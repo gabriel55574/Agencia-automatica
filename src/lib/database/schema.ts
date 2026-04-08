@@ -32,9 +32,9 @@ import {
 export const clientInsertSchema = z.object({
   name: z.string().min(1).max(255),
   company: z.string().min(1).max(255),
-  briefing: z.record(z.unknown()).nullable().optional(),
+  briefing: z.record(z.string(), z.unknown()).nullable().optional(),
   status: z.enum(CLIENT_STATUSES).default('active'),
-  metadata: z.record(z.unknown()).default({}),
+  metadata: z.record(z.string(), z.unknown()).default({}),
 })
 
 /** Full client row schema (mirrors clients table) */
@@ -42,12 +42,12 @@ export const clientSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
   company: z.string(),
-  briefing: z.record(z.unknown()).nullable(),
+  briefing: z.record(z.string(), z.unknown()).nullable(),
   current_phase_number: z.number().int().min(1).max(5),
   status: z.enum(CLIENT_STATUSES),
   cycle_number: z.number().int().min(1),
   previous_cycle_id: z.string().uuid().nullable(),
-  metadata: z.record(z.unknown()),
+  metadata: z.record(z.string(), z.unknown()),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
 })
@@ -82,8 +82,8 @@ export const processSchema = z.object({
   name: z.string(),
   squad: z.enum(SQUAD_TYPES),
   status: z.enum(PROCESS_STATUSES),
-  input_snapshot: z.record(z.unknown()).nullable(),
-  output_json: z.record(z.unknown()).nullable(),
+  input_snapshot: z.record(z.string(), z.unknown()).nullable(),
+  output_json: z.record(z.string(), z.unknown()).nullable(),
   output_markdown: z.string().nullable(),
   started_at: z.string().datetime().nullable(),
   completed_at: z.string().datetime().nullable(),
@@ -102,8 +102,8 @@ export const qualityGateSchema = z.object({
   client_id: z.string().uuid(),
   gate_number: z.number().int().min(1).max(4),
   status: z.enum(GATE_STATUSES),
-  ai_review_json: z.record(z.unknown()).nullable(),
-  checklist_results: z.record(z.unknown()).nullable(),
+  ai_review_json: z.record(z.string(), z.unknown()).nullable(),
+  checklist_results: z.record(z.string(), z.unknown()).nullable(),
   operator_decision: z.enum(GATE_DECISIONS).nullable(),
   operator_notes: z.string().nullable(),
   reviewed_at: z.string().datetime().nullable(),
@@ -148,7 +148,7 @@ export const deliverableSchema = z.object({
   file_type: z.string(),
   storage_path: z.string(),
   file_name: z.string(),
-  metadata: z.record(z.unknown()),
+  metadata: z.record(z.string(), z.unknown()),
   created_at: z.string().datetime(),
 })
 
