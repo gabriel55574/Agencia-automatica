@@ -111,45 +111,45 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | Phase 1 | Pending |
-| FOUN-02 | Phase 1 | Pending |
-| FOUN-03 | Phase 1 | Pending |
-| FOUN-04 | Phase 1 | Pending |
-| CLNT-01 | Phase 2 | Pending |
-| CLNT-02 | Phase 2 | Pending |
-| CLNT-03 | Phase 2 | Pending |
-| CLNT-04 | Phase 2 | Pending |
-| PIPE-01 | Phase 2 | Pending |
-| PIPE-02 | Phase 2 | Pending |
-| PIPE-03 | Phase 2 | Pending |
-| PIPE-04 | Phase 2 | Pending |
-| PIPE-05 | Phase 2 | Pending |
-| SQAD-01 | Phase 3 | Pending |
-| SQAD-02 | Phase 3 | Pending |
-| SQAD-03 | Phase 3 | Pending |
-| SQAD-04 | Phase 3 | Pending |
-| SQAD-05 | Phase 3 | Pending |
-| SQAD-06 | Phase 3 | Pending |
-| SQAD-07 | Phase 3 | Pending |
-| SQAD-08 | Phase 3 | Pending |
-| GATE-01 | Phase 4 | Pending |
-| GATE-02 | Phase 4 | Pending |
-| GATE-03 | Phase 4 | Pending |
-| GATE-04 | Phase 4 | Pending |
-| GATE-05 | Phase 4 | Pending |
-| GATE-06 | Phase 4 | Pending |
-| DASH-01 | Phase 5 | Pending |
-| DASH-02 | Phase 5 | Pending |
-| DASH-03 | Phase 5 | Pending |
-| DASH-04 | Phase 5 | Pending |
-| DASH-05 | Phase 5 | Pending |
-| DOCS-01 | Phase 3 | Pending |
-| DOCS-02 | Phase 5 | Pending |
-| DOCS-03 | Phase 6 | Pending |
-| DOCS-04 | Phase 3 | Pending |
-| FEED-01 | Phase 7 | Pending |
-| FEED-02 | Phase 7 | Pending |
-| FEED-03 | Phase 7 | Pending |
+| FOUN-01 | Phase 1: Foundation & Data Model | Pending |
+| FOUN-02 | Phase 1: Foundation & Data Model | Pending |
+| FOUN-03 | Phase 1: Foundation & Data Model | Pending |
+| FOUN-04 | Phase 1: Foundation & Data Model | Pending |
+| CLNT-01 | Phase 2: Client Management | Pending |
+| CLNT-02 | Phase 2: Client Management | Pending |
+| CLNT-03 | Phase 2: Client Management | Pending |
+| CLNT-04 | Phase 2: Client Management | Pending |
+| PIPE-01 | Phase 3: Pipeline Engine | Pending |
+| PIPE-02 | Phase 3: Pipeline Engine | Pending |
+| PIPE-03 | Phase 3: Pipeline Engine | Pending |
+| PIPE-04 | Phase 3: Pipeline Engine | Pending |
+| PIPE-05 | Phase 3: Pipeline Engine | Pending |
+| SQAD-03 | Phase 4: CLI Orchestrator & Job Queue | Pending |
+| SQAD-08 | Phase 4: CLI Orchestrator & Job Queue | Pending |
+| SQAD-01 | Phase 5: Squad Execution & Context | Pending |
+| SQAD-02 | Phase 5: Squad Execution & Context | Pending |
+| SQAD-04 | Phase 5: Squad Execution & Context | Pending |
+| SQAD-05 | Phase 5: Squad Execution & Context | Pending |
+| SQAD-06 | Phase 5: Squad Execution & Context | Pending |
+| SQAD-07 | Phase 5: Squad Execution & Context | Pending |
+| GATE-01 | Phase 6: Quality Gates | Pending |
+| GATE-02 | Phase 6: Quality Gates | Pending |
+| GATE-03 | Phase 6: Quality Gates | Pending |
+| GATE-04 | Phase 6: Quality Gates | Pending |
+| GATE-05 | Phase 6: Quality Gates | Pending |
+| GATE-06 | Phase 6: Quality Gates | Pending |
+| DOCS-01 | Phase 7: Document Management | Pending |
+| DOCS-02 | Phase 7: Document Management | Pending |
+| DOCS-03 | Phase 7: Document Management | Pending |
+| DOCS-04 | Phase 7: Document Management | Pending |
+| DASH-01 | Phase 8: Dashboard & Operational Views | Pending |
+| DASH-02 | Phase 8: Dashboard & Operational Views | Pending |
+| DASH-03 | Phase 8: Dashboard & Operational Views | Pending |
+| DASH-04 | Phase 8: Dashboard & Operational Views | Pending |
+| DASH-05 | Phase 8: Dashboard & Operational Views | Pending |
+| FEED-01 | Phase 9: Feedback Loop | Pending |
+| FEED-02 | Phase 9: Feedback Loop | Pending |
+| FEED-03 | Phase 9: Feedback Loop | Pending |
 
 **Coverage:**
 - v1 requirements: 38 total
@@ -158,4 +158,4 @@
 
 ---
 *Requirements defined: 2026-04-08*
-*Last updated: 2026-04-08 after initial definition*
+*Last updated: 2026-04-08 after roadmap creation*
