@@ -34,11 +34,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Attempting to advance a client to a non-sequential phase is rejected by a PostgreSQL constraint or trigger (not just application code)
   4. Next.js application runs on a VPS (not serverless) and connects to Supabase for auth, database, and storage
   5. TypeScript types are generated from the database schema and used throughout the application
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md — Next.js 16 scaffold with Supabase client configuration and operator authentication (auth middleware, login page, protected dashboard)
+- [ ] 01-02-PLAN.md — Complete PostgreSQL schema (6 tables), phase enforcement trigger, RLS policies, TypeScript domain enums and Zod schemas
+- [ ] 01-03-PLAN.md — Test infrastructure (Vitest), integration tests for schema and triggers, TypeScript type generation, production build verification
 
 ### Phase 2: Client Management
 **Goal**: Operator can onboard new clients, view their full context, edit their information, and archive inactive clients
@@ -176,7 +177,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Data Model | 0/0 | Not started | - |
+| 1. Foundation & Data Model | 0/3 | Planning complete | - |
 | 2. Client Management | 0/0 | Not started | - |
 | 3. Pipeline Engine | 0/0 | Not started | - |
 | 4. CLI Orchestrator & Job Queue | 0/0 | Not started | - |
