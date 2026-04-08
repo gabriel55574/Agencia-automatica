@@ -37,9 +37,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Next.js 16 scaffold with Supabase client configuration and operator authentication (auth middleware, login page, protected dashboard)
-- [ ] 01-02-PLAN.md — Complete PostgreSQL schema (6 tables), phase enforcement trigger, RLS policies, TypeScript domain enums and Zod schemas
-- [ ] 01-03-PLAN.md — Test infrastructure (Vitest), integration tests for schema and triggers, TypeScript type generation, production build verification
+- [x] 01-01-PLAN.md — Next.js 16 scaffold with Supabase client configuration and operator authentication (auth middleware, login page, protected dashboard)
+- [x] 01-02-PLAN.md — Complete PostgreSQL schema (6 tables), phase enforcement trigger, RLS policies, TypeScript domain enums and Zod schemas
+- [x] 01-03-PLAN.md — Test infrastructure (Vitest), integration tests for schema and triggers, TypeScript type generation, production build verification
 
 ### Phase 2: Client Management
 **Goal**: Operator can onboard new clients, view their full context, edit their information, and archive inactive clients
@@ -177,7 +177,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Data Model | 0/3 | Planning complete | - |
+| 1. Foundation & Data Model | 3/3 | Complete | 2026-04-08 |
 | 2. Client Management | 0/0 | Not started | - |
 | 3. Pipeline Engine | 0/0 | Not started | - |
 | 4. CLI Orchestrator & Job Queue | 0/0 | Not started | - |
