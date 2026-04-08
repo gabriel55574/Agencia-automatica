@@ -1,0 +1,168 @@
+-- Agency OS: Initial Schema
+-- Creates the 6 core tables for the Agency OS pipeline
+-- Phase 1 of 9: Foundation & Data Model
+
+-- Enable required extensions
+CREATE EXTENSION IF NOT EXISTS moddatetime;
+
+-- ============================================================
+-- TABLE: clients
+-- Core entity. Each client has a 5-phase pipeline journey.
+-- ============================================================
+CREATE TABLE clients (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  company TEXT NOT NULL,
+  briefing JSONB,
+  current_phase_number SMALLINT NOT NULL DEFAULT 1 CHECK (current_phase_number BETWEEN 1 AND 5),
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'archived')),
+  cycle_number SMALLINT NOT NULL DEFAULT 1,
+  previous_cycle_id UUID REFERENCES clients(id),
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ============================================================
+-- TABLE: phases
+-- Each client has exactly 5 phases (UNIQUE constraint enforces this).
+-- Phase sequence is enforced by trigger in migration 00002.
+-- ============================================================
+CREATE TABLE phases (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+  phase_number SMALLINT NOT NULL CHECK (phase_number BETWEEN 1 AND 5),
+  name TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'completed')),
+  started_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(client_id, phase_number)
+);
+
+-- ============================================================
+-- TABLE: processes
+-- 16 processes distributed across 5 phases (UNIQUE per phase).
+-- squad column references the responsible squad (4 squads total).
+-- ============================================================
+CREATE TABLE processes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  phase_id UUID NOT NULL REFERENCES phases(id) ON DELETE CASCADE,
+  client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+  process_number SMALLINT NOT NULL CHECK (process_number BETWEEN 1 AND 16),
+  name TEXT NOT NULL,
+  squad TEXT NOT NULL CHECK (squad IN ('estrategia', 'planejamento', 'growth', 'crm')),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'completed', 'failed')),
+  input_snapshot JSONB,
+  output_json JSONB,
+  output_markdown TEXT,
+  started_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(phase_id, process_number)
+);
+
+-- ============================================================
+-- TABLE: quality_gates
+-- 4 gates, one after each of phases 1-4.
+-- Operator approves/rejects after AI pre-review.
+-- ============================================================
+CREATE TABLE quality_gates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  phase_id UUID NOT NULL REFERENCES phases(id) ON DELETE CASCADE,
+  client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+  gate_number SMALLINT NOT NULL CHECK (gate_number BETWEEN 1 AND 4),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'evaluating', 'approved', 'rejected')),
+  ai_review_json JSONB,
+  checklist_results JSONB,
+  operator_decision TEXT CHECK (operator_decision IN ('approved', 'rejected')),
+  operator_notes TEXT,
+  reviewed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(phase_id, gate_number)
+);
+
+-- ============================================================
+-- TABLE: squad_jobs
+-- Tracks Claude Code CLI executions spawned per process/phase.
+-- Used by the job queue system to manage concurrency and retries.
+-- ============================================================
+CREATE TABLE squad_jobs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+  phase_id UUID NOT NULL REFERENCES phases(id) ON DELETE CASCADE,
+  process_id UUID REFERENCES processes(id),
+  squad_type TEXT NOT NULL CHECK (squad_type IN ('estrategia', 'planejamento', 'growth', 'crm')),
+  status TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued', 'running', 'completed', 'failed', 'cancelled')),
+  cli_command TEXT,
+  progress_log TEXT,
+  output TEXT,
+  error_log TEXT,
+  attempts SMALLINT NOT NULL DEFAULT 0,
+  max_attempts SMALLINT NOT NULL DEFAULT 3,
+  started_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ============================================================
+-- TABLE: deliverables
+-- Files generated by squad processes, stored in Supabase Storage.
+-- storage_path references the bucket path for signed URL generation.
+-- ============================================================
+CREATE TABLE deliverables (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+  process_id UUID REFERENCES processes(id) ON DELETE SET NULL,
+  phase_number SMALLINT NOT NULL,
+  file_type TEXT NOT NULL,
+  storage_path TEXT NOT NULL,
+  file_name TEXT NOT NULL,
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ============================================================
+-- TRIGGERS: updated_at auto-update via moddatetime extension
+-- ============================================================
+CREATE TRIGGER update_clients_updated_at
+  BEFORE UPDATE ON clients
+  FOR EACH ROW
+  EXECUTE FUNCTION moddatetime(updated_at);
+
+CREATE TRIGGER update_phases_updated_at
+  BEFORE UPDATE ON phases
+  FOR EACH ROW
+  EXECUTE FUNCTION moddatetime(updated_at);
+
+CREATE TRIGGER update_processes_updated_at
+  BEFORE UPDATE ON processes
+  FOR EACH ROW
+  EXECUTE FUNCTION moddatetime(updated_at);
+
+CREATE TRIGGER update_quality_gates_updated_at
+  BEFORE UPDATE ON quality_gates
+  FOR EACH ROW
+  EXECUTE FUNCTION moddatetime(updated_at);
+
+CREATE TRIGGER update_squad_jobs_updated_at
+  BEFORE UPDATE ON squad_jobs
+  FOR EACH ROW
+  EXECUTE FUNCTION moddatetime(updated_at);
+
+-- ============================================================
+-- INDEXES: optimize common query patterns
+-- ============================================================
+CREATE INDEX idx_clients_status ON clients(status);
+CREATE INDEX idx_phases_client_id ON phases(client_id);
+CREATE INDEX idx_phases_status ON phases(status);
+CREATE INDEX idx_processes_phase_id ON processes(phase_id);
+CREATE INDEX idx_processes_client_id ON processes(client_id);
+CREATE INDEX idx_quality_gates_phase_id ON quality_gates(phase_id);
+CREATE INDEX idx_squad_jobs_status ON squad_jobs(status);
+CREATE INDEX idx_squad_jobs_client_id ON squad_jobs(client_id);
+CREATE INDEX idx_deliverables_client_id ON deliverables(client_id);
