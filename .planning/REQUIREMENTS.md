@@ -1,0 +1,161 @@
+# Requirements: Agency OS
+
+**Defined:** 2026-04-08
+**Core Value:** One person manages 15+ clients at agency quality by combining a standardized marketing process with AI-powered squad automation
+
+## v1 Requirements
+
+### Foundation
+
+- [ ] **FOUN-01**: Operator can log in with email/password (Supabase Auth, solo user)
+- [ ] **FOUN-02**: System enforces a fixed 5-phase sequential pipeline per client (Diagnostico, Engenharia de Valor, Go-to-Market, Tracao, Retencao)
+- [ ] **FOUN-03**: Pipeline state machine is enforced at the database level via PostgreSQL constraints and triggers
+- [ ] **FOUN-04**: Next.js app scaffold with Supabase integration runs on self-hosted VPS (not serverless)
+
+### Client Management
+
+- [ ] **CLNT-01**: Operator can register a new client with name, company, and initial briefing
+- [ ] **CLNT-02**: Operator can view a client profile page showing current phase, history, and all outputs
+- [ ] **CLNT-03**: Operator can edit client information and briefing at any time
+- [ ] **CLNT-04**: Operator can archive/deactivate a client
+
+### Pipeline Engine
+
+- [ ] **PIPE-01**: Each client has an independent pipeline state tracked in the database
+- [ ] **PIPE-02**: Clients can only advance to the next phase after the quality gate is approved
+- [ ] **PIPE-03**: If a quality gate fails, the client returns to the specific process that failed (not the entire phase)
+- [ ] **PIPE-04**: Pipeline transitions are protected against race conditions with row-level locking
+- [ ] **PIPE-05**: Each of the 16 processes within the 5 phases has defined inputs, execution steps, and output checklists
+
+### Squad Automation
+
+- [ ] **SQAD-01**: Operator can trigger a squad session for any process via a button click in the UI
+- [ ] **SQAD-02**: The system automatically assembles context (prior outputs, briefing, feedback loop data) when triggering a squad
+- [ ] **SQAD-03**: Squad sessions run as Claude Code CLI child processes managed by a PostgreSQL-backed job queue
+- [ ] **SQAD-04**: Each of the 4 squads (Estrategia, Planejamento, Growth, CRM) has specialized prompts for their processes
+- [ ] **SQAD-05**: Squad outputs are parsed into structured data and stored alongside the raw CLI output
+- [ ] **SQAD-06**: Output parsing uses Zod schemas per process type with fallback to raw storage on parse failure
+- [ ] **SQAD-07**: Operator can preview the assembled prompt before triggering a squad run
+- [ ] **SQAD-08**: Job queue enforces concurrency limits (max 2-3 simultaneous CLI sessions)
+
+### Quality Gates
+
+- [ ] **GATE-01**: Each of the 4 quality gates has a defined checklist derived from the Agency OS methodology
+- [ ] **GATE-02**: When all processes in a phase complete, AI pre-reviews the outputs against the gate checklist
+- [ ] **GATE-03**: AI gate review uses adversarial prompting (different evaluation perspective) to prevent rubber-stamping
+- [ ] **GATE-04**: Gate review produces a structured verdict (pass/fail per item) with evidence citations
+- [ ] **GATE-05**: Operator sees the AI review and makes the final approve/reject decision
+- [ ] **GATE-06**: On rejection, operator can annotate which specific items need rework
+
+### Dashboard
+
+- [ ] **DASH-01**: Kanban-style pipeline board shows all clients organized by their current phase
+- [ ] **DASH-02**: Kanban board is display-only (no drag-and-drop between phases — transitions happen through gates)
+- [ ] **DASH-03**: Dashboard shows bottleneck alerts for stuck clients (configurable time threshold per phase)
+- [ ] **DASH-04**: Dashboard shows pending approvals, failed gates, and running squad sessions
+- [ ] **DASH-05**: Pipeline status updates in real-time via Supabase Realtime (no manual refresh needed)
+
+### Document Management
+
+- [ ] **DOCS-01**: All squad outputs are stored organized by client, phase, and process
+- [ ] **DOCS-02**: Operator can view any output document inline in the app
+- [ ] **DOCS-03**: Operator can export deliverables as PDF for sharing with clients
+- [ ] **DOCS-04**: Raw CLI output is always preserved alongside parsed/structured output
+
+### Feedback Loop
+
+- [ ] **FEED-01**: Phase 5 (Retencao) outputs are available as context when re-running Phase 1 for the same client
+- [ ] **FEED-02**: NPS data, churn patterns, and CLV insights from Phase 5 are surfaced during Phase 1 re-execution
+- [ ] **FEED-03**: System tracks which feedback loop cycle a client is on (first pass vs subsequent iterations)
+
+## v2 Requirements
+
+### Cost Management
+
+- **COST-01**: Track AI token usage and estimated cost per client per process
+- **COST-02**: Dashboard shows monthly cost breakdown by client and squad
+- **COST-03**: Per-process token budgets with alerts when approaching limits
+
+### Notifications
+
+- **NOTF-01**: Email notifications for completed squad runs
+- **NOTF-02**: Email notifications for quality gate failures
+- **NOTF-03**: Daily digest email summarizing pipeline status across all clients
+
+### Analytics
+
+- **ANLY-01**: Average time per phase across all clients
+- **ANLY-02**: Process success rate (first-pass gate approval rate)
+- **ANLY-03**: Client lifecycle metrics (time from intake to Phase 5)
+
+### Templates
+
+- **TMPL-01**: Save successful squad outputs as templates for similar clients
+- **TMPL-02**: Clone client configurations for similar business types
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Team collaboration / multi-user | Solo operator only — no roles, permissions, or team features for v1 |
+| Client-facing portal | Clients don't log in; operator shares exports manually |
+| Custom process builder | The 5-phase/16-process framework is fixed — it IS the product |
+| Real-time chat/messaging | Communication happens outside the system |
+| Payment/billing | Invoicing handled externally |
+| Mobile app | Web-first, responsive design is sufficient |
+| Drag-and-drop Kanban | Phase transitions must go through quality gates, not manual moves |
+| Claude API integration | Using Claude Code CLI exclusively, not the API |
+| Cost tracking per client | Deferred to v2 — useful but not critical for v1 launch |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| FOUN-01 | Phase 1 | Pending |
+| FOUN-02 | Phase 1 | Pending |
+| FOUN-03 | Phase 1 | Pending |
+| FOUN-04 | Phase 1 | Pending |
+| CLNT-01 | Phase 2 | Pending |
+| CLNT-02 | Phase 2 | Pending |
+| CLNT-03 | Phase 2 | Pending |
+| CLNT-04 | Phase 2 | Pending |
+| PIPE-01 | Phase 2 | Pending |
+| PIPE-02 | Phase 2 | Pending |
+| PIPE-03 | Phase 2 | Pending |
+| PIPE-04 | Phase 2 | Pending |
+| PIPE-05 | Phase 2 | Pending |
+| SQAD-01 | Phase 3 | Pending |
+| SQAD-02 | Phase 3 | Pending |
+| SQAD-03 | Phase 3 | Pending |
+| SQAD-04 | Phase 3 | Pending |
+| SQAD-05 | Phase 3 | Pending |
+| SQAD-06 | Phase 3 | Pending |
+| SQAD-07 | Phase 3 | Pending |
+| SQAD-08 | Phase 3 | Pending |
+| GATE-01 | Phase 4 | Pending |
+| GATE-02 | Phase 4 | Pending |
+| GATE-03 | Phase 4 | Pending |
+| GATE-04 | Phase 4 | Pending |
+| GATE-05 | Phase 4 | Pending |
+| GATE-06 | Phase 4 | Pending |
+| DASH-01 | Phase 5 | Pending |
+| DASH-02 | Phase 5 | Pending |
+| DASH-03 | Phase 5 | Pending |
+| DASH-04 | Phase 5 | Pending |
+| DASH-05 | Phase 5 | Pending |
+| DOCS-01 | Phase 3 | Pending |
+| DOCS-02 | Phase 5 | Pending |
+| DOCS-03 | Phase 6 | Pending |
+| DOCS-04 | Phase 3 | Pending |
+| FEED-01 | Phase 7 | Pending |
+| FEED-02 | Phase 7 | Pending |
+| FEED-03 | Phase 7 | Pending |
+
+**Coverage:**
+- v1 requirements: 38 total
+- Mapped to phases: 38
+- Unmapped: 0
+
+---
+*Requirements defined: 2026-04-08*
+*Last updated: 2026-04-08 after initial definition*
