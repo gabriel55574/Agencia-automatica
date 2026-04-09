@@ -10,9 +10,17 @@ One person manages 15+ clients at agency quality by combining a standardized mar
 
 ## Current State
 
-**Shipped:** v1.0 MVP (2026-04-09)
-**Codebase:** ~9,000 lines TypeScript across 126 commits
-**Tech stack:** Next.js 16.2, Supabase (Postgres, Auth, Realtime, Storage), Claude Code CLI, Vitest, @react-pdf/renderer
+**Shipped:** v1.1 Production Hardening & Feature Expansion (2026-04-09)
+**Codebase:** ~14,200 lines TypeScript across 187 commits
+**Tech stack:** Next.js 16.2, Supabase (Postgres, Auth, Realtime, Storage), Claude Code CLI, Vitest, Recharts, Resend, @react-pdf/renderer
+
+### What v1.1 Delivers
+
+- Tech debt cleanup: tsx restored, types auto-generated from live schema, zero `as any` casts, 291 tests passing
+- Cost tracking: token usage per squad run, monthly /costs breakdown by client, per-process budget alerts, dashboard cost widget
+- Email notifications: Resend integration, squad completion/failure emails, gate failure alerts, daily digest via node-cron
+- Analytics dashboard: /analytics page with Recharts charts — phase duration, gate approval rates, client lifecycle, monthly trends with date range filter
+- Templates: save squad outputs as named templates, clone client configs, inject templates as reference context in prompts, /templates management page
 
 ### What v1.0 Delivers
 
@@ -164,4 +172,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after v1.1 milestone start*
+*Last updated: 2026-04-09 after v1.1 milestone*

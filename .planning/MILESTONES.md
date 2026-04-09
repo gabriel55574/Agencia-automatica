@@ -1,5 +1,26 @@
 # Milestones
 
+## v1.1 Production Hardening & Feature Expansion (Shipped: 2026-04-09)
+
+**Phases completed:** 6 phases, 12 plans, 31 tasks
+
+**Key accomplishments:**
+
+- Auto-generated types from live Supabase schema with gate_reviews table, 5 RPC signatures, and zero as-any casts across application code
+- All 33 integration tests pass against live Supabase -- added gate_reviews to table check and cleanup for full schema coverage
+- Token extraction from Claude CLI output with cost estimation, DB migration for squad_jobs/processes cost columns, and worker integration recording usage per completed run
+- Monthly /costs page with sortable per-client cost breakdown table, MonthSelector dropdown, cost formatting utilities, and Supabase query module
+- CostSummaryWidget on dashboard showing monthly total spend and top 5 clients, RunCostBadge on completed process rows showing dollar cost and token count
+- Per-process token budget lifecycle: Server Actions for set/remove, BudgetSettingDialog with inline confirmation, color-coded BudgetBar progress, and BudgetAlertBanner for exceeded warnings
+- Status:
+- Worker notification hooks for squad completion/failure, gate review fail/partial alerts, and daily digest cron at 08:00 UTC via node-cron
+- Recharts-ready analytics module with typed Supabase queries for phase durations (5 phases), gate approval rates (4 gates), client lifecycle metrics, and monthly trend aggregation -- 30 unit tests passing
+- Interactive analytics dashboard with Recharts bar/line charts for phase performance, gate approval rates with color-coded badges, client lifecycle metrics, and monthly trends -- all filtered by date range toggle
+- Templates table confirmed live with 7 integration tests covering schema constraints, Zod validation, and clone client pattern
+- /templates management page with delete, Save-as-Template wired into outputs browser via OutputViewer prop chain, Templates nav link in dashboard header
+
+---
+
 ## v1.0 MVP (Shipped: 2026-04-09)
 
 **Phases completed:** 9 phases, 21 plans, 46 tasks
