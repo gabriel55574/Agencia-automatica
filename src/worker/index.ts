@@ -57,7 +57,8 @@ export async function tryClaimAndRun(): Promise<void> {
   if ((count ?? 0) >= MAX_CONCURRENT) return
 
   // Atomically claim the next queued job via FOR UPDATE SKIP LOCKED (T-04-01)
-  const { data: jobs, error } = await supabase.rpc('claim_next_job')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: jobs, error } = await (supabase as any).rpc('claim_next_job')
   if (error) {
     process.stdout.write(`[worker] claim_next_job error: ${error.message}\n`)
     return
