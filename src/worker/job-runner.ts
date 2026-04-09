@@ -14,6 +14,7 @@ import { spawn, ChildProcess } from 'child_process'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { squadJobSchema } from '../lib/database/schema'
 import type { SquadJob } from '../lib/database/schema'
+import { parseCliOutput, parseStructuredOutput } from './output-parser'
 
 export type { SquadJob }
 
@@ -168,11 +169,38 @@ export async function runJob(
     const success = exitCode === 0 && !isCliError(stdoutBuffer)
 
     if (success) {
+      // Phase 5: Parse structured output from CLI response
+      const parsedContent = parseCliOutput(stdoutBuffer)
+      let structuredOutput: unknown = null
+
+      if (parsedContent !== null && job.process_id) {
+        // Need process_number to select correct schema
+        // Query it from processes table
+        const { data: processRow } = await supabase
+          .from('processes')
+          .select('process_number')
+          .eq('id', job.process_id)
+          .single()
+
+        if (processRow) {
+          const result = parseStructuredOutput(parsedContent, processRow.process_number)
+          if (result.success) {
+            structuredOutput = result.data
+          } else {
+            // Log parse failure but don't fail the job
+            process.stdout.write(
+              `[worker] Structured output parse failed for job ${job.id}: ${result.error}\n`
+            )
+          }
+        }
+      }
+
       await supabase
         .from('squad_jobs')
         .update({
           status: 'completed',
           output: stdoutBuffer,
+          structured_output: structuredOutput,
           progress_log: stdoutBuffer,
           completed_at: new Date().toISOString(),
         })
