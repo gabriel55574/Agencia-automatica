@@ -50,12 +50,12 @@ Plans:
   2. Operator can view a client profile page showing current phase, phase history, and all associated outputs
   3. Operator can edit client name, company, and briefing at any time without disrupting the pipeline state
   4. Operator can archive a client, removing it from active views while preserving all data
-**Plans**: TBD
+**Plans:** 2 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md — Foundation + Client Creation: install deps (shadcn/ui, react-hook-form, date-fns, lucide-react), DB migration for atomic create_client_with_phases RPC, briefingSchema, /clients card grid page with archive toggle, /clients/new intake form with Server Action
+- [ ] 02-02-PLAN.md — Profile, Edit, Archive: /clients/[id] single-page profile (header, briefing, pipeline timeline, outputs placeholder), /clients/[id]/edit pre-populated edit form, archive/restore Server Actions with confirmation dialog
 
 ### Phase 3: Pipeline Engine
 **Goal**: Each client has an independent pipeline with gate-controlled phase transitions, process-level rework routing, race condition protection, and fully defined process inputs/outputs
@@ -178,7 +178,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Data Model | 3/3 | Complete | 2026-04-08 |
-| 2. Client Management | 0/0 | Not started | - |
+| 2. Client Management | 0/2 | Not started | - |
 | 3. Pipeline Engine | 0/0 | Not started | - |
 | 4. CLI Orchestrator & Job Queue | 0/0 | Not started | - |
 | 5. Squad Execution & Context | 0/0 | Not started | - |
