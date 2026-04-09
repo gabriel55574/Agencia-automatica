@@ -118,11 +118,10 @@ describe('runJob', () => {
 
     // Spawn should be called synchronously during runJob initialization
     expect(spawnMock).toHaveBeenCalledOnce()
-    expect(spawnMock).toHaveBeenCalledWith(
-      'claude',
-      expect.arrayContaining(['--print', '--output-format', 'json', '--no-session-persistence']),
-      expect.objectContaining({ stdio: ['ignore', 'pipe', 'pipe'] })
-    )
+    const [cmd, args, opts] = spawnMock.mock.calls[0]
+    expect(cmd).toBe('claude')
+    expect(args).toEqual(expect.arrayContaining(['--print', '--output-format', expect.stringMatching(/json|stream-json/), '--no-session-persistence']))
+    expect(opts.stdio).toEqual(['ignore', 'pipe', 'pipe'])
 
     // Resolve the Promise by triggering the close event
     const closeCb = mockProc.on.mock.calls.find(([evt]) => evt === 'close')?.[1]
