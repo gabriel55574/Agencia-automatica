@@ -67,9 +67,9 @@ Plans:
   2. Operator can open a monthly cost breakdown page showing total spend per client with sortable columns
   3. Operator can set a token budget per process, and the UI shows a visual warning when a run approaches or exceeds that budget
   4. The main dashboard displays a monthly cost summary widget showing total spend and the top-spending clients
-**Plans:** 2 plans
+**Plans:** 1/4 plans executed
 Plans:
-- [ ] 12-01-PLAN.md — Database migration, token parser module, worker integration for cost capture
+- [x] 12-01-PLAN.md — Database migration, token parser module, worker integration for cost capture
 - [ ] 12-02-PLAN.md — Cost breakdown page, dashboard widget, run cost badges, budget system UI
 **UI hint**: yes
 
@@ -128,7 +128,7 @@ Phases 12, 13, 14 all depend on 11 but are sequenced for data accumulation benef
 | 9. Feedback Loop | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 10. Tech Debt Cleanup | v1.1 | 2/2 | Complete   | 2026-04-09 |
 | 11. Production Deployment | v1.1 | 0/0 | Not started | - |
-| 12. Cost Tracking | v1.1 | 0/2 | Planned | - |
+| 12. Cost Tracking | v1.1 | 1/4 | In Progress|  |
 | 13. Notifications | v1.1 | 0/0 | Not started | - |
 | 14. Analytics | v1.1 | 0/0 | Not started | - |
 | 15. Templates | v1.1 | 0/2 | Planned | - |
