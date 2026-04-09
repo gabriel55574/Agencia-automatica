@@ -72,7 +72,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md — Static config + test foundation: PROCESS_DEFINITIONS for all 16 processes, shadcn/ui wrappers (accordion, dialog, checkbox), Wave 0 test stubs (processes-config.test.ts, pipeline.test.ts, helpers.ts)
-- [ ] 03-02-PLAN.md — DB migrations + Server Actions + UI: create_client_with_phases extended with 16 process rows + 4 gate rows, approve_gate/reject_gate RPCs with SELECT FOR UPDATE, gate Server Actions, PipelineAccordion replacing PipelineTimeline on client profile
+- [x] 03-02-PLAN.md — DB migrations + Server Actions + UI: create_client_with_phases extended with 16 process rows + 4 gate rows, approve_gate/reject_gate RPCs with SELECT FOR UPDATE, gate Server Actions, PipelineAccordion replacing PipelineTimeline on client profile
 
 ### Phase 4: CLI Orchestrator & Job Queue
 **Goal**: A reliable infrastructure layer that queues, spawns, monitors, and manages Claude Code CLI processes with concurrency control -- the engine that powers all squad automation
