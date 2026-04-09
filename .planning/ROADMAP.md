@@ -99,12 +99,13 @@ Plans:
   3. Operator can preview the fully assembled prompt (context + squad instructions) before confirming the trigger
   4. Squad outputs are parsed into structured data using Zod schemas per process type, with fallback to raw storage when parsing fails
   5. Both parsed structured output and raw CLI output are stored and accessible for every squad run
-**Plans**: TBD
+**Plans:** 3 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 05-01-PLAN.md — Data foundation: DB migration (structured_output JSONB), 16 per-process Zod schemas, schema dispatcher, context assembler with 32K truncation, CLI output parser with two-level JSON deserialization, unit tests
+- [ ] 05-02-PLAN.md — Prompt templates + backend: 4 squad buildPrompt() functions with verbatim squad identity, worker close handler parse extension, assembleSquadContext + confirmSquadRun Server Actions
+- [ ] 05-03-PLAN.md — UI layer: RunSquadButton with visibility logic, PromptPreviewModal with truncation warning, StructuredOutputView with View Raw toggle, ProcessAccordionRow extension, client profile page wiring, DB push + end-to-end verification
 
 ### Phase 6: Quality Gates
 **Goal**: AI pre-reviews squad outputs against methodology checklists using adversarial prompting, produces structured verdicts with evidence, and the operator makes the final judgment call
@@ -181,7 +182,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 2. Client Management | 2/2 | Complete | 2026-04-08 |
 | 3. Pipeline Engine | 0/2 | In progress | - |
 | 4. CLI Orchestrator & Job Queue | 0/0 | Not started | - |
-| 5. Squad Execution & Context | 0/0 | Not started | - |
+| 5. Squad Execution & Context | 0/3 | Not started | - |
 | 6. Quality Gates | 0/0 | Not started | - |
 | 7. Document Management | 0/0 | Not started | - |
 | 8. Dashboard & Operational Views | 0/0 | Not started | - |
