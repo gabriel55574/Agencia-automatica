@@ -1,10 +1,9 @@
 /**
  * Agency OS: Database connection integration tests
  *
- * These tests require `supabase start` to be running.
- * Run: supabase start && npm test
+ * These tests run against the cloud Supabase project (configured via .env/.env.local).
  *
- * Verifies: local Supabase is reachable and all 6 core tables exist.
+ * Verifies: Supabase is reachable and all 7 core tables exist.
  */
 
 import { describe, it, expect, afterAll } from 'vitest'
@@ -17,6 +16,7 @@ const EXPECTED_TABLES = [
   'quality_gates',
   'squad_jobs',
   'deliverables',
+  'gate_reviews',
 ] as const
 
 describe('Database Connection', () => {
@@ -24,12 +24,12 @@ describe('Database Connection', () => {
     await cleanTestData()
   })
 
-  it('Supabase client connects to local instance successfully', async () => {
+  it('Supabase client connects successfully', async () => {
     const { error } = await testClient.from('clients').select('id').limit(1)
     expect(error).toBeNull()
   })
 
-  it('All 6 core tables exist and are accessible', async () => {
+  it('All 7 core tables exist and are accessible', async () => {
     for (const tableName of EXPECTED_TABLES) {
       // Use a zero-row SELECT to confirm the table exists without fetching data
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

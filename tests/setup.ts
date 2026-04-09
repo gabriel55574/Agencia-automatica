@@ -45,6 +45,7 @@ export async function cleanTestData() {
   const sentinel = '00000000-0000-0000-0000-000000000000'
   await testClient.from('deliverables').delete().neq('id', sentinel)
   await testClient.from('squad_jobs').delete().neq('id', sentinel)
+  await testClient.from('gate_reviews').delete().neq('id', sentinel)
   await testClient.from('quality_gates').delete().neq('id', sentinel)
   await testClient.from('processes').delete().neq('id', sentinel)
   await testClient.from('phases').delete().neq('id', sentinel)
