@@ -200,12 +200,15 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
 
       <Separator />
 
-      {/* ---- Outputs section (placeholder — Phase 7) ---- */}
+      {/* ---- Outputs section ---- */}
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 mb-2">Outputs</h2>
-        <p className="text-sm text-zinc-400">
-          Outputs will appear here as squads complete processes.
-        </p>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold text-zinc-900">Outputs</h2>
+          <Link href={`/clients/${client.id}/outputs`}>
+            <Button variant="outline" size="sm">View All Outputs</Button>
+          </Link>
+        </div>
+        <p className="text-sm text-zinc-400">Browse all squad outputs organized by phase and process.</p>
       </div>
 
     </div>
