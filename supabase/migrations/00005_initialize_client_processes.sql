@@ -12,7 +12,8 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
   v_client_id UUID;
-  v_phase_ids UUID[] := ARRAY[NULL::UUID, NULL::UUID, NULL::UUID, NULL::UUID, NULL::UUID];
+  v_temp_phase_id UUID;
+  v_phase_ids UUID[] := ARRAY[]::UUID[];
   v_phase_names TEXT[] := ARRAY[
     'Diagnostico',
     'Engenharia de Valor',
@@ -33,10 +34,12 @@ BEGIN
       CASE WHEN i = 1 THEN 'active'::TEXT ELSE 'pending'::TEXT END,
       CASE WHEN i = 1 THEN NOW() ELSE NULL END
     )
-    RETURNING id INTO v_phase_ids[i];
+    RETURNING id INTO v_temp_phase_id;
+    v_phase_ids := v_phase_ids || v_temp_phase_id;
   END LOOP;
 
   -- Seed 16 process rows (all pending)
+  -- v_phase_ids[1..5] correspond to phases 1..5
   INSERT INTO processes (phase_id, client_id, process_number, name, squad, status)
   VALUES
     (v_phase_ids[1], v_client_id, 1,  'Pesquisa de Mercado e Insights',    'estrategia',   'pending'),
