@@ -84,7 +84,24 @@ One person manages 15+ clients at agency quality by combining a standardized mar
 
 ### Active
 
-(None — define in next milestone via `/gsd-new-milestone`)
+- [ ] Fix v1.0 tech debt (tsx dependency, type regeneration, integration tests, dead code)
+- [ ] Production deployment (VPS setup, PM2, environment variables, SSL, domain)
+- [ ] Cost tracking per client per process (token usage, monthly breakdown, budget alerts)
+- [ ] Email notifications (completed squad runs, gate failures, daily digest)
+- [ ] Analytics dashboard (time per phase, gate pass rates, client lifecycle metrics)
+- [ ] Templates (save successful outputs, clone client configurations)
+
+## Current Milestone: v1.1 Production Hardening & Feature Expansion
+
+**Goal:** Fix v1.0 tech debt, deploy to production, and add cost tracking, notifications, analytics, and templates to make Agency OS operationally complete.
+
+**Target features:**
+- Tech debt cleanup (tsx dependency, type regeneration, integration tests, type casts)
+- Production deployment (VPS setup, PM2 config, environment variables, SSL)
+- Cost tracking per client/process (token usage, monthly breakdown, budget alerts)
+- Email notifications (completed runs, gate failures, daily digest)
+- Analytics dashboard (time per phase, gate pass rates, client lifecycle metrics)
+- Templates (save successful outputs as templates, clone client configs)
 
 ### Out of Scope
 
@@ -129,5 +146,22 @@ v1.0 was built in 2 days (April 8-9, 2026) with 9 phases executed autonomously. 
 | Self-hosted VPS (not serverless) | CLI processes need persistent worker process | Pending — not yet deployed to VPS |
 | Operator-triggered gate review (not auto) | Operator controls when expensive CLI calls run | Good — preserves agency over automation |
 
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd-transition`):
+1. Requirements invalidated? -> Move to Out of Scope with reason
+2. Requirements validated? -> Move to Validated with phase reference
+3. New requirements emerged? -> Add to Active
+4. Decisions to log? -> Add to Key Decisions
+5. "What This Is" still accurate? -> Update if drifted
+
+**After each milestone** (via `/gsd-complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
-*Last updated: 2026-04-09 after v1.0 milestone*
+*Last updated: 2026-04-09 after v1.1 milestone start*
