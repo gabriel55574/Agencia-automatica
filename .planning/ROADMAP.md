@@ -42,9 +42,9 @@
   2. TypeScript types match the live Supabase schema with zero `as any` casts in application code
   3. Integration tests execute against the live Supabase instance and pass
   4. No orphaned exports or dead code flagged by the codebase audit
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
-- [ ] 10-01-PLAN.md — Regenerate TypeScript types from live schema and remove all `as any` casts
+- [x] 10-01-PLAN.md — Regenerate TypeScript types from live schema and remove all `as any` casts
 - [ ] 10-02-PLAN.md — Execute integration tests against live Supabase and fix failures
 
 ### Phase 11: Production Deployment
@@ -120,7 +120,7 @@ Phases 12, 13, 14 all depend on 11 but are sequenced for data accumulation benef
 | 7. Document Management | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 8. Dashboard & Operational Views | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 9. Feedback Loop | v1.0 | 2/2 | Complete | 2026-04-09 |
-| 10. Tech Debt Cleanup | v1.1 | 0/2 | In progress | - |
+| 10. Tech Debt Cleanup | v1.1 | 1/2 | In Progress|  |
 | 11. Production Deployment | v1.1 | 0/0 | Not started | - |
 | 12. Cost Tracking | v1.1 | 0/0 | Not started | - |
 | 13. Notifications | v1.1 | 0/0 | Not started | - |

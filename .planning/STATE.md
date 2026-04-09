@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Production Hardening & Feature Expansion
-status: planning
-stopped_at: Roadmap created, ready to plan Phase 10
-last_updated: "2026-04-09T21:00:00.000Z"
-last_activity: 2026-04-09 -- v1.1 roadmap created (6 phases, 21 requirements)
+status: executing
+stopped_at: Completed 10-01-PLAN.md
+last_updated: "2026-04-09T19:57:45Z"
+last_activity: 2026-04-09 — Completed Plan 10-01 (regenerate types, remove as-any casts)
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 2
+  completed_plans: 1
+  percent: 50
 ---
 
 # Project State
@@ -26,19 +26,19 @@ See: .planning/PROJECT.md (updated 2026-04-09)
 ## Current Position
 
 Phase: 10 of 15 (Tech Debt Cleanup) -- first of 6 v1.1 phases
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-04-09 — v1.1 roadmap created (6 phases, 21 requirements mapped)
+Plan: 1 of 2 in current phase (10-01 complete)
+Status: Executing
+Last activity: 2026-04-09 -- Completed Plan 10-01 (regenerate types, remove as-any casts)
 
-Progress: [░░░░░░░░░░] 0% (v1.1)
+Progress: [█████░░░░░] 50% (v1.1)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0 (v1.1)
-- Average duration: --
-- Total execution time: 0 hours
+- Total plans completed: 1 (v1.1)
+- Average duration: 7min
+- Total execution time: 0.1 hours
 
 **v1.0 reference:** 21 plans across 9 phases in ~2 days
 
@@ -54,6 +54,8 @@ Recent decisions affecting current work:
 - [v1.0]: PostgreSQL job queue over BullMQ+Redis -- simpler infra at current scale
 - [v1.0]: Self-hosted VPS (not serverless) -- CLI needs persistent worker
 - [v1.1]: Tech debt before production -- worker cannot start without tsx fix
+- [v1.1]: Cloud type generation via --project-id over --local (no Docker needed)
+- [v1.1]: String types for CHECK-constrained columns (not union literals from PG ENUMs)
 
 ### Pending Todos
 
@@ -61,11 +63,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- tsx missing from devDependencies blocks worker startup (DEBT-01, Phase 10)
-- Hand-generated types have `as any` casts masking potential type errors (DEBT-02/04, Phase 10)
+- (RESOLVED) tsx missing from devDependencies -- confirmed present (DEBT-01)
+- (RESOLVED) Hand-generated types -- regenerated from live schema (DEBT-02/04)
 
 ## Session Continuity
 
 Last session: 2026-04-09
-Stopped at: v1.1 roadmap created, ready to plan Phase 10
+Stopped at: Completed 10-01-PLAN.md
 Resume file: None
