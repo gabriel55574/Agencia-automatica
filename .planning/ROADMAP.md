@@ -121,9 +121,9 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 06-01-PLAN.md — Gate checklists + review foundation: 4 static TypeScript checklist files (verbatim from methodology), getGateChecklist dispatcher, GateReviewVerdictSchema Zod schema, adversarial review prompt builder with distinct auditor persona
-- [ ] 06-02-PLAN.md — Backend infrastructure: gate_reviews DB migration, squad_type extension for 'gate_review', runGateReview Server Action, worker verdict parsing extension, supabase db push
-- [ ] 06-03-PLAN.md — UI layer: GateReviewDisplay component (verdict badges, evidence, View Raw), GateSection enhancement (checklist display, Run Gate Review button, verdict integration), enhanced reject dialog with AI-suggested rework items
+- [x] 06-01-PLAN.md — Gate checklists + review foundation: 4 static TypeScript checklist files (verbatim from methodology), getGateChecklist dispatcher, GateReviewVerdictSchema Zod schema, adversarial review prompt builder with distinct auditor persona
+- [x] 06-02-PLAN.md — Backend infrastructure: gate_reviews DB migration, squad_type extension for 'gate_review', runGateReview Server Action, worker verdict parsing extension, supabase db push
+- [x] 06-03-PLAN.md — UI layer: GateReviewDisplay component (verdict badges, evidence, View Raw), GateSection enhancement (checklist display, Run Gate Review button, verdict integration), enhanced reject dialog with AI-suggested rework items
 
 ### Phase 7: Document Management
 **Goal**: All squad outputs are organized, browsable, and exportable -- the operator can find any deliverable and share it with clients
@@ -134,12 +134,12 @@ Plans:
   2. Operator can view any output document inline in the app without downloading
   3. Operator can export deliverables as PDF for sharing with clients
   4. Raw CLI output is always preserved alongside the parsed/structured version and accessible for debugging
-**Plans**: TBD
+**Plans:** 2 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
+- [ ] 07-01-PLAN.md — Outputs browsing page with phase/process accordion hierarchy, per-process run history, inline OutputViewer with Structured/Raw tabs, raw .txt download, "View All Outputs" link on client profile
+- [ ] 07-02-PLAN.md — PDF export: install @react-pdf/renderer, branded OutputPdfTemplate with header/section/body/footer, dynamic-imported PdfDownloadSection, Export PDF button in OutputViewer, end-to-end verification checkpoint
 
 ### Phase 8: Dashboard & Operational Views
 **Goal**: Operator has a single-screen operational view showing all clients across the pipeline, what needs attention, and what is running -- the command center for managing 15+ clients
@@ -185,6 +185,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 4. CLI Orchestrator & Job Queue | 0/0 | Not started | - |
 | 5. Squad Execution & Context | 0/3 | Not started | - |
 | 6. Quality Gates | 0/3 | Not started | - |
-| 7. Document Management | 0/0 | Not started | - |
+| 7. Document Management | 0/2 | Not started | - |
 | 8. Dashboard & Operational Views | 0/0 | Not started | - |
 | 9. Feedback Loop | 0/0 | Not started | - |
