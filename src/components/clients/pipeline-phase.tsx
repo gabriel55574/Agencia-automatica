@@ -4,7 +4,7 @@ import { AccordionItem, AccordionTrigger, AccordionContent } from '@/components/
 import { Accordion } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { ProcessRow as ProcessRowComponent } from './process-row'
+import { ProcessAccordionRow as ProcessRowComponent } from './process-row'
 import { GateSection } from './gate-section'
 import { PROCESS_DEFINITIONS } from '@/lib/pipeline/processes'
 import type { PhaseRow, ProcessRow, GateRow } from '@/lib/types/pipeline'

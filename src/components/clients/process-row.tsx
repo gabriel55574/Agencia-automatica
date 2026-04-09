@@ -1,29 +1,35 @@
 'use client'
 
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
+import { AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Square } from 'lucide-react'
-import type { ProcessRow } from '@/lib/types/pipeline'
+import type { ProcessRow as ProcessRowType } from '@/lib/types/pipeline'
 import type { ProcessDefinition } from '@/lib/pipeline/processes'
 
-interface ProcessRowProps {
-  process: ProcessRow
+// ============================================================
+// ProcessAccordionRow — used inside PipelinePhase accordion
+// (Phase 3 component: shows process definition details)
+// ============================================================
+
+interface ProcessAccordionRowProps {
+  process: ProcessRowType
   definition: ProcessDefinition | undefined
 }
 
-function StatusBadge({ status }: { status: ProcessRow['status'] }) {
+function AccordionStatusBadge({ status }: { status: ProcessRowType['status'] }) {
   if (status === 'pending') return <Badge variant="secondary">Pending</Badge>
   if (status === 'active') return <Badge className="bg-blue-100 text-blue-700 border-blue-200">Active</Badge>
   if (status === 'completed') return <Badge className="bg-green-100 text-green-700 border-green-200">Completed</Badge>
   return <Badge className="bg-red-100 text-red-700 border-red-200 font-semibold">Needs Rework</Badge>
 }
 
-export function ProcessRow({ process, definition }: ProcessRowProps) {
+export function ProcessAccordionRow({ process, definition }: ProcessAccordionRowProps) {
   return (
     <AccordionItem value={process.id} className="border-b border-zinc-100 last:border-0">
       <AccordionTrigger className="flex justify-between items-center py-3 px-1 hover:no-underline">
         <span className="text-sm font-medium text-zinc-800 text-left">{process.name}</span>
-        <StatusBadge status={process.status} />
+        <AccordionStatusBadge status={process.status} />
       </AccordionTrigger>
       <AccordionContent className="px-1 pb-4">
         {definition ? (
@@ -67,5 +73,72 @@ export function ProcessRow({ process, definition }: ProcessRowProps) {
         )}
       </AccordionContent>
     </AccordionItem>
+  )
+}
+
+// ============================================================
+// ProcessRow — used in /clients/[id] job status section (Phase 4)
+// Shows running/failed/completed badges + View button for job progress
+// Does NOT import Supabase — pure display component
+// ============================================================
+
+interface ProcessRowProps {
+  process: {
+    id: string
+    process_number: number
+    name: string
+    squad: string
+    status: string
+  }
+  // The most recent squad_job for this process (null if none exist)
+  activeJob: {
+    id: string
+    status: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled'
+  } | null
+  // Callback to open the progress modal with the job ID
+  onViewProgress: (jobId: string) => void
+}
+
+export function ProcessRow({ process, activeJob, onViewProgress }: ProcessRowProps) {
+  return (
+    <div className="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-zinc-50 transition-colors">
+      {/* Process number badge */}
+      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-zinc-100 text-zinc-600 text-xs font-semibold shrink-0">
+        #{process.process_number}
+      </span>
+
+      {/* Process name + squad */}
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-zinc-800 truncate">{process.name}</p>
+        <p className="text-xs text-zinc-500 capitalize">{process.squad}</p>
+      </div>
+
+      {/* Status badge + optional View button */}
+      <div className="flex items-center gap-2 shrink-0">
+        {/* Process-level completed badge (independent of job status) */}
+        {process.status === 'completed' && (
+          <Badge className="bg-green-100 text-green-700 border-green-200">completed</Badge>
+        )}
+
+        {/* Job-level status badges */}
+        {activeJob?.status === 'running' && (
+          <>
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200">running</Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onViewProgress(activeJob.id)}
+              className="text-xs h-7 px-2"
+            >
+              View ►
+            </Button>
+          </>
+        )}
+
+        {activeJob?.status === 'failed' && (
+          <Badge className="bg-red-100 text-red-700 border-red-200">failed</Badge>
+        )}
+      </div>
+    </div>
   )
 }
