@@ -86,8 +86,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Worker core: PM2 setup, Realtime+polling job loop, CLI spawn with concurrency guard, progress batching, retry with backoff, heartbeat timeout recovery
-- [ ] 04-02-PLAN.md — Progress UI: process row status badges (running/failed), progress modal with Supabase Realtime subscription, end-to-end verification checkpoint
+- [x] 04-01-PLAN.md — Worker core: PM2 setup, Realtime+polling job loop, CLI spawn with concurrency guard, progress batching, retry with backoff, heartbeat timeout recovery
+- [x] 04-02-PLAN.md — Progress UI: process row status badges (running/failed), progress modal with Supabase Realtime subscription, end-to-end verification checkpoint
 
 ### Phase 5: Squad Execution & Context
 **Goal**: Operator can trigger any of the 4 squads for any process, with the system automatically assembling context and parsing structured outputs -- the core workflow that makes one person manage 15+ clients
