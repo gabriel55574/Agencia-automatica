@@ -103,7 +103,10 @@ Plans:
   1. Operator can save any successful squad output as a named template from the output viewer
   2. Operator can clone an existing client's configuration (briefing and process settings) to create a new client pre-filled with that data
   3. When triggering a squad run, operator can optionally select a template that gets included as reference context in the assembled prompt
-**Plans**: TBD
+**Plans:** 0/2 plans complete
+Plans:
+- [ ] 15-01-PLAN.md — Database migration, server actions, assembler extension for templates
+- [ ] 15-02-PLAN.md — UI components for save-as-template, clone-client, template selector, management page
 **UI hint**: yes
 
 ## Progress
@@ -128,4 +131,4 @@ Phases 12, 13, 14 all depend on 11 but are sequenced for data accumulation benef
 | 12. Cost Tracking | v1.1 | 0/2 | Planned | - |
 | 13. Notifications | v1.1 | 0/0 | Not started | - |
 | 14. Analytics | v1.1 | 0/0 | Not started | - |
-| 15. Templates | v1.1 | 0/0 | Not started | - |
+| 15. Templates | v1.1 | 0/2 | Planned | - |
