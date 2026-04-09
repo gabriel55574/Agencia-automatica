@@ -10,7 +10,8 @@
  */
 
 import { createClient } from '@/lib/supabase/server'
-import type { CostBreakdownRow, MonthlyCostSummary } from './types'
+import { BUDGET_THRESHOLDS } from './constants'
+import type { BudgetStatus, CostBreakdownRow, MonthlyCostSummary } from './types'
 
 /**
  * Fetch monthly cost breakdown grouped by client.
@@ -136,4 +137,73 @@ export async function fetchMonthlyCostSummary(month: string): Promise<MonthlyCos
       : null
 
   return { total_cost, total_tokens, top_clients, previous_month_total }
+}
+
+export type ProcessBudgetInfo = {
+  budget: number
+  used: number
+  status: BudgetStatus
+}
+
+/**
+ * Fetch budget usage for all processes that have a token_budget set.
+ *
+ * Returns a record keyed by process_id with budget, usage, and status.
+ * Used by the client profile page to render BudgetBar on process rows.
+ *
+ * @param clientId - The client whose processes to check
+ * @returns Record<processId, { budget, used, status }>
+ */
+export async function fetchProcessBudgetUsage(
+  clientId: string
+): Promise<Record<string, ProcessBudgetInfo>> {
+  const supabase = await createClient()
+
+  // Find all processes for this client that have a budget set
+  const { data: processes } = await supabase
+    .from('processes')
+    .select('id, token_budget')
+    .eq('client_id', clientId)
+    .not('token_budget', 'is', null)
+
+  if (!processes || processes.length === 0) return {}
+
+  // For each budgeted process, get total token usage from completed jobs
+  const processIds = processes.map(p => p.id)
+  const { data: jobs } = await supabase
+    .from('squad_jobs')
+    .select('process_id, token_count')
+    .in('process_id', processIds)
+    .eq('status', 'completed')
+    .not('token_count', 'is', null)
+
+  // Aggregate token usage per process
+  const usageByProcess = new Map<string, number>()
+  for (const job of jobs ?? []) {
+    if (job.process_id) {
+      usageByProcess.set(
+        job.process_id,
+        (usageByProcess.get(job.process_id) ?? 0) + ((job.token_count as number) ?? 0)
+      )
+    }
+  }
+
+  // Build result with budget status
+  const result: Record<string, ProcessBudgetInfo> = {}
+  for (const process of processes) {
+    const budget = (process.token_budget as number) ?? 0
+    const used = usageByProcess.get(process.id) ?? 0
+    const ratio = budget > 0 ? used / budget : 0
+
+    let status: BudgetStatus = 'under'
+    if (ratio >= BUDGET_THRESHOLDS.exceeded) {
+      status = 'exceeded'
+    } else if (ratio >= BUDGET_THRESHOLDS.approaching) {
+      status = 'approaching'
+    }
+
+    result[process.id] = { budget, used, status }
+  }
+
+  return result
 }
