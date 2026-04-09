@@ -20,12 +20,15 @@ interface PipelinePhaseProps {
   latestJobs: Record<string, LatestJobData>
   /** Map of gate_id -> latest gate review data (Phase 6) */
   latestReviews: Record<string, GateReviewRow>
+  /** Map of process_id -> budget info (Phase 12, COST-03) */
+  budgetUsage?: Record<string, { budget: number; used: number; status: string }>
   /** Callback for when squad context is assembled (Phase 5) */
   onAssembled: (data: {
     context: AssembledContext
     prompt: string
     squadType: string
     processId: string
+    processNumber: number
     clientId: string
     phaseId: string
   }) => void
@@ -37,7 +40,7 @@ function PhaseStatusBadge({ status }: { status: PhaseRow['status'] }) {
   return <Badge variant="secondary">Pending</Badge>
 }
 
-export function PipelinePhase({ phase, processes, gate, clientId, clientName, latestJobs, latestReviews, onAssembled }: PipelinePhaseProps) {
+export function PipelinePhase({ phase, processes, gate, clientId, clientName, latestJobs, latestReviews, budgetUsage, onAssembled }: PipelinePhaseProps) {
   const isActivePhase = phase.status === 'active'
 
   return (
@@ -63,6 +66,8 @@ export function PipelinePhase({ phase, processes, gate, clientId, clientName, la
               clientId={clientId}
               phaseId={phase.id}
               onAssembled={onAssembled}
+              tokenBudget={budgetUsage?.[proc.id]?.budget ?? null}
+              budgetUsed={budgetUsage?.[proc.id]?.used ?? null}
             />
           ))}
         </Accordion>

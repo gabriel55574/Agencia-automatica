@@ -16,9 +16,11 @@ interface PipelineAccordionProps {
   latestJobs: Record<string, LatestJobData>
   /** Map of gate_id -> latest gate review data (Phase 6) */
   latestReviews: Record<string, GateReviewRow>
+  /** Map of process_id -> budget info (Phase 12, COST-03) */
+  budgetUsage?: Record<string, { budget: number; used: number; status: string }>
 }
 
-export function PipelineAccordion({ phases, processes, gates, clientId, clientName, latestJobs, latestReviews }: PipelineAccordionProps) {
+export function PipelineAccordion({ phases, processes, gates, clientId, clientName, latestJobs, latestReviews, budgetUsage }: PipelineAccordionProps) {
   const [previewData, setPreviewData] = useState<PreviewData | null>(null)
 
   const activePhase = phases.find(p => p.status === 'active')
@@ -53,6 +55,7 @@ export function PipelineAccordion({ phases, processes, gates, clientId, clientNa
             clientName={clientName}
             latestJobs={latestJobs}
             latestReviews={latestReviews}
+            budgetUsage={budgetUsage}
             onAssembled={setPreviewData}
           />
         ))}

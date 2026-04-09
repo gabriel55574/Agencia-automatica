@@ -7,6 +7,8 @@ import { Square } from 'lucide-react'
 import { RunSquadButton } from '@/components/squad/RunSquadButton'
 import { RunCostBadge } from '@/components/squad/RunCostBadge'
 import { StructuredOutputView } from '@/components/squad/StructuredOutputView'
+import { BudgetSettingDialog } from '@/components/costs/BudgetSettingDialog'
+import { BudgetBar } from '@/components/costs/BudgetBar'
 import type { ProcessRow as ProcessRowType, LatestJobData } from '@/lib/types/pipeline'
 import type { ProcessDefinition } from '@/lib/pipeline/processes'
 import type { AssembledContext } from '@/lib/squads/assembler'
@@ -32,9 +34,14 @@ interface ProcessAccordionRowProps {
     prompt: string
     squadType: string
     processId: string
+    processNumber: number
     clientId: string
     phaseId: string
   }) => void
+  /** Token budget for this process (null if no budget set) */
+  tokenBudget: number | null
+  /** Total tokens used by completed squad runs for this process */
+  budgetUsed: number | null
 }
 
 function AccordionStatusBadge({ status }: { status: ProcessRowType['status'] }) {
@@ -52,6 +59,8 @@ export function ProcessAccordionRow({
   clientId,
   phaseId,
   onAssembled,
+  tokenBudget,
+  budgetUsed,
 }: ProcessAccordionRowProps) {
   return (
     <AccordionItem value={process.id} className="border-b border-zinc-100 last:border-0">
@@ -132,6 +141,22 @@ export function ProcessAccordionRow({
               latestJobStatus={latestJob?.status ?? null}
               onAssembled={onAssembled}
             />
+          </div>
+        )}
+
+        {/* Budget system (Phase 12, COST-03) */}
+        {isActivePhase && (
+          <div className="mt-3 flex items-center gap-2">
+            <BudgetSettingDialog
+              processId={process.id}
+              processName={process.name}
+              currentBudget={tokenBudget}
+            />
+          </div>
+        )}
+        {tokenBudget != null && (
+          <div className="mt-2">
+            <BudgetBar used={budgetUsed ?? 0} budget={tokenBudget} />
           </div>
         )}
 

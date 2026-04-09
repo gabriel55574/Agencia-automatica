@@ -8,6 +8,8 @@ import { PipelineAccordion } from '@/components/clients/pipeline-accordion'
 import { ArchiveDialog } from '@/components/clients/archive-dialog'
 import { CycleBadge } from '@/components/clients/cycle-badge'
 import { ResetPipelineDialog } from '@/components/clients/reset-pipeline-dialog'
+import { CloneClientDialog } from '@/components/clients/clone-client-dialog'
+import { fetchProcessBudgetUsage } from '@/lib/costs/queries'
 import type { Json } from '@/lib/database/types'
 import type { PhaseRow, ProcessRow, GateRow, GateReviewRow, LatestJobData } from '@/lib/types/pipeline'
 
@@ -114,6 +116,9 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
     }
   }
 
+  // Fetch budget usage for processes with token budgets (Phase 12, COST-03)
+  const budgetUsage = await fetchProcessBudgetUsage(id)
+
   const briefing = parseBriefing(client.briefing)
   const isArchived = client.status === 'archived'
 
@@ -142,6 +147,10 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
           <Link href={`/clients/${client.id}/edit`}>
             <Button variant="outline" size="sm">Edit</Button>
           </Link>
+          <CloneClientDialog
+            sourceClientId={client.id}
+            sourceClientName={client.name}
+          />
           <ResetPipelineDialog
             clientId={client.id}
             clientName={client.name}
@@ -197,6 +206,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
             clientName={client.name}
             latestJobs={jobsByProcessIdObj}
             latestReviews={latestReviewsByGateId}
+            budgetUsage={budgetUsage}
           />
         ) : (
           <p className="text-sm text-zinc-400">Pipeline phases not initialized.</p>
