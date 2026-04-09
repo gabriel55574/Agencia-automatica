@@ -48,11 +48,11 @@ Exceptions: none
 | Role | Size | Weight | Line Height | Tailwind Class |
 |------|------|--------|-------------|----------------|
 | Body | 14px | 400 (regular) | 1.5 | `text-sm` |
-| Label | 12px | 500 (medium) | 1.33 | `text-xs font-medium` |
+| Label | 12px | 400 (regular) | 1.33 | `text-xs` |
 | Heading | 18px | 600 (semibold) | 1.33 | `text-lg font-semibold` |
-| Display | 24px | 700 (bold) | 1.2 | `text-2xl font-bold` |
+| Display | 24px | 600 (semibold) | 1.2 | `text-2xl font-semibold` |
 
-Source: Extracted from existing codebase patterns (DashboardPage, ClientProfilePage, KanbanBoard).
+Source: Extracted from existing codebase patterns (DashboardPage, ClientProfilePage, KanbanBoard). Reduced to 2 weights (400 regular, 600 semibold) per design contract maximum.
 
 ---
 
@@ -92,7 +92,7 @@ Install via `npx shadcn@latest add`:
 | `table` | Monthly cost breakdown table with sortable columns (COST-02) |
 | `progress` | Budget usage bar visualization (COST-03) |
 | `select` | Month/year selector on cost breakdown page (COST-02) |
-| `tooltip` | Hover detail on budget bars and cost figures |
+| `tooltip` | Hover detail on budget bars, cost figures, and budget settings icon button |
 | `dropdown-menu` | Sort options on cost table columns |
 
 ### Existing shadcn Components Used
@@ -138,7 +138,7 @@ Position: Below the `ActionSummaryBar`, above the Kanban board on the main dashb
 
 ```
 +--------------------------------------------------+
-| Dashboard (text-2xl font-bold)                   |
+| Dashboard (text-2xl font-semibold)               |
 +--------------------------------------------------+
 | [BottleneckAlert]                                |
 | [ActionSummaryBar]                               |
@@ -161,7 +161,7 @@ Position: Below the `ActionSummaryBar`, above the Kanban board on the main dashb
 - Card component with `CardHeader` + `CardContent`
 - Header: "Cost Summary" at `text-base font-semibold text-zinc-900`
 - "View All Costs" link button at `text-sm` aligned right in header
-- Total spend: `text-2xl font-bold text-zinc-900` for dollar amount, `font-mono` for numerical alignment
+- Total spend: `text-2xl font-semibold text-zinc-900` for dollar amount, `font-mono` for numerical alignment
 - Month label: `text-sm text-zinc-500`
 - Top clients list: max 5 entries, each row with client name (left-aligned `text-sm text-zinc-700`) and cost (right-aligned `text-sm font-mono text-zinc-900`)
 - If no data: show empty state (see Copywriting Contract below)
@@ -200,7 +200,7 @@ Route: `/costs`
 +--------------------------------------------------+
 ```
 
-- Page heading: `text-2xl font-bold text-zinc-900` "Cost Breakdown"
+- Page heading: `text-2xl font-semibold text-zinc-900` "Cost Breakdown"
 - `MonthSelector`: shadcn `Select` component, right-aligned in header row. Shows "April 2026" format. Dropdown lists last 12 months.
 - Monthly total: `text-xl font-semibold text-zinc-900` with `font-mono` for the dollar amount
 - Tab bar: shadcn `Tabs` component with two tabs: "By Client" (default), "By Process"
@@ -230,7 +230,7 @@ Triggered by a "Set Budget" button on each process row in the pipeline accordion
 | [___100,000___]                          |
 | Estimated cost: ~$2.50                   |
 |                                          |
-| [Cancel]                    [Save Budget]|
+| [Discard Changes]           [Save Budget]|
 +------------------------------------------+
 ```
 
@@ -238,7 +238,7 @@ Triggered by a "Set Budget" button on each process row in the pipeline accordion
 - Process name shown as `text-sm text-zinc-500` subtitle
 - Input: shadcn `Input` with `type="number"`, right-aligned text, `font-mono`
 - Estimated cost shown below input: `text-xs text-zinc-400`, calculated at $0.025 per 1k tokens (configurable constant)
-- Cancel: `Button variant="ghost"`
+- Discard Changes: `Button variant="ghost"` with label "Discard Changes"
 - Save: `Button variant="default"` with label "Save Budget"
 - Validation: minimum 1000 tokens, must be a whole number
 - On save: toast via `sonner` -- "Budget set for Market Research: 100,000 tokens"
@@ -286,6 +286,7 @@ When any process in the current view has exceeded its budget, show an alert bann
 |---------|------|
 | Primary CTA (COST-03) | "Set Budget" |
 | Secondary CTA (COST-02) | "View All Costs" |
+| Dialog dismiss (COST-03) | "Discard Changes" |
 | Empty state heading (COST-02) | "No cost data yet" |
 | Empty state body (COST-02) | "Cost tracking begins after your first squad run completes. Run a squad for any client to start seeing cost data here." |
 | Empty state heading (COST-04 widget) | "No spend this month" |
@@ -341,7 +342,7 @@ All monetary and numeric values render in `font-mono` (Geist Mono via `--font-ge
 
 ### Budget Removal (COST-03)
 
-1. If a budget exists, the "Set Budget" button label changes to budget icon button (Lucide `Settings2`, `h-3.5 w-3.5`)
+1. If a budget exists, the "Set Budget" button label changes to budget icon button (Lucide `Settings2`, `h-3.5 w-3.5`) with `aria-label="Edit token budget for {processName}"` and a `Tooltip` on hover showing "Edit Budget"
 2. Inside the dialog, a "Remove Budget" ghost button appears at bottom-left
 3. Clicking "Remove Budget" shows inline confirmation: "Remove budget for {processName}?"
 4. Confirming removes the budget, closes dialog, shows toast: "Budget removed for {processName}"
@@ -376,6 +377,7 @@ Note: Solo operator will primarily use desktop. Mobile is "functional but not op
 | Cost values | `aria-label` on abbreviated token counts (e.g., `aria-label="12,300 tokens"` when displaying "12.3k") |
 | Dialog | Handled by Radix Dialog (focus trap, Escape to close, aria-labelledby) |
 | Color-only information | Budget status is conveyed by both color AND text label (percentage + "over budget" / "approaching") |
+| Budget settings icon button | `aria-label="Edit token budget for {processName}"` on the Lucide `Settings2` icon button. Wrapped in shadcn `Tooltip` with content "Edit Budget" shown on hover/focus. |
 
 ---
 
