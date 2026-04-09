@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState, useTransition } from 'react'
 import { briefingSchema } from '@/lib/database/schema'
-import { createClientAction } from '@/lib/actions/clients'
+import { createClientAction, updateClientAction } from '@/lib/actions/clients'
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -27,7 +27,7 @@ interface ClientFormProps {
   clientId?: string  // required for edit mode
 }
 
-export function ClientForm({ mode, defaultValues, clientId: _clientId }: ClientFormProps) {
+export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
   const [serverError, setServerError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -51,8 +51,9 @@ export function ClientForm({ mode, defaultValues, clientId: _clientId }: ClientF
       let result: { error: string } | { success: true } | undefined
       if (mode === 'create') {
         result = await createClientAction(fd)
+      } else if (mode === 'edit' && clientId) {
+        result = await updateClientAction(clientId, fd)
       }
-      // edit mode handled in Plan 02-02
 
       if (result && 'error' in result) {
         setServerError(result.error)
