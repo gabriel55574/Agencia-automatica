@@ -24,7 +24,42 @@ export type PhaseColumn = {
   clients: DashboardClient[]
 }
 
+export type PendingApproval = {
+  gate_id: string
+  client_id: string
+  client_name: string
+  client_company: string
+  gate_number: number
+  phase_name: string
+}
+
+export type FailedGate = {
+  gate_id: string
+  client_id: string
+  client_name: string
+  client_company: string
+  gate_number: number
+  phase_name: string
+  status: 'rejected'
+}
+
+export type RunningJob = {
+  job_id: string
+  client_id: string
+  client_name: string
+  client_company: string
+  squad_type: string
+  status: 'queued' | 'running'
+}
+
+export type ActionPanelData = {
+  pendingApprovals: PendingApproval[]
+  failedGates: FailedGate[]
+  runningJobs: RunningJob[]
+}
+
 export type DashboardData = {
   columns: PhaseColumn[]
   stuckClients: DashboardClient[]
+  actions: ActionPanelData
 }

@@ -1,7 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
 import { PHASE_NAMES, type PhaseNumber } from '@/lib/database/enums'
 import { BOTTLENECK_THRESHOLDS } from './constants'
-import type { DashboardClient, DashboardData, PhaseColumn } from './types'
+import type {
+  DashboardClient,
+  DashboardData,
+  PhaseColumn,
+  ActionPanelData,
+  PendingApproval,
+  FailedGate,
+  RunningJob,
+} from './types'
 
 /**
  * Fetch all data needed for the Kanban dashboard.
@@ -31,7 +39,7 @@ export async function fetchDashboardData(showArchived: boolean): Promise<Dashboa
       supabase.from('quality_gates').select('id, client_id, gate_number, status, phase_id'),
       supabase
         .from('squad_jobs')
-        .select('id, client_id, status')
+        .select('id, client_id, status, squad_type')
         .in('status', ['queued', 'running']),
     ])
 
@@ -104,5 +112,82 @@ export async function fetchDashboardData(showArchived: boolean): Promise<Dashboa
     return diffDays > thresholdDays
   })
 
-  return { columns, stuckClients }
+  // Build action panel data from already-fetched data
+  const actions = buildActionPanelData(clients, gates, runningJobs, phases)
+
+  return { columns, stuckClients, actions }
+}
+
+/**
+ * Build action panel data from already-fetched query results.
+ *
+ * - Pending approvals: gates with status 'pending' or 'evaluating' and no operator decision
+ * - Failed gates: gates with status 'rejected'
+ * - Running jobs: squad_jobs with status 'queued' or 'running'
+ */
+function buildActionPanelData(
+  clients: Array<{ id: string; name: string; company: string; current_phase_number: number }>,
+  gates: Array<{ id: string; client_id: string; gate_number: number; status: string; phase_id: string }>,
+  runningJobs: Array<{ id: string; client_id: string; status: string; [key: string]: unknown }>,
+  phases: Array<{ id: string; client_id: string; phase_number: number; status: string; started_at: string | null }>,
+): ActionPanelData {
+  // Build client lookup for name/company
+  const clientMap = new Map(clients.map((c) => [c.id, c]))
+
+  // Build phase lookup for phase_number from phase_id
+  const phaseMap = new Map(phases.map((p) => [p.id, p]))
+
+  // Pending approvals: gates where status is 'pending' or 'evaluating'
+  const pendingApprovals: PendingApproval[] = gates
+    .filter((g) => g.status === 'pending' || g.status === 'evaluating')
+    .map((g) => {
+      const client = clientMap.get(g.client_id)
+      const phase = phaseMap.get(g.phase_id)
+      const phaseNum = phase?.phase_number as 1 | 2 | 3 | 4 | 5 | undefined
+      return {
+        gate_id: g.id,
+        client_id: g.client_id,
+        client_name: client?.name ?? 'Unknown',
+        client_company: client?.company ?? '',
+        gate_number: g.gate_number,
+        phase_name: phaseNum ? PHASE_NAMES[phaseNum] : `Phase ${g.gate_number}`,
+      }
+    })
+
+  // Failed gates: gates with status 'rejected'
+  const failedGates: FailedGate[] = gates
+    .filter((g) => g.status === 'rejected')
+    .map((g) => {
+      const client = clientMap.get(g.client_id)
+      const phase = phaseMap.get(g.phase_id)
+      const phaseNum = phase?.phase_number as 1 | 2 | 3 | 4 | 5 | undefined
+      return {
+        gate_id: g.id,
+        client_id: g.client_id,
+        client_name: client?.name ?? 'Unknown',
+        client_company: client?.company ?? '',
+        gate_number: g.gate_number,
+        phase_name: phaseNum ? PHASE_NAMES[phaseNum] : `Phase ${g.gate_number}`,
+        status: 'rejected' as const,
+      }
+    })
+
+  // Running jobs: already filtered to queued/running by the query
+  const runningJobItems: RunningJob[] = runningJobs.map((j) => {
+    const client = clientMap.get(j.client_id)
+    return {
+      job_id: j.id,
+      client_id: j.client_id,
+      client_name: client?.name ?? 'Unknown',
+      client_company: client?.company ?? '',
+      squad_type: (j as { squad_type?: string }).squad_type ?? 'unknown',
+      status: j.status as 'queued' | 'running',
+    }
+  })
+
+  return {
+    pendingApprovals,
+    failedGates,
+    runningJobs: runningJobItems,
+  }
 }
