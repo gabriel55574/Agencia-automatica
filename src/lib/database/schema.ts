@@ -97,6 +97,7 @@ export const processSchema = z.object({
   input_snapshot: z.record(z.string(), z.unknown()).nullable(),
   output_json: z.record(z.string(), z.unknown()).nullable(),
   output_markdown: z.string().nullable(),
+  token_budget: z.number().int().nullable().optional(),            // Phase 12: COST-03
   started_at: z.string().datetime().nullable(),
   completed_at: z.string().datetime().nullable(),
   created_at: z.string().datetime(),
@@ -142,6 +143,8 @@ export const squadJobSchema = z.object({
   error_log: z.string().nullable(),
   attempts: z.number().int().min(0),
   max_attempts: z.number().int().min(1),
+  token_count: z.number().int().nullable().optional(),             // Phase 12: COST-01
+  estimated_cost_usd: z.number().nullable().optional(),            // Phase 12: COST-01
   started_at: z.string().datetime().nullable(),
   completed_at: z.string().datetime().nullable(),
   created_at: z.string().datetime(),

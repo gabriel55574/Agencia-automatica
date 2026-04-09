@@ -35,6 +35,8 @@ export type LatestJobData = {
   status: string
   structured_output: Record<string, unknown> | null
   output: string | null
+  token_count: number | null           // Phase 12: COST-01
+  estimated_cost_usd: number | null    // Phase 12: COST-01
 }
 
 /** Row shape from gate_reviews table, used as prop for GateReviewDisplay */

@@ -9,7 +9,7 @@ import { ArchiveDialog } from '@/components/clients/archive-dialog'
 import { CycleBadge } from '@/components/clients/cycle-badge'
 import { ResetPipelineDialog } from '@/components/clients/reset-pipeline-dialog'
 import type { Json } from '@/lib/database/types'
-import type { PhaseRow, ProcessRow, GateRow, GateReviewRow } from '@/lib/types/pipeline'
+import type { PhaseRow, ProcessRow, GateRow, GateReviewRow, LatestJobData } from '@/lib/types/pipeline'
 
 interface ClientProfilePageProps {
   params: Promise<{ id: string }>
@@ -60,36 +60,28 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
   const { data: activeJobs } = processIds.length > 0
     ? await supabase
         .from('squad_jobs')
-        .select('id, status, process_id, structured_output, output')
+        .select('id, status, process_id, structured_output, output, token_count, estimated_cost_usd')
         .in('process_id', processIds)
         .order('created_at', { ascending: false })
     : { data: [] }
 
   // Build a Map<processId, LatestJobData> of the most recent job per process
-  const jobsByProcessId = new Map<string, {
-    id: string;
-    status: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled';
-    structured_output: Record<string, unknown> | null;
-    output: string | null;
-  }>()
+  const jobsByProcessId = new Map<string, LatestJobData>()
   for (const job of activeJobs ?? []) {
     if (job.process_id && !jobsByProcessId.has(job.process_id)) {
       jobsByProcessId.set(job.process_id, {
         id: job.id,
-        status: job.status as 'queued' | 'running' | 'completed' | 'failed' | 'cancelled',
+        status: job.status as string,
         structured_output: (job.structured_output as Record<string, unknown>) ?? null,
         output: (job.output as string) ?? null,
+        token_count: (job.token_count as number) ?? null,
+        estimated_cost_usd: (job.estimated_cost_usd as number) ?? null,
       })
     }
   }
 
   // Serialize Map to plain object for client component prop
-  const jobsByProcessIdObj: Record<string, {
-    id: string;
-    status: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled';
-    structured_output: Record<string, unknown> | null;
-    output: string | null;
-  }> = {}
+  const jobsByProcessIdObj: Record<string, LatestJobData> = {}
   for (const [key, value] of jobsByProcessId.entries()) {
     jobsByProcessIdObj[key] = value
   }
