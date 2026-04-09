@@ -1,0 +1,127 @@
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { PipelineTimeline } from '@/components/clients/pipeline-timeline'
+import { ArchiveDialog } from '@/components/clients/archive-dialog'
+import type { Json } from '@/lib/database/types'
+
+interface ClientProfilePageProps {
+  params: Promise<{ id: string }>
+}
+
+// Type guard for briefing JSON shape
+function parseBriefing(raw: Json | null) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null
+  const b = raw as Record<string, unknown>
+  return {
+    niche: typeof b.niche === 'string' ? b.niche : null,
+    target_audience: typeof b.target_audience === 'string' ? b.target_audience : null,
+    additional_context: typeof b.additional_context === 'string' ? b.additional_context : null,
+  }
+}
+
+export default async function ClientProfilePage({ params }: ClientProfilePageProps) {
+  const { id } = await params
+  const supabase = await createClient()
+
+  const [{ data: client }, { data: phases }] = await Promise.all([
+    supabase
+      .from('clients')
+      .select('id, name, company, briefing, current_phase_number, status, created_at, updated_at')
+      .eq('id', id)
+      .single(),
+    supabase
+      .from('phases')
+      .select('id, phase_number, name, status, started_at, completed_at')
+      .eq('client_id', id)
+      .order('phase_number', { ascending: true }),
+  ])
+
+  if (!client) notFound()
+
+  const briefing = parseBriefing(client.briefing)
+  const isArchived = client.status === 'archived'
+
+  return (
+    <div className="max-w-3xl space-y-8">
+
+      {/* ---- Header ---- */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-2xl font-bold text-zinc-900 truncate">{client.name}</h1>
+            <Badge variant={isArchived ? 'secondary' : 'default'}>
+              {isArchived ? 'Archived' : 'Active'}
+            </Badge>
+          </div>
+          {/* Text node only — never dangerouslySetInnerHTML (T-2-02-05) */}
+          <p className="text-zinc-500">{client.company}</p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <Link href={`/clients/${client.id}/edit`}>
+            <Button variant="outline" size="sm">Edit</Button>
+          </Link>
+          <ArchiveDialog
+            clientId={client.id}
+            clientName={client.name}
+            isArchived={isArchived}
+          />
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* ---- Briefing section ---- */}
+      <div>
+        <h2 className="text-lg font-semibold text-zinc-900 mb-4">Briefing</h2>
+        {briefing ? (
+          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Niche</dt>
+              {/* Text node only — never dangerouslySetInnerHTML (T-2-02-05) */}
+              <dd className="text-sm text-zinc-800">{briefing.niche ?? '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Target Audience</dt>
+              <dd className="text-sm text-zinc-800">{briefing.target_audience ?? '—'}</dd>
+            </div>
+            {briefing.additional_context && (
+              <div className="sm:col-span-2">
+                <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Additional Context</dt>
+                <dd className="text-sm text-zinc-800 whitespace-pre-wrap">{briefing.additional_context}</dd>
+              </div>
+            )}
+          </dl>
+        ) : (
+          <p className="text-sm text-zinc-400">No briefing information recorded yet.</p>
+        )}
+      </div>
+
+      <Separator />
+
+      {/* ---- Pipeline timeline ---- */}
+      <div>
+        <h2 className="text-lg font-semibold text-zinc-900 mb-4">Pipeline</h2>
+        {phases && phases.length > 0 ? (
+          <PipelineTimeline phases={phases} />
+        ) : (
+          <p className="text-sm text-zinc-400">Pipeline phases not initialized.</p>
+        )}
+      </div>
+
+      <Separator />
+
+      {/* ---- Outputs section (placeholder — Phase 7) ---- */}
+      <div>
+        <h2 className="text-lg font-semibold text-zinc-900 mb-2">Outputs</h2>
+        <p className="text-sm text-zinc-400">
+          Outputs will appear here as squads complete processes.
+        </p>
+      </div>
+
+    </div>
+  )
+}
