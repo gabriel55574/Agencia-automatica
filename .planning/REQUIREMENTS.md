@@ -63,22 +63,22 @@ Deferred to v1.3+. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LOC-01 | Pending | Pending |
-| LOC-02 | Pending | Pending |
-| NAV-01 | Pending | Pending |
-| NAV-02 | Pending | Pending |
-| VIS-01 | Pending | Pending |
-| VIS-02 | Pending | Pending |
-| VIS-03 | Pending | Pending |
-| UX-01 | Pending | Pending |
-| UX-02 | Pending | Pending |
-| UX-03 | Pending | Pending |
+| LOC-01 | Phase 18 | Pending |
+| LOC-02 | Phase 18 | Pending |
+| NAV-01 | Phase 16 | Pending |
+| NAV-02 | Phase 17 | Pending |
+| VIS-01 | Phase 17 | Pending |
+| VIS-02 | Phase 16 | Pending |
+| VIS-03 | Phase 19 | Pending |
+| UX-01 | Phase 19 | Pending |
+| UX-02 | Phase 19 | Pending |
+| UX-03 | Phase 19 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 10 total
-- Mapped to phases: 0
-- Unmapped: 10 (awaiting roadmap)
+- Mapped to phases: 10
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-09*
-*Last updated: 2026-04-09 after initial definition*
+*Last updated: 2026-04-09 after roadmap creation*
