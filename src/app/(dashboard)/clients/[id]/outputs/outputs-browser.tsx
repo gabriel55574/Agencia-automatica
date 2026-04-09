@@ -11,15 +11,16 @@ import type { ProcessWithRuns } from './page'
 
 interface OutputsBrowserProps {
   clientName: string
+  clientId: string
   phaseNumbers: number[]
   byPhase: Record<string, ProcessWithRuns[]>
 }
 
-export function OutputsBrowser({ clientName, phaseNumbers, byPhase }: OutputsBrowserProps) {
-  const [selectedRun, setSelectedRun] = useState<(CompletedRun & { processName: string; phaseName: string }) | null>(null)
+export function OutputsBrowser({ clientName, clientId, phaseNumbers, byPhase }: OutputsBrowserProps) {
+  const [selectedRun, setSelectedRun] = useState<(CompletedRun & { processName: string; phaseName: string; processNumber: number }) | null>(null)
 
-  function handleSelectRun(run: CompletedRun, processName: string, phaseName: string) {
-    setSelectedRun({ ...run, processName, phaseName })
+  function handleSelectRun(run: CompletedRun, processName: string, phaseName: string, processNumber: number) {
+    setSelectedRun({ ...run, processName, phaseName, processNumber })
   }
 
   function handleClose() {
@@ -72,7 +73,7 @@ export function OutputsBrowser({ clientName, phaseNumbers, byPhase }: OutputsBro
                           </div>
                           <RunHistoryList
                             runs={proc.runs}
-                            onSelectRun={(run) => handleSelectRun(run, proc.processName, proc.phaseName)}
+                            onSelectRun={(run) => handleSelectRun(run, proc.processName, proc.phaseName, proc.processNumber)}
                             selectedRunId={selectedRun?.id ?? null}
                           />
                         </div>
@@ -95,6 +96,8 @@ export function OutputsBrowser({ clientName, phaseNumbers, byPhase }: OutputsBro
             phaseName={selectedRun.phaseName}
             clientName={clientName}
             onClose={handleClose}
+            processNumber={selectedRun.processNumber}
+            clientId={clientId}
           />
         </div>
       )}

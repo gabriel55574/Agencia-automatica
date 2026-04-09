@@ -30,6 +30,8 @@ interface OutputViewerProps {
   phaseName: string
   clientName: string
   onClose: () => void
+  processNumber?: number  // for Save as Template
+  clientId?: string       // for Save as Template
 }
 
 function computeDuration(startedAt: string | null, completedAt: string | null): string {
@@ -61,7 +63,7 @@ function sanitizeForFilename(str: string): string {
     .slice(0, 100)
 }
 
-export function OutputViewer({ run, processName, phaseName, clientName, onClose }: OutputViewerProps) {
+export function OutputViewer({ run, processName, phaseName, clientName, onClose, processNumber, clientId }: OutputViewerProps) {
   const [showPdf, setShowPdf] = useState(false)
 
   const handleDownloadRaw = useCallback(() => {
@@ -114,6 +116,9 @@ export function OutputViewer({ run, processName, phaseName, clientName, onClose 
           <StructuredOutputView
             structuredOutput={run.structuredOutput}
             rawOutput={run.output}
+            processNumber={processNumber}
+            clientId={clientId}
+            jobId={run.id}
           />
         </TabsContent>
 

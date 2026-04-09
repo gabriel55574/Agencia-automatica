@@ -151,6 +151,7 @@ export default async function OutputsPage({ params }: OutputsPageProps) {
       ) : (
         <OutputsBrowser
           clientName={client.name}
+          clientId={client.id}
           phaseNumbers={phaseNumbers}
           byPhase={Object.fromEntries(
             Array.from(byPhase.entries()).map(([k, v]) => [String(k), v])
