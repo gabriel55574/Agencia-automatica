@@ -37,9 +37,9 @@
 
 ### Templates
 
-- [ ] **TMPL-01**: Operator can save a successful squad output as a named template for reuse with similar clients
-- [ ] **TMPL-02**: Operator can clone a client configuration (briefing, process settings) to quickly onboard similar clients
-- [ ] **TMPL-03**: When triggering a squad run, operator can optionally select a template to include as reference context in the prompt
+- [x] **TMPL-01**: Operator can save a successful squad output as a named template for reuse with similar clients
+- [x] **TMPL-02**: Operator can clone a client configuration (briefing, process settings) to quickly onboard similar clients
+- [x] **TMPL-03**: When triggering a squad run, operator can optionally select a template to include as reference context in the prompt
 
 ## v2 Requirements (Deferred)
 
@@ -81,9 +81,9 @@
 | ANLY-02 | Phase 14 | Complete |
 | ANLY-03 | Phase 14 | Complete |
 | ANLY-04 | Phase 14 | Complete |
-| TMPL-01 | Phase 15 | Pending |
-| TMPL-02 | Phase 15 | Pending |
-| TMPL-03 | Phase 15 | Pending |
+| TMPL-01 | Phase 15 | Complete |
+| TMPL-02 | Phase 15 | Complete |
+| TMPL-03 | Phase 15 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 21 total
