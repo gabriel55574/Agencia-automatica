@@ -24,9 +24,9 @@
 
 ### Notifications
 
-- [ ] **NOTF-01**: Operator receives an email when a squad run completes (success or failure)
-- [ ] **NOTF-02**: Operator receives an email when a quality gate review produces a FAIL or PARTIAL verdict
-- [ ] **NOTF-03**: Operator receives a daily digest email summarizing pipeline status across all clients (phase progress, pending approvals, stuck clients)
+- [x] **NOTF-01**: Operator receives an email when a squad run completes (success or failure)
+- [x] **NOTF-02**: Operator receives an email when a quality gate review produces a FAIL or PARTIAL verdict
+- [x] **NOTF-03**: Operator receives a daily digest email summarizing pipeline status across all clients (phase progress, pending approvals, stuck clients)
 
 ### Analytics
 
@@ -74,9 +74,9 @@
 | COST-02 | Phase 12 | Complete |
 | COST-03 | Phase 12 | Complete |
 | COST-04 | Phase 12 | Complete |
-| NOTF-01 | Phase 13 | Pending |
-| NOTF-02 | Phase 13 | Pending |
-| NOTF-03 | Phase 13 | Pending |
+| NOTF-01 | Phase 13 | Complete |
+| NOTF-02 | Phase 13 | Complete |
+| NOTF-03 | Phase 13 | Complete |
 | ANLY-01 | Phase 14 | Pending |
 | ANLY-02 | Phase 14 | Pending |
 | ANLY-03 | Phase 14 | Pending |
