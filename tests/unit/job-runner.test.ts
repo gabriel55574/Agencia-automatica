@@ -1,63 +1,89 @@
 /**
  * Unit tests for src/worker/job-runner.ts
  *
- * Wave 0 stubs — these test the behavior of isCliError, runJob, and
- * the spawn integration. Tests will fail RED until job-runner.ts is implemented.
+ * Wave 0 stubs → GREEN after implementation.
+ * Tests isCliError, runJob spawn behavior, and handleFailure.
+ *
+ * Note: Test UUIDs use RFC 4122 v4 format (8-4-4-4-12 with version nibble=4, variant=8/9/a/b).
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { ChildProcess } from 'child_process'
 import type { SquadJob } from '@/lib/database/schema'
 
 // ============================================================
-// MOCK SETUP
+// MOCK SETUP — hoisted by Vitest before any imports
 // ============================================================
 
-// Mock child_process module before importing job-runner
-vi.mock('child_process', () => {
-  const mockProc = {
-    stdout: { on: vi.fn() },
-    stderr: { on: vi.fn() },
-    on: vi.fn(),
-    kill: vi.fn(),
-    pid: 12345,
-  }
-  return {
-    spawn: vi.fn(() => mockProc),
-    __mockProc: mockProc,
-  }
-})
+// Create a stable mockProc reference shared across all tests
+const mockProc = {
+  stdout: { on: vi.fn() },
+  stderr: { on: vi.fn() },
+  on: vi.fn(),
+  kill: vi.fn(),
+  pid: 12345,
+}
+
+vi.mock('child_process', () => ({
+  spawn: vi.fn(() => mockProc),
+  ChildProcess: class {},
+}))
+
+// Import the real module after mocks are set up
+import { isCliError, runJob, handleFailure } from '../../src/worker/job-runner'
+import { spawn } from 'child_process'
+
+const spawnMock = spawn as ReturnType<typeof vi.fn>
+
+// ============================================================
+// Test fixtures — RFC 4122 v4 compliant UUIDs
+// ============================================================
+
+const TEST_JOB_ID = '550e8400-e29b-41d4-a716-446655440001'
+const TEST_CLIENT_ID = '550e8400-e29b-41d4-a716-446655440002'
+const TEST_PHASE_ID = '550e8400-e29b-41d4-a716-446655440003'
+
+const mockJob: SquadJob = {
+  id: TEST_JOB_ID,
+  client_id: TEST_CLIENT_ID,
+  phase_id: TEST_PHASE_ID,
+  process_id: null,
+  squad_type: 'estrategia',
+  status: 'running',
+  cli_command: 'Write a haiku about marketing',
+  progress_log: null,
+  output: null,
+  error_log: null,
+  attempts: 0,
+  max_attempts: 3,
+  started_at: new Date().toISOString(),
+  completed_at: null,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+}
+
+function makeMockSupabase() {
+  const eqMock = vi.fn(() => Promise.resolve({ error: null }))
+  const updateMock = vi.fn(() => ({ eq: eqMock }))
+  const fromMock = vi.fn(() => ({ update: updateMock }))
+  return { supabase: { from: fromMock }, updateMock, eqMock }
+}
 
 // ============================================================
 // isCliError tests
 // ============================================================
 
 describe('isCliError', () => {
-  let isCliError: (stdout: string) => boolean
-
-  beforeEach(async () => {
-    // Dynamic import inside test to pick up fresh mocks
-    const module = await import('../../src/worker/job-runner')
-    isCliError = module.isCliError
-  })
-
-  afterEach(() => {
-    vi.resetModules()
-  })
-
   it('returns false when JSON has is_error=false', () => {
-    const stdout = '{"type":"result","is_error":false}'
-    expect(isCliError(stdout)).toBe(false)
+    expect(isCliError('{"type":"result","is_error":false}')).toBe(false)
   })
 
   it('returns true when JSON has is_error=true', () => {
-    const stdout = '{"type":"result","is_error":true}'
-    expect(isCliError(stdout)).toBe(true)
+    expect(isCliError('{"type":"result","is_error":true}')).toBe(true)
   })
 
   it('returns true when stdout is not valid JSON', () => {
-    const stdout = 'not json at all'
-    expect(isCliError(stdout)).toBe(true)
+    expect(isCliError('not json at all')).toBe(true)
   })
 
   it('returns true when stdout is empty string', () => {
@@ -75,122 +101,66 @@ describe('isCliError', () => {
 // ============================================================
 
 describe('runJob', () => {
-  let runJob: (job: SquadJob, supabase: unknown, activeJobs: Map<string, ChildProcess>) => Promise<void>
-  let spawnMock: ReturnType<typeof vi.fn>
-  let mockProc: {
-    stdout: { on: ReturnType<typeof vi.fn> }
-    stderr: { on: ReturnType<typeof vi.fn> }
-    on: ReturnType<typeof vi.fn>
-    kill: ReturnType<typeof vi.fn>
-    pid: number
-  }
-
-  const mockJob: SquadJob = {
-    id: '00000000-0000-0000-0000-000000000001',
-    client_id: '00000000-0000-0000-0000-000000000002',
-    phase_id: '00000000-0000-0000-0000-000000000003',
-    process_id: null,
-    squad_type: 'estrategia',
-    status: 'running',
-    cli_command: 'Write a haiku about marketing',
-    progress_log: null,
-    output: null,
-    error_log: null,
-    attempts: 0,
-    max_attempts: 3,
-    started_at: new Date().toISOString(),
-    completed_at: null,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  }
-
-  const mockSupabase = {
-    from: vi.fn(() => ({
-      update: vi.fn(() => ({
-        eq: vi.fn(() => Promise.resolve({ error: null })),
-      })),
-    })),
-  }
-
-  beforeEach(async () => {
-    vi.resetModules()
-    const childProcess = await import('child_process')
-    spawnMock = childProcess.spawn as ReturnType<typeof vi.fn>
-    // @ts-expect-error accessing test helper
-    mockProc = childProcess.__mockProc
-
-    const module = await import('../../src/worker/job-runner')
-    runJob = module.runJob
-  })
-
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks()
+    // Reset mockProc event handlers
+    mockProc.stdout.on.mockReset()
+    mockProc.stderr.on.mockReset()
+    mockProc.on.mockReset()
   })
 
   it('calls spawn("claude", [...args]) with stdio [ignore, pipe, pipe]', async () => {
     const activeJobs = new Map<string, ChildProcess>()
+    const { supabase } = makeMockSupabase()
 
-    // Start runJob but don't await — just check that spawn was called
-    const runPromise = runJob(mockJob, mockSupabase, activeJobs)
+    // Start runJob (it awaits proc.on('close') internally)
+    const runPromise = runJob(mockJob, supabase as unknown as Parameters<typeof runJob>[1], activeJobs)
 
+    // Spawn should be called synchronously during runJob initialization
     expect(spawnMock).toHaveBeenCalledOnce()
     expect(spawnMock).toHaveBeenCalledWith(
       'claude',
       expect.arrayContaining(['--print', '--output-format', 'json', '--no-session-persistence']),
-      expect.objectContaining({
-        stdio: ['ignore', 'pipe', 'pipe'],
-      })
+      expect.objectContaining({ stdio: ['ignore', 'pipe', 'pipe'] })
     )
 
-    // Resolve the proc.on('close') to complete runJob
-    const closeCall = mockProc.on.mock.calls.find(([event]) => event === 'close')
-    if (closeCall) {
-      await closeCall[1](0) // exit code 0
-    }
+    // Resolve the Promise by triggering the close event
+    const closeCb = mockProc.on.mock.calls.find(([evt]) => evt === 'close')?.[1]
+    if (closeCb) await closeCb(0)
     await runPromise.catch(() => {})
   })
 
   it('marks job completed when spawn exits with code 0 and is_error=false', async () => {
     const activeJobs = new Map<string, ChildProcess>()
-    const updateEqMock = vi.fn(() => Promise.resolve({ error: null }))
-    const updateMock = vi.fn(() => ({ eq: updateEqMock }))
-    const fromMock = vi.fn(() => ({ update: updateMock }))
-    const supabase = { from: fromMock }
+    const { supabase, updateMock } = makeMockSupabase()
 
     // Configure stdout to emit valid non-error JSON
-    mockProc.stdout.on.mockImplementation((event: string, handler: (chunk: Buffer) => void) => {
-      if (event === 'data') {
-        handler(Buffer.from('{"type":"result","is_error":false}'))
-      }
+    mockProc.stdout.on.mockImplementation((event: string, handler: (b: Buffer) => void) => {
+      if (event === 'data') handler(Buffer.from('{"type":"result","is_error":false}'))
     })
 
-    const runPromise = runJob(mockJob, supabase, activeJobs)
+    const runPromise = runJob(mockJob, supabase as unknown as Parameters<typeof runJob>[1], activeJobs)
 
     // Trigger close with exit code 0
-    const closeCall = mockProc.on.mock.calls.find(([event]) => event === 'close')
-    if (closeCall) await closeCall[1](0)
-
+    const closeCb = mockProc.on.mock.calls.find(([evt]) => evt === 'close')?.[1]
+    if (closeCb) await closeCb(0)
     await runPromise.catch(() => {})
 
-    // Verify that update was called with status='completed'
     expect(updateMock).toHaveBeenCalledWith(expect.objectContaining({ status: 'completed' }))
   })
 
   it('calls handleFailure when spawn exits with code 1', async () => {
     const activeJobs = new Map<string, ChildProcess>()
-    const updateEqMock = vi.fn(() => Promise.resolve({ error: null }))
-    const updateMock = vi.fn(() => ({ eq: updateEqMock }))
-    const fromMock = vi.fn(() => ({ update: updateMock }))
-    const supabase = { from: fromMock }
+    const { supabase, updateMock } = makeMockSupabase()
 
-    const runPromise = runJob(mockJob, supabase, activeJobs)
+    const runPromise = runJob(mockJob, supabase as unknown as Parameters<typeof runJob>[1], activeJobs)
 
-    const closeCall = mockProc.on.mock.calls.find(([event]) => event === 'close')
-    if (closeCall) await closeCall[1](1) // non-zero exit code
-
+    // Trigger close with exit code 1 (failure)
+    const closeCb = mockProc.on.mock.calls.find(([evt]) => evt === 'close')?.[1]
+    if (closeCb) await closeCb(1)
     await runPromise.catch(() => {})
 
-    // On failure, job should be updated (either re-queued or failed)
+    // handleFailure should update the job (re-queue or fail depending on attempts)
     expect(updateMock).toHaveBeenCalledWith(
       expect.objectContaining({ status: expect.stringMatching(/queued|failed/) })
     )
