@@ -170,6 +170,75 @@ export type Database = {
           },
         ]
       }
+      notification_log: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          event_type: string
+          id: string
+          recipient_email: string
+          reference_id: string | null
+          status: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          event_type: string
+          id?: string
+          recipient_email: string
+          reference_id?: string | null
+          status?: string
+          subject: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          event_type?: string
+          id?: string
+          recipient_email?: string
+          reference_id?: string | null
+          status?: string
+          subject?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          daily_digest_enabled: boolean
+          digest_hour_utc: number
+          email_override: string | null
+          gate_failure_enabled: boolean
+          id: string
+          squad_completion_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_digest_enabled?: boolean
+          digest_hour_utc?: number
+          email_override?: string | null
+          gate_failure_enabled?: boolean
+          id?: string
+          squad_completion_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_digest_enabled?: boolean
+          digest_hour_utc?: number
+          email_override?: string | null
+          gate_failure_enabled?: boolean
+          id?: string
+          squad_completion_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       phases: {
         Row: {
           client_id: string
@@ -427,6 +496,57 @@ export type Database = {
             columns: ["process_id"]
             isOneToOne: false
             referencedRelation: "processes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      templates: {
+        Row: {
+          content: Json
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          process_number: number
+          source_client_id: string | null
+          source_job_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          process_number: number
+          source_client_id?: string | null
+          source_job_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          process_number?: number
+          source_client_id?: string | null
+          source_job_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "templates_source_client_id_fkey"
+            columns: ["source_client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "templates_source_job_id_fkey"
+            columns: ["source_job_id"]
+            isOneToOne: false
+            referencedRelation: "squad_jobs"
             referencedColumns: ["id"]
           },
         ]
