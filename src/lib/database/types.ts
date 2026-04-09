@@ -310,6 +310,12 @@ export interface Database {
         }
         Returns: string
       }
+      reset_pipeline_cycle: {
+        Args: {
+          p_client_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       client_status: 'active' | 'archived'

@@ -18,10 +18,16 @@ import type { AssembledContext } from '../../src/lib/squads/assembler'
 type QueryResult = { data: unknown; error: null } | { data: null; error: { message: string } }
 
 /**
- * Creates a mock Supabase client that responds to the two queries
- * assembleContext makes:
- * 1. clients table: .from('clients').select('briefing, current_phase_number').eq('id', clientId).single()
- * 2. squad_jobs table: complex join query
+ * Creates a mock Supabase client that responds to queries from both
+ * assembleContext and extractFeedbackContext (called internally):
+ *
+ * assembleContext queries:
+ * 1. clients table: .from('clients').select('briefing, current_phase_number').eq(...).single()
+ * 2. squad_jobs table: complex join query with .lt() and double .order()
+ *
+ * extractFeedbackContext queries (via shared supabase client):
+ * 3. clients table: .from('clients').select('cycle_number').eq(...).single()
+ * (short-circuits with cycle_number=1, so no further squad_jobs queries needed)
  */
 function createMockSupabase(options: {
   clientData?: { briefing: Record<string, unknown>; current_phase_number: number } | null
@@ -35,16 +41,34 @@ function createMockSupabase(options: {
 }) {
   const { clientData = null, clientError = null, jobsData = [], jobsError = null } = options
 
-  // Build the mock chain for the clients query
-  const clientSingleMock = vi.fn(() =>
-    clientError
-      ? { data: null, error: { message: clientError } }
-      : { data: clientData, error: null }
-  )
-  const clientEqMock = vi.fn(() => ({ single: clientSingleMock }))
-  const clientSelectMock = vi.fn(() => ({ eq: clientEqMock }))
+  // Track clients query call count to differentiate assembler vs feedback queries
+  let clientsCallCount = 0
 
-  // Build the mock chain for the squad_jobs query
+  // Build the mock chain for the assembler's clients query
+  function buildAssemblerClientChain() {
+    const clientSingleMock = vi.fn(() =>
+      clientError
+        ? { data: null, error: { message: clientError } }
+        : { data: clientData, error: null }
+    )
+    const clientEqMock = vi.fn(() => ({ single: clientSingleMock }))
+    const clientSelectMock = vi.fn(() => ({ eq: clientEqMock }))
+    return { select: clientSelectMock }
+  }
+
+  // Build the mock chain for extractFeedbackContext's clients query
+  // Always returns cycle_number=1 so feedback extraction short-circuits
+  function buildFeedbackClientChain() {
+    const singleMock = vi.fn(() => ({
+      data: { cycle_number: 1 },
+      error: null,
+    }))
+    const eqMock = vi.fn(() => ({ single: singleMock }))
+    const selectMock = vi.fn(() => ({ eq: eqMock }))
+    return { select: selectMock }
+  }
+
+  // Build the mock chain for the squad_jobs query (assembler only)
   const jobsOrderMock = vi.fn(() =>
     jobsError
       ? { data: null, error: { message: jobsError } }
@@ -59,7 +83,12 @@ function createMockSupabase(options: {
 
   const fromMock = vi.fn((table: string) => {
     if (table === 'clients') {
-      return { select: clientSelectMock }
+      clientsCallCount++
+      // First call is from assembleContext, second from extractFeedbackContext
+      if (clientsCallCount === 1) {
+        return buildAssemblerClientChain()
+      }
+      return buildFeedbackClientChain()
     }
     if (table === 'squad_jobs') {
       return { select: jobsSelectMock }
@@ -175,7 +204,7 @@ describe('assembleContext', () => {
     expect(totalChars).toBeLessThanOrEqual(32_000)
   })
 
-  it('feedbackContext is always empty string', async () => {
+  it('feedbackContext is empty string for cycle 1 clients', async () => {
     const mockClient = createMockSupabase({
       clientData: { briefing: DEFAULT_BRIEFING, current_phase_number: 2 },
       jobsData: [],

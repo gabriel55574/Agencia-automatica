@@ -8,7 +8,8 @@
  * - Queries completed squad_jobs from phases PRIOR to the current phase only (D-04)
  * - Orders outputs by phase_number ASC, process_number ASC (D-05)
  * - Truncates at 32,000 characters oldest-first to stay within prompt limits (D-06)
- * - feedbackContext is always '' in Phase 5 (placeholder for Phase 9 feedback loop)
+ * - feedbackContext is populated by Phase 9 feedback loop for cycle 2+ clients;
+ *   empty string for cycle 1 clients (first pass through the pipeline)
  *
  * Security (T-05-02): All queries scope with WHERE client_id = $1.
  * No cross-client data leakage possible.
@@ -16,6 +17,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { extractFeedbackContext } from './feedback'
 
 // ============================================================
 // Types
@@ -78,6 +80,10 @@ export async function assembleContext(
   const briefing = client.briefing ? JSON.stringify(client.briefing) : ''
   const currentPhaseNumber = client.current_phase_number as number
 
+  // Step 1b: Extract feedback context from previous cycle (Phase 9 feedback loop)
+  // Returns non-empty string for cycle 2+ clients with Phase 5 outputs
+  const feedback = await extractFeedbackContext(clientId, supabase)
+
   // Step 2: Fetch completed squad_jobs from prior phases
   // Uses a join through processes and phases tables to get process/phase metadata.
   // Only includes jobs from phases BEFORE the current phase (D-04: exclude same-phase).
@@ -115,7 +121,7 @@ export async function assembleContext(
   let truncated = false
 
   const computeTotal = () =>
-    briefing.length + priorOutputs.reduce((sum, o) => sum + o.output.length, 0)
+    briefing.length + feedback.length + priorOutputs.reduce((sum, o) => sum + o.output.length, 0)
 
   while (computeTotal() > MAX_CONTEXT_CHARS && priorOutputs.length > 1) {
     priorOutputs.shift() // Remove the oldest (first) output
@@ -126,7 +132,7 @@ export async function assembleContext(
   return {
     briefing,
     priorOutputs,
-    feedbackContext: '', // Phase 9 placeholder
+    feedbackContext: feedback,
     truncated,
     totalOutputsAvailable,
     outputsIncluded: priorOutputs.length,
