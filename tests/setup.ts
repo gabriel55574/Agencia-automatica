@@ -1,9 +1,8 @@
 /**
  * Agency OS: Vitest test setup
  *
- * These integration tests require `supabase start` to be running.
- * Run: supabase start
- * Then: npm test
+ * Integration tests run against the cloud Supabase project (configured via .env.local).
+ * Fallback: local Supabase (requires `supabase start`).
  *
  * The service role key is read from SUPABASE_SERVICE_ROLE_KEY env var.
  * For local development, the default local key from `supabase start` output is used.
@@ -13,8 +12,14 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
+import { config } from 'dotenv'
+import { resolve } from 'path'
 
-// Local Supabase defaults (output of `supabase start`)
+// Load .env.local for cloud Supabase credentials (falls back to process.env if already set)
+config({ path: resolve(process.cwd(), '.env.local'), override: false })
+config({ path: resolve(process.cwd(), '.env'), override: false })
+
+// Cloud Supabase defaults (from .env.local); fallback to local Supabase
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'http://127.0.0.1:54321'
 const SERVICE_ROLE_KEY =
   process.env.SUPABASE_SERVICE_ROLE_KEY ??
