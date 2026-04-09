@@ -138,8 +138,8 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 07-01-PLAN.md — Outputs browsing page with phase/process accordion hierarchy, per-process run history, inline OutputViewer with Structured/Raw tabs, raw .txt download, "View All Outputs" link on client profile
-- [ ] 07-02-PLAN.md — PDF export: install @react-pdf/renderer, branded OutputPdfTemplate with header/section/body/footer, dynamic-imported PdfDownloadSection, Export PDF button in OutputViewer, end-to-end verification checkpoint
+- [x] 07-01-PLAN.md — Outputs browsing page with phase/process accordion hierarchy, per-process run history, inline OutputViewer with Structured/Raw tabs, raw .txt download, "View All Outputs" link on client profile
+- [x] 07-02-PLAN.md — PDF export: install @react-pdf/renderer, branded OutputPdfTemplate with header/section/body/footer, dynamic-imported PdfDownloadSection, Export PDF button in OutputViewer, end-to-end verification checkpoint
 
 ### Phase 8: Dashboard & Operational Views
 **Goal**: Operator has a single-screen operational view showing all clients across the pipeline, what needs attention, and what is running -- the command center for managing 15+ clients
@@ -151,12 +151,12 @@ Plans:
   3. Dashboard displays bottleneck alerts for clients stuck in a phase beyond a configurable time threshold
   4. Dashboard shows a consolidated view of pending approvals, failed gates, and currently running squad sessions
   5. Pipeline status updates appear in real-time via Supabase Realtime without requiring manual page refresh
-**Plans**: TBD
+**Plans:** 2 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
+- [ ] 08-01-PLAN.md — Kanban board with 5 phase columns, client cards (name, company, process badge, gate status, running indicator), bottleneck alerts for stuck clients, archived toggle
+- [ ] 08-02-PLAN.md — Action panel (pending approvals, failed gates, running jobs), summary bar with counts, Supabase Realtime hook for live dashboard updates, end-to-end verification checkpoint
 
 ### Phase 9: Feedback Loop
 **Goal**: The system closes the learning loop -- Phase 5 retention insights automatically inform Phase 1 re-execution for returning clients, making each iteration smarter than the last
@@ -186,5 +186,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 5. Squad Execution & Context | 0/3 | Not started | - |
 | 6. Quality Gates | 0/3 | Not started | - |
 | 7. Document Management | 0/2 | Not started | - |
-| 8. Dashboard & Operational Views | 0/0 | Not started | - |
+| 8. Dashboard & Operational Views | 0/2 | Not started | - |
 | 9. Feedback Loop | 0/0 | Not started | - |
