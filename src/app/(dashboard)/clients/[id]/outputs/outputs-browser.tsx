@@ -5,6 +5,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/
 import { Badge } from '@/components/ui/badge'
 import { PHASE_NAMES, type PhaseNumber } from '@/lib/database/enums'
 import { RunHistoryList, type CompletedRun } from '@/components/documents/RunHistoryList'
+import { OutputViewer } from '@/components/documents/OutputViewer'
 import { format } from 'date-fns'
 import type { ProcessWithRuns } from './page'
 
@@ -85,12 +86,16 @@ export function OutputsBrowser({ clientName, phaseNumbers, byPhase }: OutputsBro
         </Accordion>
       </div>
 
-      {/* Right side: OutputViewer placeholder - wired in Task 2 */}
+      {/* Right side: OutputViewer */}
       {selectedRun && (
-        <div className="w-3/5 border-l pl-6">
-          <div className="text-sm text-zinc-400">
-            Output viewer will render here. Selected run: {selectedRun.id}
-          </div>
+        <div className="w-3/5">
+          <OutputViewer
+            run={selectedRun}
+            processName={selectedRun.processName}
+            phaseName={selectedRun.phaseName}
+            clientName={clientName}
+            onClose={handleClose}
+          />
         </div>
       )}
     </div>
