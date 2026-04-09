@@ -11,6 +11,9 @@
  * - The status arrays in src/lib/database/enums.ts
  *
  * Uses Zod v3 syntax. Do NOT use Zod v4 breaking changes.
+ *
+ * Phase 5 addition: structured_output JSONB column on squad_jobs
+ * (see migration 00007_squad_structured_output.sql).
  */
 
 import { z } from 'zod'
@@ -135,6 +138,7 @@ export const squadJobSchema = z.object({
   cli_command: z.string().nullable(),
   progress_log: z.string().nullable(),
   output: z.string().nullable(),
+  structured_output: z.record(z.string(), z.unknown()).nullable().optional(),
   error_log: z.string().nullable(),
   attempts: z.number().int().min(0),
   max_attempts: z.number().int().min(1),
