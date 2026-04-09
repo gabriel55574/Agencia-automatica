@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Production Hardening & Feature Expansion
 status: verifying
-stopped_at: Completed 14-02-PLAN.md
-last_updated: "2026-04-09T21:38:25.203Z"
+stopped_at: Completed 15-02-PLAN.md
+last_updated: "2026-04-09T21:39:39.281Z"
 last_activity: 2026-04-09
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 12
-  completed_plans: 11
-  percent: 92
+  completed_plans: 12
+  percent: 100
 ---
 
 # Project State
@@ -71,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 14]: NavLinks extracted as client component for usePathname active state detection in Server Component layout
 - [Phase 14]: Date range filter recomputes all 4 chart sections via useMemo from raw trend data, not re-fetching
 - [Phase 14]: GateApprovalChart uses styled divs with progress bars instead of Recharts for better semantic control
+- [Phase 15-02]: Templates nav link added to NavLinks component (shared nav) rather than layout.tsx directly
+- [Phase 15-02]: TemplateList uses optimistic local state removal after delete for instant UX feedback
 
 ### Pending Todos
 
@@ -83,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-09T21:38:25.200Z
-Stopped at: Completed 14-02-PLAN.md
+Last session: 2026-04-09T21:39:39.278Z
+Stopped at: Completed 15-02-PLAN.md
 Resume file: None
