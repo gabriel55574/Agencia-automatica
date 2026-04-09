@@ -28,11 +28,20 @@ import {
 // CLIENT schemas
 // ============================================================
 
+/** Schema for the hybrid briefing JSONB object stored in clients.briefing */
+export const briefingSchema = z.object({
+  niche: z.string().min(1, 'Niche is required'),
+  target_audience: z.string().min(1, 'Target audience is required'),
+  additional_context: z.string().optional().nullable(),
+})
+
+export type BriefingInsert = z.infer<typeof briefingSchema>
+
 /** Schema for creating a new client (subset of full client fields) */
 export const clientInsertSchema = z.object({
   name: z.string().min(1).max(255),
   company: z.string().min(1).max(255),
-  briefing: z.record(z.string(), z.unknown()).nullable().optional(),
+  briefing: briefingSchema.nullable().optional(),
   status: z.enum(CLIENT_STATUSES).default('active'),
   metadata: z.record(z.string(), z.unknown()).default({}),
 })
