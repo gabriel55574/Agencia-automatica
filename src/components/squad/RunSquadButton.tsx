@@ -15,9 +15,9 @@ export interface RunSquadButtonProps {
   clientId: string
   phaseId: string
   /** Controls visibility per D-01, D-03 */
-  processStatus: 'pending' | 'active' | 'completed' | 'failed'
+  processStatus: string
   isActivePhase: boolean
-  latestJobStatus: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled' | null
+  latestJobStatus: string | null
   /** Callback to open preview modal with assembled data */
   onAssembled: (data: {
     context: AssembledContext

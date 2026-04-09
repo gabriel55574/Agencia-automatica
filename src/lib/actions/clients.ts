@@ -39,7 +39,7 @@ export async function createClientAction(formData: FormData): Promise<ActionResu
   const { data: clientId, error: rpcError } = await admin.rpc('create_client_with_phases', {
     p_name: clientResult.data.name,
     p_company: clientResult.data.company,
-    p_briefing: (clientResult.data.briefing ?? null) as Record<string, unknown> | null,
+    p_briefing: clientResult.data.briefing ?? undefined,
   })
 
   if (rpcError) {
