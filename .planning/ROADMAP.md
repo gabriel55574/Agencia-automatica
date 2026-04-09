@@ -67,12 +67,12 @@ Plans:
   3. When a quality gate fails, the client is routed back to the specific failed process within the phase (not the entire phase)
   4. Concurrent operations on the same client's pipeline (e.g., two rapid transition attempts) do not corrupt state -- row-level locking prevents race conditions
   5. Each of the 16 processes has defined input requirements, execution steps, and output checklists viewable in the app
-**Plans**: TBD
+**Plans:** 2 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md — Static config + test foundation: PROCESS_DEFINITIONS for all 16 processes, shadcn/ui wrappers (accordion, dialog, checkbox), Wave 0 test stubs (processes-config.test.ts, pipeline.test.ts, helpers.ts)
+- [ ] 03-02-PLAN.md — DB migrations + Server Actions + UI: create_client_with_phases extended with 16 process rows + 4 gate rows, approve_gate/reject_gate RPCs with SELECT FOR UPDATE, gate Server Actions, PipelineAccordion replacing PipelineTimeline on client profile
 
 ### Phase 4: CLI Orchestrator & Job Queue
 **Goal**: A reliable infrastructure layer that queues, spawns, monitors, and manages Claude Code CLI processes with concurrency control -- the engine that powers all squad automation
@@ -179,7 +179,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 |-------|----------------|--------|-----------|
 | 1. Foundation & Data Model | 3/3 | Complete | 2026-04-08 |
 | 2. Client Management | 2/2 | Complete | 2026-04-08 |
-| 3. Pipeline Engine | 0/0 | Not started | - |
+| 3. Pipeline Engine | 0/2 | In progress | - |
 | 4. CLI Orchestrator & Job Queue | 0/0 | Not started | - |
 | 5. Squad Execution & Context | 0/0 | Not started | - |
 | 6. Quality Gates | 0/0 | Not started | - |
