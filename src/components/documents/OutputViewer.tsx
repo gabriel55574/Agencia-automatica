@@ -1,12 +1,18 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { StructuredOutputView } from '@/components/squad/StructuredOutputView'
 import { X } from 'lucide-react'
 import { format } from 'date-fns'
+
+const PdfDownloadSection = dynamic(() => import('./PdfDownloadSection'), {
+  ssr: false,
+  loading: () => <span className="text-xs text-zinc-400">Loading PDF...</span>,
+})
 
 export type OutputViewerRun = {
   id: string
@@ -56,6 +62,8 @@ function sanitizeForFilename(str: string): string {
 }
 
 export function OutputViewer({ run, processName, phaseName, clientName, onClose }: OutputViewerProps) {
+  const [showPdf, setShowPdf] = useState(false)
+
   const handleDownloadRaw = useCallback(() => {
     if (!run.output) return
     const blob = new Blob([run.output], { type: 'text/plain' })
@@ -130,7 +138,21 @@ export function OutputViewer({ run, processName, phaseName, clientName, onClose 
         >
           Download Raw (.txt)
         </Button>
-        {/* PDF export button added by Plan 02 */}
+        {showPdf ? (
+          <PdfDownloadSection
+            clientName={clientName}
+            processName={processName}
+            phaseName={phaseName}
+            date={format(new Date(run.createdAt), 'yyyy-MM-dd')}
+            structuredOutput={run.structuredOutput}
+            rawOutput={run.output}
+            fileName={`${sanitizeForFilename(clientName)}_${sanitizeForFilename(processName)}_${format(new Date(run.createdAt), 'yyyy-MM-dd')}.pdf`}
+          />
+        ) : (
+          <Button variant="outline" size="sm" onClick={() => setShowPdf(true)}>
+            Export PDF
+          </Button>
+        )}
       </div>
     </div>
   )
