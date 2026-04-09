@@ -71,7 +71,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 03-01-PLAN.md — Static config + test foundation: PROCESS_DEFINITIONS for all 16 processes, shadcn/ui wrappers (accordion, dialog, checkbox), Wave 0 test stubs (processes-config.test.ts, pipeline.test.ts, helpers.ts)
+- [x] 03-01-PLAN.md — Static config + test foundation: PROCESS_DEFINITIONS for all 16 processes, shadcn/ui wrappers (accordion, dialog, checkbox), Wave 0 test stubs (processes-config.test.ts, pipeline.test.ts, helpers.ts)
 - [ ] 03-02-PLAN.md — DB migrations + Server Actions + UI: create_client_with_phases extended with 16 process rows + 4 gate rows, approve_gate/reject_gate RPCs with SELECT FOR UPDATE, gate Server Actions, PipelineAccordion replacing PipelineTimeline on client profile
 
 ### Phase 4: CLI Orchestrator & Job Queue
@@ -83,11 +83,11 @@ Plans:
   2. Claude Code CLI processes spawn as managed child processes with stdout streaming to the database in real-time
   3. Concurrency is enforced: no more than the configured limit (2-3) of simultaneous CLI sessions run at once; excess jobs wait in the queue
   4. Failed or timed-out CLI sessions are detected, marked with error status, and eligible for retry
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md — Worker core: PM2 setup, Realtime+polling job loop, CLI spawn with concurrency guard, progress batching, retry with backoff, heartbeat timeout recovery
+- [ ] 04-02-PLAN.md — Progress UI: process row status badges (running/failed), progress modal with Supabase Realtime subscription, end-to-end verification checkpoint
 
 ### Phase 5: Squad Execution & Context
 **Goal**: Operator can trigger any of the 4 squads for any process, with the system automatically assembling context and parsing structured outputs -- the core workflow that makes one person manage 15+ clients
