@@ -195,6 +195,55 @@ export async function runJob(
         }
       }
 
+      // Phase 6: Gate review jobs — parse verdict and store in gate_reviews table
+      if (job.squad_type === 'gate_review') {
+        const gateReviewParsed = parseCliOutput(stdoutBuffer)
+        if (gateReviewParsed !== null) {
+          // Dynamic import: worker runs outside Next.js bundler, use relative path
+          const { GateReviewVerdictSchema } = await import(
+            '../lib/gates/review-schema'
+          )
+          const verdictResult = GateReviewVerdictSchema.safeParse(gateReviewParsed)
+
+          if (verdictResult.success) {
+            await supabase
+              .from('gate_reviews')
+              .update({
+                verdict: verdictResult.data,
+                raw_output: stdoutBuffer,
+                status: 'completed',
+              })
+              .eq('squad_job_id', job.id)
+          } else {
+            // Parse failed — store raw output and parse error, mark as failed
+            process.stdout.write(
+              `[worker] Gate review verdict parse failed for job ${job.id}: ${verdictResult.error.message}\n`
+            )
+            await supabase
+              .from('gate_reviews')
+              .update({
+                verdict: {
+                  parse_error: verdictResult.error.message,
+                  raw: gateReviewParsed,
+                },
+                raw_output: stdoutBuffer,
+                status: 'failed',
+              })
+              .eq('squad_job_id', job.id)
+          }
+        } else {
+          // CLI output not parseable at all
+          await supabase
+            .from('gate_reviews')
+            .update({
+              verdict: { parse_error: 'CLI output could not be parsed' },
+              raw_output: stdoutBuffer,
+              status: 'failed',
+            })
+            .eq('squad_job_id', job.id)
+        }
+      }
+
       await supabase
         .from('squad_jobs')
         .update({
@@ -206,6 +255,20 @@ export async function runJob(
         })
         .eq('id', job.id)
     } else {
+      // Phase 6: On failure, update gate_reviews status for gate_review jobs
+      if (job.squad_type === 'gate_review') {
+        await supabase
+          .from('gate_reviews')
+          .update({
+            verdict: {
+              error: 'Job failed',
+              stderr: stderrBuffer.slice(0, 2000),
+            },
+            raw_output: stdoutBuffer,
+            status: 'failed',
+          })
+          .eq('squad_job_id', job.id)
+      }
       await handleFailure(job, stdoutBuffer, stderrBuffer, supabase, retryCallback)
     }
   })

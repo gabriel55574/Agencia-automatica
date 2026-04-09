@@ -71,7 +71,7 @@ export const PROCESS_TO_PHASE: Record<number, PhaseNumber> = {
 //   growth:       Phase 4    (creative, IMC, sales funnel)
 //   crm:          Phase 5    (CLV, NPS, retention)
 // ============================================================
-export const SQUAD_TYPES = ['estrategia', 'planejamento', 'growth', 'crm'] as const
+export const SQUAD_TYPES = ['estrategia', 'planejamento', 'growth', 'crm', 'gate_review'] as const
 export type SquadType = (typeof SQUAD_TYPES)[number]
 
 // ============================================================
