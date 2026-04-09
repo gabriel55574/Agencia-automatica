@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { PipelineAccordion } from '@/components/clients/pipeline-accordion'
 import { ArchiveDialog } from '@/components/clients/archive-dialog'
+import { CycleBadge } from '@/components/clients/cycle-badge'
+import { ResetPipelineDialog } from '@/components/clients/reset-pipeline-dialog'
 import type { Json } from '@/lib/database/types'
 import type { PhaseRow, ProcessRow, GateRow, GateReviewRow } from '@/lib/types/pipeline'
 
@@ -31,7 +33,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
   const [{ data: client }, { data: phases }, { data: processes }, { data: gates }] = await Promise.all([
     supabase
       .from('clients')
-      .select('id, name, company, briefing, current_phase_number, status, created_at, updated_at')
+      .select('id, name, company, briefing, current_phase_number, status, cycle_number, created_at, updated_at')
       .eq('id', id)
       .single(),
     supabase
@@ -123,6 +125,11 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
   const briefing = parseBriefing(client.briefing)
   const isArchived = client.status === 'archived'
 
+  // Determine if pipeline can be reset: Phase 5 must be completed
+  const phase5Completed = (phases ?? []).some(
+    (p: PhaseRow) => p.phase_number === 5 && p.status === 'completed'
+  )
+
   return (
     <div className="max-w-3xl space-y-8">
 
@@ -134,6 +141,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
             <Badge variant={isArchived ? 'secondary' : 'default'}>
               {isArchived ? 'Archived' : 'Active'}
             </Badge>
+            <CycleBadge cycleNumber={client.cycle_number as number} />
           </div>
           {/* Text node only — never dangerouslySetInnerHTML (T-2-02-05) */}
           <p className="text-zinc-500">{client.company}</p>
@@ -142,6 +150,11 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
           <Link href={`/clients/${client.id}/edit`}>
             <Button variant="outline" size="sm">Edit</Button>
           </Link>
+          <ResetPipelineDialog
+            clientId={client.id}
+            clientName={client.name}
+            canReset={phase5Completed}
+          />
           <ArchiveDialog
             clientId={client.id}
             clientName={client.name}

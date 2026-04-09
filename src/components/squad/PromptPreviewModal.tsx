@@ -112,6 +112,18 @@ export function PromptPreviewModal({ open, onClose, data }: PromptPreviewModalPr
           )}
         </div>
 
+        {/* Feedback from Previous Cycle (D-10, T-09-08) — shown only for cycle 2+ clients */}
+        {data.context.feedbackContext && (
+          <div>
+            <h4 className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">
+              Feedback from Previous Cycle
+            </h4>
+            <pre className="max-h-48 overflow-y-auto bg-blue-50 border border-blue-100 p-3 rounded-md text-xs font-mono whitespace-pre-wrap break-words text-blue-900">
+              {data.context.feedbackContext}
+            </pre>
+          </div>
+        )}
+
         {/* Full prompt display */}
         <div>
           <h4 className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">
