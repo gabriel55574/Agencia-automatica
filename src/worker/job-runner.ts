@@ -15,6 +15,8 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { squadJobSchema } from '../lib/database/schema'
 import type { SquadJob } from '../lib/database/schema'
 import { parseCliOutput, parseStructuredOutput } from './output-parser'
+import { extractTokenUsage } from '../lib/costs/token-parser'
+import { calculateCost } from '../lib/costs/constants'
 
 export type { SquadJob }
 
@@ -244,6 +246,17 @@ export async function runJob(
         }
       }
 
+      // Phase 12: Extract token usage from CLI output for cost tracking (COST-01)
+      const tokenUsage = extractTokenUsage(stdoutBuffer)
+      const tokenCount = tokenUsage?.total_tokens ?? null
+      const estimatedCost = calculateCost(tokenCount)
+
+      if (tokenUsage) {
+        process.stdout.write(
+          `[worker] Job ${job.id}: ${tokenUsage.total_tokens} tokens, ~$${estimatedCost?.toFixed(2)}\n`
+        )
+      }
+
       await supabase
         .from('squad_jobs')
         .update({
@@ -252,6 +265,8 @@ export async function runJob(
           structured_output: structuredOutput,
           progress_log: stdoutBuffer,
           completed_at: new Date().toISOString(),
+          token_count: tokenCount,           // Phase 12: COST-01
+          estimated_cost_usd: estimatedCost,  // Phase 12: COST-01
         })
         .eq('id', job.id)
     } else {
