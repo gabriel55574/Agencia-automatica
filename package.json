@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "db:types": "supabase gen types typescript --local > src/lib/database/types.ts"
+    "db:types": "supabase gen types typescript --local > src/lib/database/types.ts",
+    "worker": "tsx src/worker/index.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -41,6 +42,7 @@
     "pg": "^8.20.0",
     "supabase": "^2.88.1",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.1.3"
   }
