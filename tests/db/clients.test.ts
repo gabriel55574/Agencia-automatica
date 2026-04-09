@@ -37,6 +37,26 @@ describe('Client DB operations (CLNT-01 through CLNT-04)', () => {
       .eq('client_id', clientId)
       .order('phase_number')
     expect(phases).toHaveLength(5)
+
+    // Verify 16 process rows
+    const { data: processes } = await testClient
+      .from('processes')
+      .select('*')
+      .eq('client_id', clientId)
+      .order('process_number')
+    expect(processes).toHaveLength(16)
+    expect(processes![0].process_number).toBe(1)
+    expect(processes![15].process_number).toBe(16)
+
+    // Verify 4 quality_gate rows
+    const { data: gates } = await testClient
+      .from('quality_gates')
+      .select('*')
+      .eq('client_id', clientId)
+      .order('gate_number')
+    expect(gates).toHaveLength(4)
+    expect(gates![0].gate_number).toBe(1)
+    expect(gates![0].status).toBe('pending')
   })
 
   it('CLNT-01: Phase 1 is active with started_at; phases 2-5 are pending with null started_at', async () => {
