@@ -36,3 +36,15 @@ export type LatestJobData = {
   structured_output: Record<string, unknown> | null
   output: string | null
 }
+
+/** Row shape from gate_reviews table, used as prop for GateReviewDisplay */
+export type GateReviewRow = {
+  id: string
+  gate_id: string
+  client_id: string
+  squad_job_id: string | null
+  verdict: Record<string, unknown>
+  raw_output: string
+  status: 'running' | 'completed' | 'failed'
+  created_at: string
+}
