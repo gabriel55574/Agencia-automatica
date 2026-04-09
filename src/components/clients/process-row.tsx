@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Square } from 'lucide-react'
 import { RunSquadButton } from '@/components/squad/RunSquadButton'
+import { RunCostBadge } from '@/components/squad/RunCostBadge'
 import { StructuredOutputView } from '@/components/squad/StructuredOutputView'
 import type { ProcessRow as ProcessRowType, LatestJobData } from '@/lib/types/pipeline'
 import type { ProcessDefinition } from '@/lib/pipeline/processes'
@@ -66,6 +67,12 @@ export function ProcessAccordionRow({
           )}
           {latestJob?.status === 'failed' && (
             <Badge className="bg-red-100 text-red-700 border-red-200">failed</Badge>
+          )}
+          {latestJob?.status === 'completed' && latestJob.token_count != null && (
+            <RunCostBadge
+              tokenCount={latestJob.token_count ?? null}
+              estimatedCost={latestJob.estimated_cost_usd ?? null}
+            />
           )}
           <AccordionStatusBadge status={process.status} />
         </div>
@@ -145,6 +152,9 @@ export function ProcessAccordionRow({
             <StructuredOutputView
               structuredOutput={latestJob.structured_output}
               rawOutput={latestJob.output}
+              processNumber={process.process_number}
+              clientId={clientId}
+              jobId={latestJob.id}
             />
           </div>
         )}
