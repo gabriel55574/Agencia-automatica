@@ -30,10 +30,10 @@
 
 ### Analytics
 
-- [ ] **ANLY-01**: Operator can view average time per phase across all clients on an analytics page
-- [ ] **ANLY-02**: Operator can view process success rate (first-pass gate approval rate) per phase
-- [ ] **ANLY-03**: Operator can view client lifecycle metrics (average time from intake to Phase 5 completion)
-- [ ] **ANLY-04**: Analytics page shows trend charts (line/bar) for key metrics over configurable time periods
+- [x] **ANLY-01**: Operator can view average time per phase across all clients on an analytics page
+- [x] **ANLY-02**: Operator can view process success rate (first-pass gate approval rate) per phase
+- [x] **ANLY-03**: Operator can view client lifecycle metrics (average time from intake to Phase 5 completion)
+- [x] **ANLY-04**: Analytics page shows trend charts (line/bar) for key metrics over configurable time periods
 
 ### Templates
 
@@ -77,10 +77,10 @@
 | NOTF-01 | Phase 13 | Complete |
 | NOTF-02 | Phase 13 | Complete |
 | NOTF-03 | Phase 13 | Complete |
-| ANLY-01 | Phase 14 | Pending |
-| ANLY-02 | Phase 14 | Pending |
-| ANLY-03 | Phase 14 | Pending |
-| ANLY-04 | Phase 14 | Pending |
+| ANLY-01 | Phase 14 | Complete |
+| ANLY-02 | Phase 14 | Complete |
+| ANLY-03 | Phase 14 | Complete |
+| ANLY-04 | Phase 14 | Complete |
 | TMPL-01 | Phase 15 | Pending |
 | TMPL-02 | Phase 15 | Pending |
 | TMPL-03 | Phase 15 | Pending |
