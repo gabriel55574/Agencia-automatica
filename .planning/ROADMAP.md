@@ -103,9 +103,9 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 05-01-PLAN.md — Data foundation: DB migration (structured_output JSONB), 16 per-process Zod schemas, schema dispatcher, context assembler with 32K truncation, CLI output parser with two-level JSON deserialization, unit tests
-- [ ] 05-02-PLAN.md — Prompt templates + backend: 4 squad buildPrompt() functions with verbatim squad identity, worker close handler parse extension, assembleSquadContext + confirmSquadRun Server Actions
-- [ ] 05-03-PLAN.md — UI layer: RunSquadButton with visibility logic, PromptPreviewModal with truncation warning, StructuredOutputView with View Raw toggle, ProcessAccordionRow extension, client profile page wiring, DB push + end-to-end verification
+- [x] 05-01-PLAN.md — Data foundation: DB migration (structured_output JSONB), 16 per-process Zod schemas, schema dispatcher, context assembler with 32K truncation, CLI output parser with two-level JSON deserialization, unit tests
+- [x] 05-02-PLAN.md — Prompt templates + backend: 4 squad buildPrompt() functions with verbatim squad identity, worker close handler parse extension, assembleSquadContext + confirmSquadRun Server Actions
+- [x] 05-03-PLAN.md — UI layer: RunSquadButton with visibility logic, PromptPreviewModal with truncation warning, StructuredOutputView with View Raw toggle, ProcessAccordionRow extension, client profile page wiring, DB push + end-to-end verification
 
 ### Phase 6: Quality Gates
 **Goal**: AI pre-reviews squad outputs against methodology checklists using adversarial prompting, produces structured verdicts with evidence, and the operator makes the final judgment call
@@ -117,12 +117,13 @@ Plans:
   3. The AI review uses a different evaluation perspective (adversarial prompting) than the generation prompt, preventing rubber-stamp approvals
   4. The gate review produces a structured verdict with pass/fail per checklist item and evidence citations from the actual outputs
   5. Operator sees the full AI review with evidence and makes the final approve or reject decision, with the ability to annotate specific items that need rework on rejection
-**Plans**: TBD
+**Plans:** 3 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
+- [ ] 06-01-PLAN.md — Gate checklists + review foundation: 4 static TypeScript checklist files (verbatim from methodology), getGateChecklist dispatcher, GateReviewVerdictSchema Zod schema, adversarial review prompt builder with distinct auditor persona
+- [ ] 06-02-PLAN.md — Backend infrastructure: gate_reviews DB migration, squad_type extension for 'gate_review', runGateReview Server Action, worker verdict parsing extension, supabase db push
+- [ ] 06-03-PLAN.md — UI layer: GateReviewDisplay component (verdict badges, evidence, View Raw), GateSection enhancement (checklist display, Run Gate Review button, verdict integration), enhanced reject dialog with AI-suggested rework items
 
 ### Phase 7: Document Management
 **Goal**: All squad outputs are organized, browsable, and exportable -- the operator can find any deliverable and share it with clients
@@ -183,7 +184,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 3. Pipeline Engine | 0/2 | In progress | - |
 | 4. CLI Orchestrator & Job Queue | 0/0 | Not started | - |
 | 5. Squad Execution & Context | 0/3 | Not started | - |
-| 6. Quality Gates | 0/0 | Not started | - |
+| 6. Quality Gates | 0/3 | Not started | - |
 | 7. Document Management | 0/0 | Not started | - |
 | 8. Dashboard & Operational Views | 0/0 | Not started | - |
 | 9. Feedback Loop | 0/0 | Not started | - |
