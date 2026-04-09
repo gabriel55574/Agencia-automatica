@@ -63,33 +63,33 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEBT-01 | TBD | Pending |
-| DEBT-02 | TBD | Pending |
-| DEBT-03 | TBD | Pending |
-| DEBT-04 | TBD | Pending |
-| PROD-01 | TBD | Pending |
-| PROD-02 | TBD | Pending |
-| PROD-03 | TBD | Pending |
-| COST-01 | TBD | Pending |
-| COST-02 | TBD | Pending |
-| COST-03 | TBD | Pending |
-| COST-04 | TBD | Pending |
-| NOTF-01 | TBD | Pending |
-| NOTF-02 | TBD | Pending |
-| NOTF-03 | TBD | Pending |
-| ANLY-01 | TBD | Pending |
-| ANLY-02 | TBD | Pending |
-| ANLY-03 | TBD | Pending |
-| ANLY-04 | TBD | Pending |
-| TMPL-01 | TBD | Pending |
-| TMPL-02 | TBD | Pending |
-| TMPL-03 | TBD | Pending |
+| DEBT-01 | Phase 10 | Pending |
+| DEBT-02 | Phase 10 | Pending |
+| DEBT-03 | Phase 10 | Pending |
+| DEBT-04 | Phase 10 | Pending |
+| PROD-01 | Phase 11 | Pending |
+| PROD-02 | Phase 11 | Pending |
+| PROD-03 | Phase 11 | Pending |
+| COST-01 | Phase 12 | Pending |
+| COST-02 | Phase 12 | Pending |
+| COST-03 | Phase 12 | Pending |
+| COST-04 | Phase 12 | Pending |
+| NOTF-01 | Phase 13 | Pending |
+| NOTF-02 | Phase 13 | Pending |
+| NOTF-03 | Phase 13 | Pending |
+| ANLY-01 | Phase 14 | Pending |
+| ANLY-02 | Phase 14 | Pending |
+| ANLY-03 | Phase 14 | Pending |
+| ANLY-04 | Phase 14 | Pending |
+| TMPL-01 | Phase 15 | Pending |
+| TMPL-02 | Phase 15 | Pending |
+| TMPL-03 | Phase 15 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 21 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 21
+- Mapped to phases: 21/21
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-09*
-*Last updated: 2026-04-09*
+*Last updated: 2026-04-09 -- traceability updated after roadmap creation*

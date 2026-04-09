@@ -3,6 +3,7 @@
 ## Milestones
 
 - **v1.0 MVP** — Phases 1-9, 21 plans (shipped 2026-04-09) | [Archive](milestones/v1.0-ROADMAP.md)
+- **v1.1 Production Hardening & Feature Expansion** — Phases 10-15 (in progress)
 
 ## Phases
 
@@ -21,7 +22,89 @@
 
 </details>
 
+### v1.1 Production Hardening & Feature Expansion (In Progress)
+
+- [ ] **Phase 10: Tech Debt Cleanup** - Fix tsx dependency, regenerate types, run integration tests, remove dead code
+- [ ] **Phase 11: Production Deployment** - Deploy Next.js + worker to VPS with PM2, SSL, and health monitoring
+- [ ] **Phase 12: Cost Tracking** - Token usage per run, monthly client breakdown, budget alerts, dashboard widget
+- [ ] **Phase 13: Notifications** - Email alerts on squad completion, gate failures, and daily digest
+- [ ] **Phase 14: Analytics** - Time per phase, gate pass rates, lifecycle metrics, trend charts
+- [ ] **Phase 15: Templates** - Save outputs as templates, clone client configs, use templates as prompt context
+
+## Phase Details
+
+### Phase 10: Tech Debt Cleanup
+**Goal**: The existing codebase is clean, type-safe, and verified against the live database so that production deployment and feature work can proceed on a solid foundation
+**Depends on**: Phase 9 (v1.0 complete)
+**Requirements**: DEBT-01, DEBT-02, DEBT-03, DEBT-04
+**Success Criteria** (what must be TRUE):
+  1. Worker process starts successfully via PM2 using tsx without manual workarounds
+  2. TypeScript types match the live Supabase schema with zero `as any` casts in application code
+  3. Integration tests execute against the live Supabase instance and pass
+  4. No orphaned exports or dead code flagged by the codebase audit
+**Plans**: TBD
+
+### Phase 11: Production Deployment
+**Goal**: Agency OS runs on a publicly accessible VPS with the Next.js app and worker process both managed, monitored, and secured for real client workloads
+**Depends on**: Phase 10
+**Requirements**: PROD-01, PROD-02, PROD-03
+**Success Criteria** (what must be TRUE):
+  1. Operator can access Agency OS via a custom domain with valid SSL certificate in a browser
+  2. Next.js application serves pages and handles Server Actions in production mode under PM2
+  3. Worker process polls for jobs, executes Claude CLI squad runs, and writes results to Supabase in production
+  4. If the worker or app crashes, PM2 restarts it automatically and health status is visible
+**Plans**: TBD
+
+### Phase 12: Cost Tracking
+**Goal**: Operator has full visibility into AI spend per run, per client, and per month so they can manage operational costs across 15+ clients
+**Depends on**: Phase 11
+**Requirements**: COST-01, COST-02, COST-03, COST-04
+**Success Criteria** (what must be TRUE):
+  1. After a squad run completes, the operator can see estimated token count and dollar cost on the run details
+  2. Operator can open a monthly cost breakdown page showing total spend per client with sortable columns
+  3. Operator can set a token budget per process, and the UI shows a visual warning when a run approaches or exceeds that budget
+  4. The main dashboard displays a monthly cost summary widget showing total spend and the top-spending clients
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 13: Notifications
+**Goal**: Operator receives timely email alerts for critical pipeline events so they can respond without constantly checking the dashboard
+**Depends on**: Phase 11
+**Requirements**: NOTF-01, NOTF-02, NOTF-03
+**Success Criteria** (what must be TRUE):
+  1. When a squad run completes (success or failure), the operator receives an email within minutes containing the run status and client name
+  2. When a quality gate review produces a FAIL or PARTIAL verdict, the operator receives an email with the verdict summary and affected client
+  3. Every morning, the operator receives a daily digest email summarizing pipeline status: phase progress, pending approvals, and stuck clients across all accounts
+**Plans**: TBD
+
+### Phase 14: Analytics
+**Goal**: Operator can analyze operational performance with metrics and trend charts to identify bottlenecks and improve throughput across the client portfolio
+**Depends on**: Phase 11
+**Requirements**: ANLY-01, ANLY-02, ANLY-03, ANLY-04
+**Success Criteria** (what must be TRUE):
+  1. Operator can view average time spent per phase across all clients on a dedicated analytics page
+  2. Operator can view the first-pass gate approval rate per phase to identify which phases cause the most rework
+  3. Operator can view client lifecycle metrics showing average time from intake to Phase 5 completion
+  4. Analytics page renders trend charts (line or bar) for key metrics with configurable time period filters
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 15: Templates
+**Goal**: Operator can capture and reuse successful work patterns to accelerate onboarding and improve consistency across similar clients
+**Depends on**: Phase 11
+**Requirements**: TMPL-01, TMPL-02, TMPL-03
+**Success Criteria** (what must be TRUE):
+  1. Operator can save any successful squad output as a named template from the output viewer
+  2. Operator can clone an existing client's configuration (briefing and process settings) to create a new client pre-filled with that data
+  3. When triggering a squad run, operator can optionally select a template that gets included as reference context in the assembled prompt
+**Plans**: TBD
+**UI hint**: yes
+
 ## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 10 -> 11 -> 12 -> 13 -> 14 -> 15
+Phases 12, 13, 14 all depend on 11 but are sequenced for data accumulation benefit.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -34,3 +117,9 @@
 | 7. Document Management | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 8. Dashboard & Operational Views | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 9. Feedback Loop | v1.0 | 2/2 | Complete | 2026-04-09 |
+| 10. Tech Debt Cleanup | v1.1 | 0/0 | Not started | - |
+| 11. Production Deployment | v1.1 | 0/0 | Not started | - |
+| 12. Cost Tracking | v1.1 | 0/0 | Not started | - |
+| 13. Notifications | v1.1 | 0/0 | Not started | - |
+| 14. Analytics | v1.1 | 0/0 | Not started | - |
+| 15. Templates | v1.1 | 0/0 | Not started | - |
