@@ -1,20 +1,21 @@
-import { createClient } from '@/lib/supabase/server'
+import { fetchDashboardData } from '@/lib/dashboard/queries'
+import { KanbanBoard } from '@/components/dashboard/KanbanBoard'
+import { BottleneckAlert } from '@/components/dashboard/BottleneckAlert'
 
-export default async function DashboardPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ show_archived?: string }>
+}) {
+  const params = await searchParams
+  const showArchived = params?.show_archived === '1'
+  const data = await fetchDashboardData(showArchived)
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-zinc-900 mb-2">Dashboard</h1>
-      <p className="text-zinc-500">
-        Bem-vindo ao Agency OS{user?.email ? `, ${user.email}` : ''}.
-      </p>
-      <p className="text-sm text-zinc-400 mt-4">
-        Este é um placeholder — o dashboard completo será implementado na Fase 8.
-      </p>
+      <BottleneckAlert stuckClients={data.stuckClients} />
+      <KanbanBoard data={data} showArchived={showArchived} />
     </div>
   )
 }
