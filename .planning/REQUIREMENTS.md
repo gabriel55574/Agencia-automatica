@@ -9,7 +9,7 @@
 
 - [x] **DEBT-01**: Fix tsx missing from package.json devDependencies so worker process can start via PM2
 - [x] **DEBT-02**: Regenerate TypeScript types from live database schema via supabase gen types
-- [ ] **DEBT-03**: Execute integration tests against live Supabase instance and fix any failures
+- [x] **DEBT-03**: Execute integration tests against live Supabase instance and fix any failures
 - [x] **DEBT-04**: Remove orphaned ProcessRow export and (admin as any) type casts
 - [ ] **PROD-01**: Deploy Next.js application to a self-hosted VPS with PM2 process management
 - [ ] **PROD-02**: Configure production environment variables, SSL/TLS, and domain for the application
@@ -65,7 +65,7 @@
 |-------------|-------|--------|
 | DEBT-01 | Phase 10 | Complete |
 | DEBT-02 | Phase 10 | Complete |
-| DEBT-03 | Phase 10 | Pending |
+| DEBT-03 | Phase 10 | Complete |
 | DEBT-04 | Phase 10 | Complete |
 | PROD-01 | Phase 11 | Pending |
 | PROD-02 | Phase 11 | Pending |

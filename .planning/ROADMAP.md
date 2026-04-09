@@ -24,7 +24,7 @@
 
 ### v1.1 Production Hardening & Feature Expansion (In Progress)
 
-- [ ] **Phase 10: Tech Debt Cleanup** - Fix tsx dependency, regenerate types, run integration tests, remove dead code
+- [x] **Phase 10: Tech Debt Cleanup** - Fix tsx dependency, regenerate types, run integration tests, remove dead code (completed 2026-04-09)
 - [ ] **Phase 11: Production Deployment** - Deploy Next.js + worker to VPS with PM2, SSL, and health monitoring
 - [ ] **Phase 12: Cost Tracking** - Token usage per run, monthly client breakdown, budget alerts, dashboard widget
 - [ ] **Phase 13: Notifications** - Email alerts on squad completion, gate failures, and daily digest
@@ -42,10 +42,10 @@
   2. TypeScript types match the live Supabase schema with zero `as any` casts in application code
   3. Integration tests execute against the live Supabase instance and pass
   4. No orphaned exports or dead code flagged by the codebase audit
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 10-01-PLAN.md — Regenerate TypeScript types from live schema and remove all `as any` casts
-- [ ] 10-02-PLAN.md — Execute integration tests against live Supabase and fix failures
+- [x] 10-02-PLAN.md — Execute integration tests against live Supabase and fix failures
 
 ### Phase 11: Production Deployment
 **Goal**: Agency OS runs on a publicly accessible VPS with the Next.js app and worker process both managed, monitored, and secured for real client workloads
@@ -120,7 +120,7 @@ Phases 12, 13, 14 all depend on 11 but are sequenced for data accumulation benef
 | 7. Document Management | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 8. Dashboard & Operational Views | v1.0 | 2/2 | Complete | 2026-04-09 |
 | 9. Feedback Loop | v1.0 | 2/2 | Complete | 2026-04-09 |
-| 10. Tech Debt Cleanup | v1.1 | 1/2 | In Progress|  |
+| 10. Tech Debt Cleanup | v1.1 | 2/2 | Complete   | 2026-04-09 |
 | 11. Production Deployment | v1.1 | 0/0 | Not started | - |
 | 12. Cost Tracking | v1.1 | 0/0 | Not started | - |
 | 13. Notifications | v1.1 | 0/0 | Not started | - |
