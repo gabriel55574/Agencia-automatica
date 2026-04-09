@@ -169,6 +169,33 @@ export const deliverableSchema = z.object({
 })
 
 // ============================================================
+// TEMPLATE schemas
+// ============================================================
+
+/** Schema for creating a new template (TMPL-01) */
+export const templateInsertSchema = z.object({
+  name: z.string().min(1, 'Template name is required').max(255),
+  description: z.string().max(1000).nullable().optional(),
+  process_number: z.number().int().min(1).max(16),
+  content: z.record(z.string(), z.unknown()),
+  source_client_id: z.string().uuid().nullable().optional(),
+  source_job_id: z.string().uuid().nullable().optional(),
+})
+
+/** Full template row schema (mirrors templates table) */
+export const templateSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  description: z.string().nullable(),
+  process_number: z.number().int().min(1).max(16),
+  content: z.record(z.string(), z.unknown()),
+  source_client_id: z.string().uuid().nullable(),
+  source_job_id: z.string().uuid().nullable(),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
+})
+
+// ============================================================
 // EXPORTED TYPES
 // Inferred from schemas -- these are the canonical TypeScript types for the domain.
 // Do NOT hand-write these interfaces; let Zod infer them.
@@ -180,3 +207,5 @@ export type Process = z.infer<typeof processSchema>
 export type QualityGate = z.infer<typeof qualityGateSchema>
 export type SquadJob = z.infer<typeof squadJobSchema>
 export type Deliverable = z.infer<typeof deliverableSchema>
+export type Template = z.infer<typeof templateSchema>
+export type TemplateInsert = z.infer<typeof templateInsertSchema>

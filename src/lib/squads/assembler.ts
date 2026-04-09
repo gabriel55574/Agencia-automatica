@@ -34,6 +34,7 @@ export type AssembledContext = {
   briefing: string
   priorOutputs: ProcessOutput[]
   feedbackContext: string // always '' in Phase 5; Phase 9 fills this
+  templateContent: string // TMPL-03: template reference content (empty if no template selected)
   truncated: boolean
   totalOutputsAvailable: number
   outputsIncluded: number
@@ -62,7 +63,8 @@ const MAX_CONTEXT_CHARS = 32_000
 export async function assembleContext(
   clientId: string,
   processNumber: number,
-  supabaseClient?: SupabaseClient
+  supabaseClient?: SupabaseClient,
+  templateContent?: string
 ): Promise<AssembledContext> {
   const supabase = supabaseClient ?? createAdminClient()
 
@@ -117,11 +119,13 @@ export async function assembleContext(
 
   // Step 4: Truncation (D-06)
   // If total chars exceed MAX_CONTEXT_CHARS, remove oldest outputs first
+  // TMPL-03: Template content counts against the truncation budget
+  const templateStr = templateContent ?? ''
   let priorOutputs = [...allOutputs]
   let truncated = false
 
   const computeTotal = () =>
-    briefing.length + feedback.length + priorOutputs.reduce((sum, o) => sum + o.output.length, 0)
+    briefing.length + feedback.length + templateStr.length + priorOutputs.reduce((sum, o) => sum + o.output.length, 0)
 
   while (computeTotal() > MAX_CONTEXT_CHARS && priorOutputs.length > 1) {
     priorOutputs.shift() // Remove the oldest (first) output
@@ -133,6 +137,7 @@ export async function assembleContext(
     briefing,
     priorOutputs,
     feedbackContext: feedback,
+    templateContent: templateStr,
     truncated,
     totalOutputsAvailable,
     outputsIncluded: priorOutputs.length,

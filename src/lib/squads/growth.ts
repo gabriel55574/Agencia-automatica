@@ -91,6 +91,11 @@ export function buildPrompt(context: AssembledContext, processNumber: number): s
     ? `Feedback Loop Data:\n${context.feedbackContext}`
     : ''
 
+  // TMPL-03: Template reference content (if operator selected a template)
+  const templateSection = context.templateContent
+    ? `\n=== REFERENCE OUTPUT (TEMPLATE) ===\nThe following is a reference output from a previous successful run. Use it as a guide for structure and quality, adapting the content to the current client's context:\n${context.templateContent}\n`
+    : ''
+
   return `=== SQUAD IDENTITY ===
 ${SQUAD_IDENTITY}
 
@@ -105,7 +110,7 @@ Prior Phase Outputs:
 ${priorOutputsSection}
 
 ${feedbackSection}
-
+${templateSection}
 === PROCESS INSTRUCTIONS ===
 Process: ${def.name} (Process #${processNumber})
 Phase: ${def.phase}

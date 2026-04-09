@@ -31,6 +31,7 @@ const mockContext: AssembledContext = {
     },
   ],
   feedbackContext: '',
+  templateContent: '',
   truncated: false,
   totalOutputsAvailable: 1,
   outputsIncluded: 1,

@@ -55,11 +55,13 @@ const confirmInputSchema = z.object({
 /**
  * Step 1: Assemble context and build prompt for preview.
  * Called when operator clicks "Run Squad" -- before the modal confirms.
+ * TMPL-03: Optional templateId fetches template content and includes it in context.
  */
 export async function assembleSquadContext(
   clientId: string,
   processId: string,
-  processNumber: number
+  processNumber: number,
+  templateId?: string | null
 ): Promise<{ context: AssembledContext; prompt: string; squadType: string } | { error: string }> {
   // Auth check (always first -- matches gates.ts pattern)
   const supabase = await createClient()
@@ -72,7 +74,24 @@ export async function assembleSquadContext(
   const squadType = PROCESS_TO_SQUAD[processNumber]
   if (!squadType) return { error: `No squad mapped for process ${processNumber}` }
 
-  const context = await assembleContext(clientId, processNumber)
+  // TMPL-03: Fetch template content if templateId provided
+  let templateContent: string | undefined
+  if (templateId) {
+    const tidResult = z.string().uuid().safeParse(templateId)
+    if (!tidResult.success) return { error: 'Invalid template ID' }
+
+    const admin = createAdminClient()
+    const { data: template, error: tplError } = await admin
+      .from('templates')
+      .select('content')
+      .eq('id', tidResult.data)
+      .single()
+
+    if (tplError || !template) return { error: 'Template not found' }
+    templateContent = JSON.stringify(template.content)
+  }
+
+  const context = await assembleContext(clientId, processNumber, undefined, templateContent)
   const builder = SQUAD_PROMPT_BUILDERS[squadType]
   if (!builder) return { error: `No prompt builder for squad ${squadType}` }
 

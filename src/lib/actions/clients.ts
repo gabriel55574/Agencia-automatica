@@ -137,3 +137,57 @@ export async function restoreClientAction(clientId: string): Promise<ActionResul
   revalidatePath(`/clients/${clientId}`)
   redirect(`/clients/${clientId}`)
 }
+
+/**
+ * Clone a client's configuration (briefing) to create a new client (TMPL-02).
+ * Copies briefing fields from the source client. Does NOT copy pipeline state,
+ * squad runs, or gate reviews — the new client starts fresh at Phase 1.
+ */
+export async function cloneClientAction(
+  sourceClientId: string,
+  newName: string,
+  newCompany: string
+): Promise<ActionResult> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Unauthorized' }
+
+  // Validate inputs
+  const idResult = z.string().uuid().safeParse(sourceClientId)
+  if (!idResult.success) return { error: 'Invalid source client ID' }
+
+  const nameResult = z.string().min(1).max(255).safeParse(newName)
+  if (!nameResult.success) return { error: 'Name is required (max 255 characters)' }
+
+  const companyResult = z.string().min(1).max(255).safeParse(newCompany)
+  if (!companyResult.success) return { error: 'Company is required (max 255 characters)' }
+
+  const admin = createAdminClient()
+
+  // Fetch source client's briefing
+  const { data: sourceClient, error: fetchError } = await admin
+    .from('clients')
+    .select('briefing')
+    .eq('id', idResult.data)
+    .single()
+
+  if (fetchError || !sourceClient) {
+    return { error: 'Source client not found' }
+  }
+
+  // Create new client with cloned briefing using existing RPC
+  // Starts fresh at Phase 1 — does NOT copy pipeline state, jobs, or gate reviews
+  const { data: clientId, error: rpcError } = await admin.rpc('create_client_with_phases', {
+    p_name: nameResult.data,
+    p_company: companyResult.data,
+    p_briefing: sourceClient.briefing ?? undefined,
+  })
+
+  if (rpcError) {
+    console.error('[cloneClientAction] RPC error:', rpcError)
+    return { error: 'Failed to clone client. Please try again.' }
+  }
+
+  revalidatePath('/clients')
+  redirect(`/clients/${clientId}`)
+}
