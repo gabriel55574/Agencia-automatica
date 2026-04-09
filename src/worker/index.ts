@@ -13,11 +13,15 @@
  * tsx runs this file outside Next.js — path aliases will fail without explicit mapping.
  */
 
+import 'dotenv/config'
 import { ChildProcess } from 'child_process'
 import { createAdminClient } from '../lib/supabase/admin'
 import { runJob, handleFailure } from './job-runner'
 import type { SquadJob } from './job-runner'
 import { recoverStuckJobs } from './heartbeat'
+import cron from 'node-cron'
+import { fetchDigestData } from '../lib/notifications/digest'
+import { notifyDailyDigest } from '../lib/notifications/notify'
 
 // ============================================================
 // CONCURRENCY CONFIG (SQAD-08, T-04-03)
@@ -134,6 +138,25 @@ tryClaimAndRun().catch((err) => {
 })
 
 // ============================================================
+// DAILY DIGEST CRON (NOTF-03)
+// Runs every day at 08:00 UTC. Fetches digest data and sends
+// email to the operator. Errors are logged, never thrown.
+// ============================================================
+cron.schedule('0 8 * * *', () => {
+  process.stdout.write('[worker] Running daily digest...\n')
+  fetchDigestData(supabase)
+    .then((data) => notifyDailyDigest(supabase, data))
+    .then(() => {
+      process.stdout.write('[worker] Daily digest sent\n')
+    })
+    .catch((err) => {
+      process.stdout.write(`[worker] Daily digest error: ${String(err)}\n`)
+    })
+}, {
+  timezone: 'UTC',
+})
+
+// ============================================================
 // SIGTERM HANDLER — graceful shutdown (T-04-03)
 // Kill all active CLI processes, then exit.
 // PM2 sends SIGTERM before restarting the process.
@@ -147,4 +170,4 @@ process.on('SIGTERM', () => {
   process.exit(0)
 })
 
-process.stdout.write('[worker] Agency OS job worker started\n')
+process.stdout.write('[worker] Agency OS job worker started (notifications enabled)\n')

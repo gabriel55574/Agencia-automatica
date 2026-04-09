@@ -11,12 +11,19 @@
  */
 
 import { spawn, ChildProcess } from 'child_process'
+import path from 'path'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { squadJobSchema } from '../lib/database/schema'
 import type { SquadJob } from '../lib/database/schema'
 import { parseCliOutput, parseStructuredOutput } from './output-parser'
+
+// Project root directory — worker runs from here so Claude Code picks up CLAUDE.md
+const PROJECT_DIR = path.resolve(__dirname, '..', '..')
 import { extractTokenUsage } from '../lib/costs/token-parser'
 import { calculateCost } from '../lib/costs/constants'
+import { notifySquadCompletion, notifyGateFailure } from '../lib/notifications/notify'
+import type { SquadCompletionData, GateFailureData } from '../lib/notifications/types'
+import { PHASE_NAMES, type PhaseNumber } from '../lib/database/enums'
 
 export type { SquadJob }
 
@@ -75,6 +82,17 @@ export async function handleFailure(
         completed_at: new Date().toISOString(),
       })
       .eq('id', job.id)
+
+    // NOTF-01: Notify operator of permanent squad failure (fire-and-forget)
+    buildCompletionData(job, 'failed', supabase, stderr || stdout).then((data) => {
+      if (data) {
+        notifySquadCompletion(supabase, data, job.id).catch((err) => {
+          process.stdout.write(`[worker] Notification error (failure): ${String(err)}\n`)
+        })
+      }
+    }).catch((err) => {
+      process.stdout.write(`[worker] Failed to build failure notification data: ${String(err)}\n`)
+    })
     return
   }
 
@@ -93,6 +111,45 @@ export async function handleFailure(
   // Schedule retry trigger via callback to avoid circular dependency with index.ts
   if (retryCallback) {
     setTimeout(retryCallback, delayMs)
+  }
+}
+
+/**
+ * Build SquadCompletionData by querying client and process info.
+ * Returns null if queries fail (notification will be skipped).
+ */
+async function buildCompletionData(
+  job: SquadJob,
+  status: 'completed' | 'failed',
+  supabase: SupabaseClient,
+  errorExcerpt?: string
+): Promise<SquadCompletionData | null> {
+  const { data: client } = await supabase
+    .from('clients')
+    .select('name, company')
+    .eq('id', job.client_id)
+    .single()
+
+  let processName = 'Unknown process'
+  if (job.process_id) {
+    const { data: proc } = await supabase
+      .from('processes')
+      .select('name')
+      .eq('id', job.process_id)
+      .single()
+    if (proc) processName = proc.name
+  }
+
+  if (!client) return null
+
+  return {
+    client_name: client.name,
+    client_company: client.company,
+    process_name: processName,
+    squad_type: job.squad_type,
+    status,
+    error_excerpt: errorExcerpt ? errorExcerpt.slice(0, 500) : null,
+    completed_at: new Date().toISOString(),
   }
 }
 
@@ -130,6 +187,8 @@ export async function runJob(
     '--no-session-persistence',
     '--permission-mode',
     'auto',
+    '--max-budget-usd',
+    '5',
     job.cli_command ?? 'No command specified',
   ]
 
@@ -138,6 +197,7 @@ export async function runJob(
   // T-04-01: spawn() with array args does NOT invoke a shell — shell injection impossible
   const proc = spawn('claude', args, {
     stdio: ['ignore', 'pipe', 'pipe'],
+    cwd: PROJECT_DIR,
     env: { ...process.env },
   })
 
@@ -216,6 +276,42 @@ export async function runJob(
                 status: 'completed',
               })
               .eq('squad_job_id', job.id)
+
+            // NOTF-02: Notify on gate failure/partial (fire-and-forget)
+            if (verdictResult.data.overall === 'fail' || verdictResult.data.overall === 'partial') {
+              ;(async () => {
+                try {
+                  const { data: client } = await supabase
+                    .from('clients')
+                    .select('name, company')
+                    .eq('id', job.client_id)
+                    .single()
+
+                  if (client) {
+                    const gateData: GateFailureData = {
+                      client_name: client.name,
+                      client_company: client.company,
+                      phase_name: PHASE_NAMES[verdictResult.data.gate_number as PhaseNumber] || `Phase ${verdictResult.data.gate_number}`,
+                      gate_number: verdictResult.data.gate_number,
+                      overall_verdict: verdictResult.data.overall as 'fail' | 'partial',
+                      failed_items_count: verdictResult.data.items.filter((i: { verdict: string }) => i.verdict === 'fail').length,
+                      total_items_count: verdictResult.data.items.length,
+                      summary: verdictResult.data.summary,
+                    }
+
+                    const { data: gateReviewRow } = await supabase
+                      .from('gate_reviews')
+                      .select('id')
+                      .eq('squad_job_id', job.id)
+                      .single()
+
+                    await notifyGateFailure(supabase, gateData, gateReviewRow?.id || job.id)
+                  }
+                } catch (err) {
+                  process.stdout.write(`[worker] Failed to build gate failure notification data: ${String(err)}\n`)
+                }
+              })()
+            }
           } else {
             // Parse failed — store raw output and parse error, mark as failed
             process.stdout.write(
@@ -269,6 +365,17 @@ export async function runJob(
           estimated_cost_usd: estimatedCost,  // Phase 12: COST-01
         })
         .eq('id', job.id)
+
+      // NOTF-01: Notify operator of squad completion (fire-and-forget)
+      buildCompletionData(job, 'completed', supabase).then((data) => {
+        if (data) {
+          notifySquadCompletion(supabase, data, job.id).catch((err) => {
+            process.stdout.write(`[worker] Notification error (completion): ${String(err)}\n`)
+          })
+        }
+      }).catch((err) => {
+        process.stdout.write(`[worker] Failed to build completion notification data: ${String(err)}\n`)
+      })
     } else {
       // Phase 6: On failure, update gate_reviews status for gate_review jobs
       if (job.squad_type === 'gate_review') {
