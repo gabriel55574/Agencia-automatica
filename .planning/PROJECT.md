@@ -92,24 +92,32 @@ One person manages 15+ clients at agency quality by combining a standardized mar
 
 ### Active
 
-- [ ] Fix v1.0 tech debt (tsx dependency, type regeneration, integration tests, dead code)
-- [ ] Production deployment (VPS setup, PM2, environment variables, SSL, domain)
-- [ ] Cost tracking per client per process (token usage, monthly breakdown, budget alerts)
-- [ ] Email notifications (completed squad runs, gate failures, daily digest)
-- [ ] Analytics dashboard (time per phase, gate pass rates, client lifecycle metrics)
-- [ ] Templates (save successful outputs, clone client configurations)
+- [ ] Traducao completa para PT-BR (~45 componentes)
+- [ ] Sidebar com navegacao completa substituindo header fino
+- [ ] Cores por fase no Kanban e pipeline (5 fases distintas)
+- [ ] Breadcrumbs em paginas internas
+- [ ] Loading states (skeleton screens) em todas as rotas
+- [ ] Empty states com ilustracoes e CTAs claros
+- [ ] Tabs no client profile (Pipeline / Outputs / Briefing)
+- [ ] Busca global de clientes
+- [ ] Toast feedback apos acoes (criar/editar/deletar/arquivar)
+- [ ] Identidade visual (logo, cor de marca, hierarquia tipografica)
 
-## Current Milestone: v1.1 Production Hardening & Feature Expansion
+## Current Milestone: v1.2 UI/UX Overhaul
 
-**Goal:** Fix v1.0 tech debt, deploy to production, and add cost tracking, notifications, analytics, and templates to make Agency OS operationally complete.
+**Goal:** Transformar o frontend de wireframe funcional em interface operacional profissional — traduzida para PT-BR, com navegacao completa, identidade visual, e UX otimizada para operador solo gerenciando 15+ clientes.
 
 **Target features:**
-- Tech debt cleanup (tsx dependency, type regeneration, integration tests, type casts)
-- Production deployment (VPS setup, PM2 config, environment variables, SSL)
-- Cost tracking per client/process (token usage, monthly breakdown, budget alerts)
-- Email notifications (completed runs, gate failures, daily digest)
-- Analytics dashboard (time per phase, gate pass rates, client lifecycle metrics)
-- Templates (save successful outputs as templates, clone client configs)
+- Traducao completa para PT-BR (todos os ~45 componentes de UI)
+- Sidebar com navegacao completa (Dashboard, Clientes, Custos, Analytics, Templates)
+- Cores por fase no Kanban e pipeline (5 fases = 5 cores distintas)
+- Breadcrumbs em todas as paginas internas
+- Loading states (skeleton screens) em todas as rotas
+- Empty states com ilustracoes e CTAs claros
+- Tabs no client profile (Pipeline / Outputs / Briefing)
+- Busca global de clientes
+- Toast feedback apos todas as acoes (criar/editar/deletar/arquivar)
+- Identidade visual (logo, cor de marca, hierarquia tipografica)
 
 ### Out of Scope
 
@@ -172,4 +180,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after v1.1 milestone*
+*Last updated: 2026-04-09 after v1.2 milestone start*
