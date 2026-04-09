@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Accordion } from '@/components/ui/accordion'
 import { PipelinePhase } from './pipeline-phase'
 import { PromptPreviewModal, type PreviewData } from '@/components/squad/PromptPreviewModal'
-import type { PhaseRow, ProcessRow, GateRow, LatestJobData } from '@/lib/types/pipeline'
+import type { PhaseRow, ProcessRow, GateRow, LatestJobData, GateReviewRow } from '@/lib/types/pipeline'
 
 interface PipelineAccordionProps {
   phases: PhaseRow[]
@@ -14,9 +14,11 @@ interface PipelineAccordionProps {
   clientName: string
   /** Map of process_id -> latest job data (Phase 5) */
   latestJobs: Record<string, LatestJobData>
+  /** Map of gate_id -> latest gate review data (Phase 6) */
+  latestReviews: Record<string, GateReviewRow>
 }
 
-export function PipelineAccordion({ phases, processes, gates, clientId, clientName, latestJobs }: PipelineAccordionProps) {
+export function PipelineAccordion({ phases, processes, gates, clientId, clientName, latestJobs, latestReviews }: PipelineAccordionProps) {
   const [previewData, setPreviewData] = useState<PreviewData | null>(null)
 
   const activePhase = phases.find(p => p.status === 'active')
@@ -50,6 +52,7 @@ export function PipelineAccordion({ phases, processes, gates, clientId, clientNa
             clientId={clientId}
             clientName={clientName}
             latestJobs={latestJobs}
+            latestReviews={latestReviews}
             onAssembled={setPreviewData}
           />
         ))}

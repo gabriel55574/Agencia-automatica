@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { PipelineAccordion } from '@/components/clients/pipeline-accordion'
 import { ArchiveDialog } from '@/components/clients/archive-dialog'
 import type { Json } from '@/lib/database/types'
-import type { PhaseRow, ProcessRow, GateRow } from '@/lib/types/pipeline'
+import type { PhaseRow, ProcessRow, GateRow, GateReviewRow } from '@/lib/types/pipeline'
 
 interface ClientProfilePageProps {
   params: Promise<{ id: string }>
@@ -92,6 +92,34 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
     jobsByProcessIdObj[key] = value
   }
 
+  // Fetch most recent gate review per gate for AI verdict display (Phase 6)
+  const gateIds = (gates ?? []).map((g) => g.id)
+  const { data: gateReviewsRaw } = gateIds.length > 0
+    ? await supabase
+        .from('gate_reviews')
+        .select('id, gate_id, client_id, squad_job_id, verdict, raw_output, status, created_at')
+        .eq('client_id', id)
+        .order('created_at', { ascending: false })
+    : { data: [] }
+
+  // Build a Map<gate_id, GateReviewRow> of the most recent review per gate
+  const latestReviewsByGateId: Record<string, GateReviewRow> = {}
+  for (const review of gateReviewsRaw ?? []) {
+    const gateId = review.gate_id as string
+    if (!latestReviewsByGateId[gateId]) {
+      latestReviewsByGateId[gateId] = {
+        id: review.id as string,
+        gate_id: gateId,
+        client_id: review.client_id as string,
+        squad_job_id: (review.squad_job_id as string) ?? null,
+        verdict: (review.verdict as Record<string, unknown>) ?? {},
+        raw_output: (review.raw_output as string) ?? '',
+        status: review.status as 'running' | 'completed' | 'failed',
+        created_at: review.created_at as string,
+      }
+    }
+  }
+
   const briefing = parseBriefing(client.briefing)
   const isArchived = client.status === 'archived'
 
@@ -163,6 +191,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
             clientId={client.id}
             clientName={client.name}
             latestJobs={jobsByProcessIdObj}
+            latestReviews={latestReviewsByGateId}
           />
         ) : (
           <p className="text-sm text-zinc-400">Pipeline phases not initialized.</p>

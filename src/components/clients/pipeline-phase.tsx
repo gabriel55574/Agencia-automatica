@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { ProcessAccordionRow as ProcessRowComponent } from './process-row'
 import { GateSection } from './gate-section'
 import { PROCESS_DEFINITIONS } from '@/lib/pipeline/processes'
-import type { PhaseRow, ProcessRow, GateRow, LatestJobData } from '@/lib/types/pipeline'
+import type { PhaseRow, ProcessRow, GateRow, LatestJobData, GateReviewRow } from '@/lib/types/pipeline'
 import type { AssembledContext } from '@/lib/squads/assembler'
 
 interface PipelinePhaseProps {
@@ -18,6 +18,8 @@ interface PipelinePhaseProps {
   clientName: string
   /** Map of process_id -> latest job data (Phase 5) */
   latestJobs: Record<string, LatestJobData>
+  /** Map of gate_id -> latest gate review data (Phase 6) */
+  latestReviews: Record<string, GateReviewRow>
   /** Callback for when squad context is assembled (Phase 5) */
   onAssembled: (data: {
     context: AssembledContext
@@ -35,7 +37,7 @@ function PhaseStatusBadge({ status }: { status: PhaseRow['status'] }) {
   return <Badge variant="secondary">Pending</Badge>
 }
 
-export function PipelinePhase({ phase, processes, gate, clientId, clientName, latestJobs, onAssembled }: PipelinePhaseProps) {
+export function PipelinePhase({ phase, processes, gate, clientId, clientName, latestJobs, latestReviews, onAssembled }: PipelinePhaseProps) {
   const isActivePhase = phase.status === 'active'
 
   return (
@@ -73,6 +75,8 @@ export function PipelinePhase({ phase, processes, gate, clientId, clientName, la
               phaseProcesses={processes}
               clientId={clientId}
               clientName={clientName}
+              phaseId={phase.id}
+              latestReview={gate ? (latestReviews[gate.id] ?? null) : null}
             />
           </>
         )}

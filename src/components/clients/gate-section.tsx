@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
+import { Circle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,13 +26,18 @@ import {
 } from '@/components/ui/dialog'
 import { Checkbox } from '@/components/ui/checkbox'
 import { approveGateAction, rejectGateAction } from '@/lib/actions/gates'
-import type { GateRow, ProcessRow } from '@/lib/types/pipeline'
+import { runGateReview } from '@/lib/actions/gate-review'
+import { getGateChecklist } from '@/lib/gates/index'
+import { GateReviewDisplay } from './gate-review-display'
+import type { GateRow, ProcessRow, GateReviewRow } from '@/lib/types/pipeline'
 
 interface GateSectionProps {
   gate: GateRow
   phaseProcesses: ProcessRow[]
   clientId: string
   clientName: string
+  phaseId: string
+  latestReview: GateReviewRow | null
 }
 
 function GateStatusBadge({ gate }: { gate: GateRow }) {
@@ -44,12 +50,26 @@ function GateStatusBadge({ gate }: { gate: GateRow }) {
   return <Badge variant="secondary">Gate {gate.gate_number} — Pending</Badge>
 }
 
-export function GateSection({ gate, phaseProcesses, clientId, clientName }: GateSectionProps) {
+/** Check whether the verdict has any failed items (for reject dialog pre-selection per D-13) */
+function hasFailedVerdictItems(review: GateReviewRow | null): boolean {
+  if (!review || review.status !== 'completed') return false
+  const verdict = review.verdict
+  if (!verdict || !Array.isArray(verdict.items)) return false
+  return (verdict.items as Array<Record<string, unknown>>).some(
+    (item) => item?.verdict === 'fail'
+  )
+}
+
+export function GateSection({ gate, phaseProcesses, clientId, clientName, phaseId, latestReview }: GateSectionProps) {
   const [isPendingApprove, startApprove] = useTransition()
   const [isPendingReject, startReject] = useTransition()
+  const [isPendingReview, startReview] = useTransition()
   const [rejectOpen, setRejectOpen] = useState(false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [notes, setNotes] = useState('')
+
+  const checklist = getGateChecklist(gate.gate_number)
+  const allProcessesCompleted = phaseProcesses.every(p => p.status === 'completed')
 
   function toggleProcess(id: string) {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
@@ -75,8 +95,29 @@ export function GateSection({ gate, phaseProcesses, clientId, clientName }: Gate
     })
   }
 
+  /** Trigger AI gate review (T-06-12: disabled during pending transition prevents double-click) */
+  function handleRunReview() {
+    startReview(async () => {
+      const result = await runGateReview(gate.id, clientId, gate.gate_number, phaseId)
+      if ('error' in result) {
+        toast.error(result.error)
+      } else {
+        toast.success('Gate review started')
+      }
+    })
+  }
+
+  /** Open reject dialog, pre-selecting all processes when AI verdict has failures (D-13) */
+  function handleOpenReject() {
+    if (hasFailedVerdictItems(latestReview)) {
+      setSelectedIds(phaseProcesses.map(p => p.id))
+    }
+    setRejectOpen(true)
+  }
+
   const canApprove = gate.status === 'pending' || gate.status === 'rejected'
   const canReject = gate.status !== 'approved'
+  const showRunReviewButton = gate.status === 'pending' && !latestReview
 
   return (
     <div className="mt-4 p-4 rounded-lg border border-zinc-200 bg-zinc-50 space-y-3">
@@ -87,6 +128,42 @@ export function GateSection({ gate, phaseProcesses, clientId, clientName }: Gate
         )}
       </div>
 
+      {/* 1. Checklist Display (D-02): visible when no review exists yet */}
+      {checklist && !latestReview?.status?.startsWith('completed') && (
+        <div className="space-y-2">
+          <h4 className="text-sm font-semibold text-zinc-800">{checklist.gateName}</h4>
+          <ul className="space-y-1">
+            {checklist.items.map(item => (
+              <li key={item.id} className="flex items-center gap-2">
+                <Circle className="size-3.5 text-zinc-400 shrink-0" />
+                <span className="text-sm text-zinc-500">{item.label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 2. Run Gate Review Button (D-03, D-04, T-06-12) */}
+      {showRunReviewButton && (
+        <div>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={!allProcessesCompleted || isPendingReview}
+            title={!allProcessesCompleted ? 'Complete all processes before running gate review' : undefined}
+            onClick={handleRunReview}
+          >
+            {isPendingReview ? 'Running Review...' : 'Run Gate Review'}
+          </Button>
+        </div>
+      )}
+
+      {/* 3. Gate Review Display (D-11): shown when review data exists */}
+      {latestReview && (
+        <GateReviewDisplay review={latestReview} gateNumber={gate.gate_number} />
+      )}
+
+      {/* 4. Approve / Reject buttons (D-12: approve always available regardless of AI review) */}
       {(canApprove || canReject) && (
         <div className="flex items-center gap-2">
           {canApprove && (
@@ -118,7 +195,7 @@ export function GateSection({ gate, phaseProcesses, clientId, clientName }: Gate
                 variant="outline"
                 className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                 disabled={isPendingReject}
-                onClick={() => setRejectOpen(true)}
+                onClick={handleOpenReject}
               >
                 Reject Gate
               </Button>
