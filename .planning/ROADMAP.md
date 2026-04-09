@@ -13,7 +13,7 @@ Agency OS transforms a solo operator into a 15+ client marketing agency by build
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Foundation & Data Model** - App scaffold, auth, complete DB schema with pipeline state machine enforced at database level
-- [ ] **Phase 2: Client Management** - Full client CRUD with profile pages, intake onboarding, and archive capability
+- [x] **Phase 2: Client Management** - Full client CRUD with profile pages, intake onboarding, and archive capability
 - [ ] **Phase 3: Pipeline Engine** - Independent client pipeline states with gate-controlled transitions, race condition protection, and process definitions
 - [ ] **Phase 4: CLI Orchestrator & Job Queue** - PostgreSQL-backed job queue, CLI process spawning, concurrency-limited worker infrastructure
 - [ ] **Phase 5: Squad Execution & Context** - Squad trigger UI, prompt assembly with context injection, structured output parsing with Zod schemas
