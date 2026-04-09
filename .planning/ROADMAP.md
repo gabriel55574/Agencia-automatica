@@ -155,8 +155,8 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 08-01-PLAN.md — Kanban board with 5 phase columns, client cards (name, company, process badge, gate status, running indicator), bottleneck alerts for stuck clients, archived toggle
-- [ ] 08-02-PLAN.md — Action panel (pending approvals, failed gates, running jobs), summary bar with counts, Supabase Realtime hook for live dashboard updates, end-to-end verification checkpoint
+- [x] 08-01-PLAN.md — Kanban board with 5 phase columns, client cards (name, company, process badge, gate status, running indicator), bottleneck alerts for stuck clients, archived toggle
+- [x] 08-02-PLAN.md — Action panel (pending approvals, failed gates, running jobs), summary bar with counts, Supabase Realtime hook for live dashboard updates, end-to-end verification checkpoint
 
 ### Phase 9: Feedback Loop
 **Goal**: The system closes the learning loop -- Phase 5 retention insights automatically inform Phase 1 re-execution for returning clients, making each iteration smarter than the last
@@ -166,11 +166,12 @@ Plans:
   1. When re-running Phase 1 for a returning client, Phase 5 outputs (Retencao) are automatically available as context in the squad prompt
   2. Specific Phase 5 insights -- NPS data, churn patterns, and CLV metrics -- are surfaced and highlighted during Phase 1 re-execution
   3. The system tracks which feedback loop cycle a client is on (first pass vs. second, third, etc.) and this is visible on the client profile
-**Plans**: TBD
+**Plans:** 2 plans
+**UI hint**: yes
 
 Plans:
-- [ ] 09-01: TBD
-- [ ] 09-02: TBD
+- [ ] 09-01-PLAN.md — Feedback extraction engine: extractFeedbackContext function (NPS/CLV/churn from process-16 structured_output), assembler integration, reset_pipeline_cycle PostgreSQL RPC, unit tests
+- [ ] 09-02-PLAN.md — UI layer: resetPipelineAction Server Action, CycleBadge component, ResetPipelineDialog, PromptPreviewModal feedback section, client profile wiring, DB push + end-to-end verification
 
 ## Progress
 
@@ -187,4 +188,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 6. Quality Gates | 0/3 | Not started | - |
 | 7. Document Management | 0/2 | Not started | - |
 | 8. Dashboard & Operational Views | 0/2 | Not started | - |
-| 9. Feedback Loop | 0/0 | Not started | - |
+| 9. Feedback Loop | 0/2 | Not started | - |
