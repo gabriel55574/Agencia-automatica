@@ -4,9 +4,10 @@ import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { PipelineTimeline } from '@/components/clients/pipeline-timeline'
+import { PipelineAccordion } from '@/components/clients/pipeline-accordion'
 import { ArchiveDialog } from '@/components/clients/archive-dialog'
 import type { Json } from '@/lib/database/types'
+import type { PhaseRow, ProcessRow, GateRow } from '@/lib/types/pipeline'
 
 interface ClientProfilePageProps {
   params: Promise<{ id: string }>
@@ -27,7 +28,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
   const { id } = await params
   const supabase = await createClient()
 
-  const [{ data: client }, { data: phases }] = await Promise.all([
+  const [{ data: client }, { data: phases }, { data: processes }, { data: gates }] = await Promise.all([
     supabase
       .from('clients')
       .select('id, name, company, briefing, current_phase_number, status, created_at, updated_at')
@@ -38,6 +39,16 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
       .select('id, phase_number, name, status, started_at, completed_at')
       .eq('client_id', id)
       .order('phase_number', { ascending: true }),
+    supabase
+      .from('processes')
+      .select('id, phase_id, process_number, name, squad, status')
+      .eq('client_id', id)
+      .order('process_number', { ascending: true }),
+    supabase
+      .from('quality_gates')
+      .select('id, phase_id, gate_number, status, operator_decision, operator_notes')
+      .eq('client_id', id)
+      .order('gate_number', { ascending: true }),
   ])
 
   if (!client) notFound()
@@ -102,11 +113,17 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
 
       <Separator />
 
-      {/* ---- Pipeline timeline ---- */}
+      {/* ---- Pipeline accordion (replaces PipelineTimeline) ---- */}
       <div>
         <h2 className="text-lg font-semibold text-zinc-900 mb-4">Pipeline</h2>
         {phases && phases.length > 0 ? (
-          <PipelineTimeline phases={phases} />
+          <PipelineAccordion
+            phases={phases as PhaseRow[]}
+            processes={(processes ?? []) as ProcessRow[]}
+            gates={(gates ?? []) as GateRow[]}
+            clientId={client.id}
+            clientName={client.name}
+          />
         ) : (
           <p className="text-sm text-zinc-400">Pipeline phases not initialized.</p>
         )}

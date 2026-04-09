@@ -28,7 +28,8 @@ export async function approveGateAction(
   if (!input.success) return { error: 'Invalid gate or client ID' }
 
   const admin = createAdminClient()
-  const { error } = await admin.rpc('approve_gate', {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (admin.rpc as any)('approve_gate', {
     p_gate_id: input.data.gateId,
     p_client_id: input.data.clientId,
   })
@@ -56,7 +57,8 @@ export async function rejectGateAction(
   if (!input.success) return { error: input.error.issues[0]?.message ?? 'Invalid input' }
 
   const admin = createAdminClient()
-  const { error } = await admin.rpc('reject_gate', {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (admin.rpc as any)('reject_gate', {
     p_gate_id: input.data.gateId,
     p_client_id: input.data.clientId,
     p_failed_process_ids: input.data.failedProcessIds,
