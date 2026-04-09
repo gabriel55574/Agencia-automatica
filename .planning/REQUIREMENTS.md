@@ -18,7 +18,7 @@
 ### Cost Tracking
 
 - [x] **COST-01**: Operator can see estimated AI token usage and cost per squad run after it completes
-- [ ] **COST-02**: Operator can view a monthly cost breakdown by client showing total spend per client
+- [x] **COST-02**: Operator can view a monthly cost breakdown by client showing total spend per client
 - [x] **COST-03**: Operator can set per-process token budgets with visual alerts when a run approaches or exceeds the limit
 - [ ] **COST-04**: Dashboard shows a monthly cost summary widget with total spend and top-spending clients
 
@@ -71,7 +71,7 @@
 | PROD-02 | Phase 11 | Pending |
 | PROD-03 | Phase 11 | Pending |
 | COST-01 | Phase 12 | Complete |
-| COST-02 | Phase 12 | Pending |
+| COST-02 | Phase 12 | Complete |
 | COST-03 | Phase 12 | Complete |
 | COST-04 | Phase 12 | Pending |
 | NOTF-01 | Phase 13 | Pending |
