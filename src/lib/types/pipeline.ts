@@ -28,3 +28,11 @@ export type GateRow = {
   operator_decision: 'approved' | 'rejected' | null
   operator_notes: string | null
 }
+
+/** Most recent squad_job data for a process, used by pipeline accordion */
+export type LatestJobData = {
+  id: string
+  status: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled'
+  structured_output: Record<string, unknown> | null
+  output: string | null
+}

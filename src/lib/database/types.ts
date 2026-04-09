@@ -205,6 +205,7 @@ export interface Database {
           cli_command: string | null
           progress_log: string | null
           output: string | null
+          structured_output: Json | null
           error_log: string | null
           attempts: number
           max_attempts: number
@@ -223,6 +224,7 @@ export interface Database {
           cli_command?: string | null
           progress_log?: string | null
           output?: string | null
+          structured_output?: Json | null
           error_log?: string | null
           attempts?: number
           max_attempts?: number
@@ -241,6 +243,7 @@ export interface Database {
           cli_command?: string | null
           progress_log?: string | null
           output?: string | null
+          structured_output?: Json | null
           error_log?: string | null
           attempts?: number
           max_attempts?: number

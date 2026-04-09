@@ -4,17 +4,36 @@ import { AccordionItem, AccordionTrigger, AccordionContent } from '@/components/
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Square } from 'lucide-react'
-import type { ProcessRow as ProcessRowType } from '@/lib/types/pipeline'
+import { RunSquadButton } from '@/components/squad/RunSquadButton'
+import { StructuredOutputView } from '@/components/squad/StructuredOutputView'
+import type { ProcessRow as ProcessRowType, LatestJobData } from '@/lib/types/pipeline'
 import type { ProcessDefinition } from '@/lib/pipeline/processes'
+import type { AssembledContext } from '@/lib/squads/assembler'
 
 // ============================================================
 // ProcessAccordionRow — used inside PipelinePhase accordion
 // (Phase 3 component: shows process definition details)
+// (Phase 5 extension: Run Squad button + structured output display)
 // ============================================================
 
 interface ProcessAccordionRowProps {
   process: ProcessRowType
   definition: ProcessDefinition | undefined
+  /** Most recent squad_job for this process (null if none exist) */
+  latestJob: LatestJobData | null
+  /** Whether the parent phase is active */
+  isActivePhase: boolean
+  clientId: string
+  phaseId: string
+  /** Callback to open preview modal with assembled data */
+  onAssembled: (data: {
+    context: AssembledContext
+    prompt: string
+    squadType: string
+    processId: string
+    clientId: string
+    phaseId: string
+  }) => void
 }
 
 function AccordionStatusBadge({ status }: { status: ProcessRowType['status'] }) {
@@ -24,12 +43,32 @@ function AccordionStatusBadge({ status }: { status: ProcessRowType['status'] }) 
   return <Badge className="bg-red-100 text-red-700 border-red-200 font-semibold">Needs Rework</Badge>
 }
 
-export function ProcessAccordionRow({ process, definition }: ProcessAccordionRowProps) {
+export function ProcessAccordionRow({
+  process,
+  definition,
+  latestJob,
+  isActivePhase,
+  clientId,
+  phaseId,
+  onAssembled,
+}: ProcessAccordionRowProps) {
   return (
     <AccordionItem value={process.id} className="border-b border-zinc-100 last:border-0">
       <AccordionTrigger className="flex justify-between items-center py-3 px-1 hover:no-underline">
         <span className="text-sm font-medium text-zinc-800 text-left">{process.name}</span>
-        <AccordionStatusBadge status={process.status} />
+        <div className="flex items-center gap-2">
+          {/* Job status badge inline with process status */}
+          {latestJob?.status === 'running' && (
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200">running</Badge>
+          )}
+          {latestJob?.status === 'queued' && (
+            <Badge className="bg-blue-100 text-blue-700 border-blue-200">queued</Badge>
+          )}
+          {latestJob?.status === 'failed' && (
+            <Badge className="bg-red-100 text-red-700 border-red-200">failed</Badge>
+          )}
+          <AccordionStatusBadge status={process.status} />
+        </div>
       </AccordionTrigger>
       <AccordionContent className="px-1 pb-4">
         {definition ? (
@@ -70,6 +109,54 @@ export function ProcessAccordionRow({ process, definition }: ProcessAccordionRow
           </dl>
         ) : (
           <p className="text-sm text-zinc-400">No definition available for this process.</p>
+        )}
+
+        {/* Run Squad button (Phase 5) — between definition and output sections */}
+        {isActivePhase && (
+          <div className="mt-4">
+            <RunSquadButton
+              processId={process.id}
+              processNumber={process.process_number}
+              processName={process.name}
+              clientId={clientId}
+              phaseId={phaseId}
+              processStatus={process.status}
+              isActivePhase={isActivePhase}
+              latestJobStatus={latestJob?.status ?? null}
+              onAssembled={onAssembled}
+            />
+          </div>
+        )}
+
+        {/* Squad execution status messages */}
+        {latestJob?.status === 'running' && (
+          <div className="mt-4 flex items-center gap-2">
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200">running</Badge>
+            <span className="text-sm text-zinc-500">Squad is executing...</span>
+          </div>
+        )}
+
+        {/* Structured output display for completed jobs (D-15, D-16) */}
+        {latestJob?.status === 'completed' && (
+          <div className="mt-4">
+            <h4 className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-2">
+              Latest Output
+            </h4>
+            <StructuredOutputView
+              structuredOutput={latestJob.structured_output}
+              rawOutput={latestJob.output}
+            />
+          </div>
+        )}
+
+        {/* Failed job indicator */}
+        {latestJob?.status === 'failed' && (
+          <div className="mt-4 flex items-center gap-2">
+            <Badge className="bg-red-100 text-red-700 border-red-200">failed</Badge>
+            {latestJob.output && (
+              <span className="text-xs text-zinc-500 truncate max-w-xs">{latestJob.output}</span>
+            )}
+          </div>
         )}
       </AccordionContent>
     </AccordionItem>

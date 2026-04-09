@@ -7,7 +7,8 @@ import { Separator } from '@/components/ui/separator'
 import { ProcessAccordionRow as ProcessRowComponent } from './process-row'
 import { GateSection } from './gate-section'
 import { PROCESS_DEFINITIONS } from '@/lib/pipeline/processes'
-import type { PhaseRow, ProcessRow, GateRow } from '@/lib/types/pipeline'
+import type { PhaseRow, ProcessRow, GateRow, LatestJobData } from '@/lib/types/pipeline'
+import type { AssembledContext } from '@/lib/squads/assembler'
 
 interface PipelinePhaseProps {
   phase: PhaseRow
@@ -15,6 +16,17 @@ interface PipelinePhaseProps {
   gate: GateRow | null
   clientId: string
   clientName: string
+  /** Map of process_id -> latest job data (Phase 5) */
+  latestJobs: Record<string, LatestJobData>
+  /** Callback for when squad context is assembled (Phase 5) */
+  onAssembled: (data: {
+    context: AssembledContext
+    prompt: string
+    squadType: string
+    processId: string
+    clientId: string
+    phaseId: string
+  }) => void
 }
 
 function PhaseStatusBadge({ status }: { status: PhaseRow['status'] }) {
@@ -23,7 +35,9 @@ function PhaseStatusBadge({ status }: { status: PhaseRow['status'] }) {
   return <Badge variant="secondary">Pending</Badge>
 }
 
-export function PipelinePhase({ phase, processes, gate, clientId, clientName }: PipelinePhaseProps) {
+export function PipelinePhase({ phase, processes, gate, clientId, clientName, latestJobs, onAssembled }: PipelinePhaseProps) {
+  const isActivePhase = phase.status === 'active'
+
   return (
     <AccordionItem value={phase.id} className="border border-zinc-200 rounded-lg mb-2 px-4 overflow-hidden">
       <AccordionTrigger className="hover:no-underline py-4">
@@ -42,6 +56,11 @@ export function PipelinePhase({ phase, processes, gate, clientId, clientName }: 
               key={proc.id}
               process={proc}
               definition={PROCESS_DEFINITIONS[proc.process_number]}
+              latestJob={latestJobs[proc.id] ?? null}
+              isActivePhase={isActivePhase}
+              clientId={clientId}
+              phaseId={phase.id}
+              onAssembled={onAssembled}
             />
           ))}
         </Accordion>
