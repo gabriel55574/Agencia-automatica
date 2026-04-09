@@ -117,8 +117,7 @@ export async function runGateReview(
   const reviewPrompt = buildReviewPrompt(input.data.gateNumber, phaseOutputs)
 
   // Step 7: Insert squad_jobs row with squad_type='gate_review'
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: jobRow, error: insertJobError } = await (admin as any)
+  const { data: jobRow, error: insertJobError } = await admin
     .from('squad_jobs')
     .insert({
       client_id: input.data.clientId,
@@ -137,8 +136,7 @@ export async function runGateReview(
   }
 
   // Step 8: Insert gate_reviews row with status='running' linked to the job
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error: insertReviewError } = await (admin as any)
+  const { error: insertReviewError } = await admin
     .from('gate_reviews')
     .insert({
       gate_id: input.data.gateId,

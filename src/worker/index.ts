@@ -16,6 +16,7 @@
 import { ChildProcess } from 'child_process'
 import { createAdminClient } from '../lib/supabase/admin'
 import { runJob, handleFailure } from './job-runner'
+import type { SquadJob } from './job-runner'
 import { recoverStuckJobs } from './heartbeat'
 
 // ============================================================
@@ -57,8 +58,7 @@ export async function tryClaimAndRun(): Promise<void> {
   if ((count ?? 0) >= MAX_CONCURRENT) return
 
   // Atomically claim the next queued job via FOR UPDATE SKIP LOCKED (T-04-01)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: jobs, error } = await (supabase as any).rpc('claim_next_job')
+  const { data: jobs, error } = await supabase.rpc('claim_next_job')
   if (error) {
     process.stdout.write(`[worker] claim_next_job error: ${error.message}\n`)
     return
@@ -70,7 +70,8 @@ export async function tryClaimAndRun(): Promise<void> {
 
   // Fire-and-forget: runJob manages its own lifecycle via activeJobs Map
   // Pass tryClaimAndRun as retryCallback to avoid circular import in handleFailure
-  runJob(job, supabase, activeJobs, tryClaimAndRun).catch((err) => {
+  // Cast to SquadJob: RPC returns string-typed fields; runJob validates via Zod internally
+  runJob(job as SquadJob, supabase, activeJobs, tryClaimAndRun).catch((err) => {
     process.stdout.write(`[worker] runJob unhandled error for ${job.id}: ${String(err)}\n`)
   })
 }

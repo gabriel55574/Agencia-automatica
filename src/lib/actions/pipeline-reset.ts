@@ -33,8 +33,7 @@ export async function resetPipelineAction(clientId: string): Promise<ActionResul
   if (!input.success) return { error: 'Invalid client ID' }
 
   const admin = createAdminClient()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (admin.rpc as any)('reset_pipeline_cycle', {
+  const { error } = await admin.rpc('reset_pipeline_cycle', {
     p_client_id: input.data.clientId,
   })
 
