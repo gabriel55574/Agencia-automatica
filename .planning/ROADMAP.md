@@ -28,7 +28,7 @@
 - [ ] **Phase 11: Production Deployment** - Deploy Next.js + worker to VPS with PM2, SSL, and health monitoring
 - [x] **Phase 12: Cost Tracking** - Token usage per run, monthly client breakdown, budget alerts, dashboard widget (completed 2026-04-09)
 - [x] **Phase 13: Notifications** - Email alerts on squad completion, gate failures, and daily digest (completed 2026-04-09)
-- [ ] **Phase 14: Analytics** - Time per phase, gate pass rates, lifecycle metrics, trend charts
+- [x] **Phase 14: Analytics** - Time per phase, gate pass rates, lifecycle metrics, trend charts (completed 2026-04-09)
 - [ ] **Phase 15: Templates** - Save outputs as templates, clone client configs, use templates as prompt context
 
 ## Phase Details
@@ -92,10 +92,10 @@ Plans:
   2. Operator can view the first-pass gate approval rate per phase to identify which phases cause the most rework
   3. Operator can view client lifecycle metrics showing average time from intake to Phase 5 completion
   4. Analytics page renders trend charts (line or bar) for key metrics with configurable time period filters
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 14-01-PLAN.md — Analytics data layer: types, Supabase queries, aggregation utilities, unit tests, Recharts dependency
-- [ ] 14-02-PLAN.md — Analytics UI: /analytics page with chart components, date range filter, header navigation
+- [x] 14-02-PLAN.md — Analytics UI: /analytics page with chart components, date range filter, header navigation
 **UI hint**: yes
 
 ### Phase 15: Templates
@@ -133,5 +133,5 @@ Phases 12, 13, 14 all depend on 11 but are sequenced for data accumulation benef
 | 11. Production Deployment | v1.1 | 0/0 | Not started | - |
 | 12. Cost Tracking | v1.1 | 4/4 | Complete   | 2026-04-09 |
 | 13. Notifications | v1.1 | 2/2 | Complete   | 2026-04-09 |
-| 14. Analytics | v1.1 | 1/2 | In Progress|  |
+| 14. Analytics | v1.1 | 2/2 | Complete   | 2026-04-09 |
 | 15. Templates | v1.1 | 1/2 | In Progress|  |
