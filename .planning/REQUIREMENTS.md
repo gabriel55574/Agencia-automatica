@@ -21,13 +21,13 @@ Requirements for UI/UX Overhaul milestone. Each maps to roadmap phases.
 
 - [x] **VIS-01**: Cada fase do pipeline tem cor distinta aplicada no Kanban, accordion de pipeline, e badges de status — Validated in Phase 17
 - [x] **VIS-02**: App tem identidade visual definida (cor primaria, accent, area de logo no sidebar/header) — Validated in Phase 16
-- [ ] **VIS-03**: Empty states exibem ilustracao/icone relevante e CTA claro orientando o operador
+- [x] **VIS-03**: Empty states exibem ilustracao/icone relevante e CTA claro orientando o operador — Validated in Phase 19
 
 ### UX/Feedback
 
-- [ ] **UX-01**: Operador ve skeleton screens enquanto dados carregam em todas as rotas do dashboard
-- [ ] **UX-02**: Operador recebe toast de confirmacao apos acoes (criar cliente, editar, deletar, arquivar, salvar template)
-- [ ] **UX-03**: Client profile organizado em tabs (Pipeline / Outputs / Briefing) em vez de scroll longo
+- [x] **UX-01**: Operador ve skeleton screens enquanto dados carregam em todas as rotas do dashboard — Validated in Phase 19
+- [x] **UX-02**: Operador recebe toast de confirmacao apos acoes (criar cliente, editar, deletar, arquivar, salvar template) — Validated in Phase 19
+- [x] **UX-03**: Client profile organizado em tabs (Pipeline / Outputs / Briefing) em vez de scroll longo — Validated in Phase 19
 
 ## Future Requirements
 
@@ -69,10 +69,10 @@ Deferred to v1.3+. Tracked but not in current roadmap.
 | NAV-02 | Phase 17 | Pending |
 | VIS-01 | Phase 17 | Pending |
 | VIS-02 | Phase 16 | Complete |
-| VIS-03 | Phase 19 | Pending |
-| UX-01 | Phase 19 | Pending |
-| UX-02 | Phase 19 | Pending |
-| UX-03 | Phase 19 | Pending |
+| VIS-03 | Phase 19 | Complete |
+| UX-01 | Phase 19 | Complete |
+| UX-02 | Phase 19 | Complete |
+| UX-03 | Phase 19 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 10 total
@@ -81,4 +81,4 @@ Deferred to v1.3+. Tracked but not in current roadmap.
 
 ---
 *Requirements defined: 2026-04-09*
-*Last updated: 2026-04-09 after Phase 16 completion*
+*Last updated: 2026-04-10 after Phase 19 completion*

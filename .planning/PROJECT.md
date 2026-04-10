@@ -10,8 +10,8 @@ One person manages 15+ clients at agency quality by combining a standardized mar
 
 ## Current State
 
-**Shipped:** v1.1 Production Hardening & Feature Expansion (2026-04-09)
-**In progress:** v1.2 UI/UX Overhaul — Phase 19 complete (UX Polish: skeleton screens, empty states, profile tabs, toast feedback)
+**Shipped:** v1.2 UI/UX Overhaul (2026-04-10)
+**Previously shipped:** v1.1 Production Hardening & Feature Expansion (2026-04-09)
 **Codebase:** ~14,200 lines TypeScript across 187 commits
 **Tech stack:** Next.js 16.2, Supabase (Postgres, Auth, Realtime, Storage), Claude Code CLI, Vitest, Recharts, Resend, @react-pdf/renderer
 
@@ -97,11 +97,11 @@ One person manages 15+ clients at agency quality by combining a standardized mar
 - [x] Sidebar com navegacao completa substituindo header fino — Validated in Phase 16: Brand Identity & Sidebar Layout
 - [ ] Cores por fase no Kanban e pipeline (5 fases distintas)
 - [ ] Breadcrumbs em paginas internas
-- [ ] Loading states (skeleton screens) em todas as rotas
-- [ ] Empty states com ilustracoes e CTAs claros
-- [ ] Tabs no client profile (Pipeline / Outputs / Briefing)
+- [x] Loading states (skeleton screens) em todas as rotas — Validated in Phase 19: UX Polish
+- [x] Empty states com ilustracoes e CTAs claros — Validated in Phase 19: UX Polish
+- [x] Tabs no client profile (Pipeline / Outputs / Briefing) — Validated in Phase 19: UX Polish
 - [ ] Busca global de clientes
-- [ ] Toast feedback apos acoes (criar/editar/deletar/arquivar)
+- [x] Toast feedback apos acoes (criar/editar/deletar/arquivar) — Validated in Phase 19: UX Polish
 - [x] Identidade visual (logo, cor de marca, hierarquia tipografica) — Validated in Phase 16: Brand Identity & Sidebar Layout
 
 ## Current Milestone: v1.2 UI/UX Overhaul
@@ -181,4 +181,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after v1.2 milestone start*
+*Last updated: 2026-04-10 after Phase 19 completion*
