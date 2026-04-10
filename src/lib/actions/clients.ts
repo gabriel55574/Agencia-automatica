@@ -1,13 +1,12 @@
 'use server'
 
-import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { briefingSchema, clientInsertSchema } from '@/lib/database/schema'
 import { createClient } from '@/lib/supabase/server'
 
-export type ActionResult = { error: string } | { success: true }
+export type ActionResult = { error: string } | { success: true; redirectTo?: string; clientId?: string }
 
 export async function createClientAction(formData: FormData): Promise<ActionResult> {
   // Security (T-2-01-03): verify authenticated session before admin write
@@ -48,7 +47,7 @@ export async function createClientAction(formData: FormData): Promise<ActionResu
   }
 
   revalidatePath('/clients')
-  redirect(`/clients/${clientId}`)
+  return { success: true as const, redirectTo: `/clients/${clientId}`, clientId: clientId as string }
 }
 
 export async function updateClientAction(
@@ -93,7 +92,7 @@ export async function updateClientAction(
 
   revalidatePath('/clients')
   revalidatePath(`/clients/${clientId}`)
-  redirect(`/clients/${clientId}`)
+  return { success: true as const, redirectTo: `/clients/${clientId}` }
 }
 
 export async function archiveClientAction(clientId: string): Promise<ActionResult> {
@@ -114,7 +113,7 @@ export async function archiveClientAction(clientId: string): Promise<ActionResul
 
   revalidatePath('/clients')
   revalidatePath(`/clients/${clientId}`)
-  redirect('/clients')
+  return { success: true as const, redirectTo: '/clients' }
 }
 
 export async function restoreClientAction(clientId: string): Promise<ActionResult> {
@@ -135,7 +134,7 @@ export async function restoreClientAction(clientId: string): Promise<ActionResul
 
   revalidatePath('/clients')
   revalidatePath(`/clients/${clientId}`)
-  redirect(`/clients/${clientId}`)
+  return { success: true as const, redirectTo: `/clients/${clientId}` }
 }
 
 /**
@@ -189,5 +188,5 @@ export async function cloneClientAction(
   }
 
   revalidatePath('/clients')
-  redirect(`/clients/${clientId}`)
+  return { success: true as const, redirectTo: `/clients/${clientId}`, clientId: clientId as string }
 }
