@@ -66,10 +66,10 @@ export async function assembleSquadContext(
   // Auth check (always first -- matches gates.ts pattern)
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const input = assembleInputSchema.safeParse({ clientId, processId, processNumber })
-  if (!input.success) return { error: 'Invalid input: ' + input.error.issues[0]?.message }
+  if (!input.success) return { error: 'Entrada invalida: ' + input.error.issues[0]?.message }
 
   const squadType = PROCESS_TO_SQUAD[processNumber]
   if (!squadType) return { error: `No squad mapped for process ${processNumber}` }
@@ -78,7 +78,7 @@ export async function assembleSquadContext(
   let templateContent: string | undefined
   if (templateId) {
     const tidResult = z.string().uuid().safeParse(templateId)
-    if (!tidResult.success) return { error: 'Invalid template ID' }
+    if (!tidResult.success) return { error: 'ID de template invalido' }
 
     const admin = createAdminClient()
     const { data: template, error: tplError } = await admin
@@ -87,7 +87,7 @@ export async function assembleSquadContext(
       .eq('id', tidResult.data)
       .single()
 
-    if (tplError || !template) return { error: 'Template not found' }
+    if (tplError || !template) return { error: 'Template nao encontrado' }
     templateContent = JSON.stringify(template.content)
   }
 
@@ -113,12 +113,12 @@ export async function confirmSquadRun(
 ): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const input = confirmInputSchema.safeParse({
     processId, clientId, phaseId, squadType, cliCommand,
   })
-  if (!input.success) return { error: input.error.issues[0]?.message ?? 'Invalid input' }
+  if (!input.success) return { error: input.error.issues[0]?.message ?? 'Entrada invalida' }
 
   const admin = createAdminClient()
   const { error } = await admin.from('squad_jobs').insert({

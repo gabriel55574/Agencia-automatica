@@ -42,7 +42,7 @@ function wrapHtml(title: string, body: string): string {
 <body style="margin: 0; padding: 20px; background: #f9fafb;">
 <div style="${STYLES.container}">
 ${body}
-<div style="${STYLES.footer}">Agency OS — Automated notification</div>
+<div style="${STYLES.footer}">Agency OS — Notificacao automatica</div>
 </div>
 </body>
 </html>`
@@ -53,21 +53,21 @@ ${body}
  */
 export function squadCompletionTemplate(data: SquadCompletionData): string {
   const statusBadge = data.status === 'completed'
-    ? `<span style="${STYLES.badge_success}">COMPLETED</span>`
-    : `<span style="${STYLES.badge_failure}">FAILED</span>`
+    ? `<span style="${STYLES.badge_success}">CONCLUIDO</span>`
+    : `<span style="${STYLES.badge_failure}">FALHOU</span>`
 
   const errorSection = data.status === 'failed' && data.error_excerpt
     ? `<div style="${STYLES.error_box}">${escapeHtml(data.error_excerpt)}</div>`
     : ''
 
   const body = `
-<div style="${STYLES.header}">Squad Run ${data.status === 'completed' ? 'Completed' : 'Failed'}</div>
+<div style="${STYLES.header}">Execucao do Squad ${data.status === 'completed' ? 'Concluida' : 'Falhou'}</div>
 <div style="${STYLES.row}">
-  <span style="${STYLES.label}">Client</span>
+  <span style="${STYLES.label}">Cliente</span>
   <span style="${STYLES.value}">${escapeHtml(data.client_name)} (${escapeHtml(data.client_company)})</span>
 </div>
 <div style="${STYLES.row}">
-  <span style="${STYLES.label}">Process</span>
+  <span style="${STYLES.label}">Processo</span>
   <span style="${STYLES.value}">${escapeHtml(data.process_name)}</span>
 </div>
 <div style="${STYLES.row}">
@@ -79,14 +79,14 @@ export function squadCompletionTemplate(data: SquadCompletionData): string {
   ${statusBadge}
 </div>
 <div style="${STYLES.row}">
-  <span style="${STYLES.label}">Completed</span>
+  <span style="${STYLES.label}">Concluido em</span>
   <span style="${STYLES.value}">${escapeHtml(data.completed_at)}</span>
 </div>
 ${errorSection}`
 
   const subject = data.status === 'completed'
-    ? `[Agency OS] Squad run completed — ${data.client_name}`
-    : `[Agency OS] Squad run FAILED — ${data.client_name}`
+    ? `[Agency OS] Execucao do squad concluida — ${data.client_name}`
+    : `[Agency OS] Execucao do squad FALHOU — ${data.client_name}`
 
   return wrapHtml(subject, body)
 }
@@ -96,17 +96,17 @@ ${errorSection}`
  */
 export function gateFailureTemplate(data: GateFailureData): string {
   const verdictBadge = data.overall_verdict === 'fail'
-    ? `<span style="${STYLES.badge_failure}">FAIL</span>`
-    : `<span style="${STYLES.badge_partial}">PARTIAL</span>`
+    ? `<span style="${STYLES.badge_failure}">REPROVADO</span>`
+    : `<span style="${STYLES.badge_partial}">PARCIAL</span>`
 
   const body = `
-<div style="${STYLES.header}">Quality Gate ${data.overall_verdict === 'fail' ? 'Failed' : 'Partial Pass'}</div>
+<div style="${STYLES.header}">Gate de Qualidade ${data.overall_verdict === 'fail' ? 'Reprovado' : 'Aprovacao Parcial'}</div>
 <div style="${STYLES.row}">
-  <span style="${STYLES.label}">Client</span>
+  <span style="${STYLES.label}">Cliente</span>
   <span style="${STYLES.value}">${escapeHtml(data.client_name)} (${escapeHtml(data.client_company)})</span>
 </div>
 <div style="${STYLES.row}">
-  <span style="${STYLES.label}">Phase</span>
+  <span style="${STYLES.label}">Fase</span>
   <span style="${STYLES.value}">${escapeHtml(data.phase_name)}</span>
 </div>
 <div style="${STYLES.row}">
@@ -114,15 +114,15 @@ export function gateFailureTemplate(data: GateFailureData): string {
   <span style="${STYLES.value}">Gate ${data.gate_number}</span>
 </div>
 <div style="${STYLES.row}">
-  <span style="${STYLES.label}">Verdict</span>
+  <span style="${STYLES.label}">Resultado</span>
   ${verdictBadge}
 </div>
 <div style="${STYLES.row}">
-  <span style="${STYLES.label}">Failed Items</span>
+  <span style="${STYLES.label}">Itens Reprovados</span>
   <span style="${STYLES.value}">${data.failed_items_count} of ${data.total_items_count}</span>
 </div>
 <div style="margin-top: 16px; padding: 12px; background: #f9fafb; border-radius: 4px;">
-  <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">Summary</div>
+  <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">Resumo</div>
   <div style="font-size: 14px;">${escapeHtml(data.summary)}</div>
 </div>`
 
@@ -144,47 +144,47 @@ export function dailyDigestTemplate(data: DigestData): string {
     ? data.stuck_clients
         .map(c => `<tr><td style="${STYLES.td}">${escapeHtml(c.name)}</td><td style="${STYLES.td}">${escapeHtml(c.phase)}</td><td style="${STYLES.td}">${c.days_stuck}d</td></tr>`)
         .join('')
-    : `<tr><td style="${STYLES.td}" colspan="3">No stuck clients</td></tr>`
+    : `<tr><td style="${STYLES.td}" colspan="3">Nenhum cliente parado</td></tr>`
 
   const body = `
-<div style="${STYLES.header}">Daily Digest — ${escapeHtml(data.date)}</div>
+<div style="${STYLES.header}">Resumo Diario — ${escapeHtml(data.date)}</div>
 
 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
   <tr>
     <td style="padding: 12px; background: #f0fdf4; border-radius: 6px; text-align: center; width: 25%;">
       <div style="font-size: 24px; font-weight: 700; color: #166534;">${data.total_active_clients}</div>
-      <div style="font-size: 12px; color: #6b7280;">Active Clients</div>
+      <div style="font-size: 12px; color: #6b7280;">Clientes Ativos</div>
     </td>
     <td style="padding: 12px; background: #eff6ff; border-radius: 6px; text-align: center; width: 25%;">
       <div style="font-size: 24px; font-weight: 700; color: #1e40af;">${data.yesterday_completed_runs}</div>
-      <div style="font-size: 12px; color: #6b7280;">Runs Yesterday</div>
+      <div style="font-size: 12px; color: #6b7280;">Execucoes Ontem</div>
     </td>
     <td style="padding: 12px; background: ${data.pending_approvals > 0 ? '#fefce8' : '#f9fafb'}; border-radius: 6px; text-align: center; width: 25%;">
       <div style="font-size: 24px; font-weight: 700; color: ${data.pending_approvals > 0 ? '#854d0e' : '#6b7280'};">${data.pending_approvals}</div>
-      <div style="font-size: 12px; color: #6b7280;">Pending Approvals</div>
+      <div style="font-size: 12px; color: #6b7280;">Aprovacoes Pendentes</div>
     </td>
     <td style="padding: 12px; background: ${data.failed_gates > 0 ? '#fef2f2' : '#f9fafb'}; border-radius: 6px; text-align: center; width: 25%;">
       <div style="font-size: 24px; font-weight: 700; color: ${data.failed_gates > 0 ? '#991b1b' : '#6b7280'};">${data.failed_gates}</div>
-      <div style="font-size: 12px; color: #6b7280;">Failed Gates</div>
+      <div style="font-size: 12px; color: #6b7280;">Gates Reprovados</div>
     </td>
   </tr>
 </table>
 
 <div style="margin-bottom: 20px;">
-  <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px;">Clients by Phase</div>
+  <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px;">Clientes por Fase</div>
   <table style="${STYLES.table}">
-    <thead><tr><th style="${STYLES.th}">Phase</th><th style="${STYLES.th}">Clients</th></tr></thead>
+    <thead><tr><th style="${STYLES.th}">Fase</th><th style="${STYLES.th}">Clientes</th></tr></thead>
     <tbody>${phaseRows}</tbody>
   </table>
 </div>
 
 <div style="margin-bottom: 20px;">
-  <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px;">Stuck Clients</div>
+  <div style="font-size: 15px; font-weight: 600; margin-bottom: 8px;">Clientes Parados</div>
   <table style="${STYLES.table}">
-    <thead><tr><th style="${STYLES.th}">Client</th><th style="${STYLES.th}">Phase</th><th style="${STYLES.th}">Days</th></tr></thead>
+    <thead><tr><th style="${STYLES.th}">Cliente</th><th style="${STYLES.th}">Fase</th><th style="${STYLES.th}">Dias</th></tr></thead>
     <tbody>${stuckRows}</tbody>
   </table>
 </div>`
 
-  return wrapHtml(`[Agency OS] Daily Digest — ${data.date}`, body)
+  return wrapHtml(`[Agency OS] Resumo Diario — ${data.date}`, body)
 }

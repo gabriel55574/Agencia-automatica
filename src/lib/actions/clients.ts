@@ -13,7 +13,7 @@ export async function createClientAction(formData: FormData): Promise<ActionResu
   // Security (T-2-01-03): verify authenticated session before admin write
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   // Validate briefing fields (T-2-01-01)
   const briefingResult = briefingSchema.safeParse({
@@ -22,7 +22,7 @@ export async function createClientAction(formData: FormData): Promise<ActionResu
     additional_context: formData.get('additional_context') || null,
   })
   if (!briefingResult.success) {
-    return { error: 'Invalid briefing data: ' + briefingResult.error.issues[0]?.message }
+    return { error: 'Dados de briefing invalidos: ' + briefingResult.error.issues[0]?.message }
   }
 
   // Validate top-level client fields (T-2-01-01, T-2-01-02)
@@ -32,7 +32,7 @@ export async function createClientAction(formData: FormData): Promise<ActionResu
     briefing: briefingResult.data,
   })
   if (!clientResult.success) {
-    return { error: 'Invalid client data: ' + clientResult.error.issues[0]?.message }
+    return { error: 'Dados do cliente invalidos: ' + clientResult.error.issues[0]?.message }
   }
 
   const admin = createAdminClient()
@@ -44,7 +44,7 @@ export async function createClientAction(formData: FormData): Promise<ActionResu
 
   if (rpcError) {
     console.error('[createClientAction] RPC error:', rpcError)
-    return { error: 'Failed to create client. Please try again.' }
+    return { error: 'Falha ao criar cliente. Tente novamente.' }
   }
 
   revalidatePath('/clients')
@@ -58,13 +58,13 @@ export async function updateClientAction(
   // Security: verify authenticated session
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   // Validate inputs
   const nameResult = z.string().min(1).max(255).safeParse(formData.get('name'))
   const companyResult = z.string().min(1).max(255).safeParse(formData.get('company'))
-  if (!nameResult.success) return { error: 'Name is required (max 255 characters)' }
-  if (!companyResult.success) return { error: 'Company is required (max 255 characters)' }
+  if (!nameResult.success) return { error: 'Nome e obrigatorio (max 255 caracteres)' }
+  if (!companyResult.success) return { error: 'Empresa e obrigatoria (max 255 caracteres)' }
 
   const briefingResult = briefingSchema.safeParse({
     niche: formData.get('niche'),
@@ -72,7 +72,7 @@ export async function updateClientAction(
     additional_context: formData.get('additional_context') || null,
   })
   if (!briefingResult.success) {
-    return { error: 'Invalid briefing: ' + briefingResult.error.issues[0]?.message }
+    return { error: 'Briefing invalido: ' + briefingResult.error.issues[0]?.message }
   }
 
   const admin = createAdminClient()
@@ -88,7 +88,7 @@ export async function updateClientAction(
 
   if (updateError) {
     console.error('[updateClientAction] error:', updateError)
-    return { error: 'Failed to update client. Please try again.' }
+    return { error: 'Falha ao atualizar cliente. Tente novamente.' }
   }
 
   revalidatePath('/clients')
@@ -99,7 +99,7 @@ export async function updateClientAction(
 export async function archiveClientAction(clientId: string): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const admin = createAdminClient()
   const { error } = await admin
@@ -109,7 +109,7 @@ export async function archiveClientAction(clientId: string): Promise<ActionResul
 
   if (error) {
     console.error('[archiveClientAction] error:', error)
-    return { error: 'Failed to archive client. Please try again.' }
+    return { error: 'Falha ao arquivar cliente. Tente novamente.' }
   }
 
   revalidatePath('/clients')
@@ -120,7 +120,7 @@ export async function archiveClientAction(clientId: string): Promise<ActionResul
 export async function restoreClientAction(clientId: string): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const admin = createAdminClient()
   const { error } = await admin
@@ -130,7 +130,7 @@ export async function restoreClientAction(clientId: string): Promise<ActionResul
 
   if (error) {
     console.error('[restoreClientAction] error:', error)
-    return { error: 'Failed to restore client. Please try again.' }
+    return { error: 'Falha ao restaurar cliente. Tente novamente.' }
   }
 
   revalidatePath('/clients')
@@ -150,17 +150,17 @@ export async function cloneClientAction(
 ): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   // Validate inputs
   const idResult = z.string().uuid().safeParse(sourceClientId)
-  if (!idResult.success) return { error: 'Invalid source client ID' }
+  if (!idResult.success) return { error: 'ID do cliente de origem invalido' }
 
   const nameResult = z.string().min(1).max(255).safeParse(newName)
-  if (!nameResult.success) return { error: 'Name is required (max 255 characters)' }
+  if (!nameResult.success) return { error: 'Nome e obrigatorio (max 255 caracteres)' }
 
   const companyResult = z.string().min(1).max(255).safeParse(newCompany)
-  if (!companyResult.success) return { error: 'Company is required (max 255 characters)' }
+  if (!companyResult.success) return { error: 'Empresa e obrigatoria (max 255 caracteres)' }
 
   const admin = createAdminClient()
 
@@ -172,7 +172,7 @@ export async function cloneClientAction(
     .single()
 
   if (fetchError || !sourceClient) {
-    return { error: 'Source client not found' }
+    return { error: 'Cliente de origem nao encontrado' }
   }
 
   // Create new client with cloned briefing using existing RPC
@@ -185,7 +185,7 @@ export async function cloneClientAction(
 
   if (rpcError) {
     console.error('[cloneClientAction] RPC error:', rpcError)
-    return { error: 'Failed to clone client. Please try again.' }
+    return { error: 'Falha ao clonar cliente. Tente novamente.' }
   }
 
   revalidatePath('/clients')

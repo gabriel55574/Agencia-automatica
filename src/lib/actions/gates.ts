@@ -12,7 +12,7 @@ const gateIdSchema = z.object({
 })
 
 const rejectGateSchema = gateIdSchema.extend({
-  failedProcessIds: z.array(z.string().uuid()).min(1, 'Select at least one process to rework'),
+  failedProcessIds: z.array(z.string().uuid()).min(1, 'Selecione pelo menos um processo para retrabalho'),
   notes: z.string().max(2000).optional(),
 })
 
@@ -22,10 +22,10 @@ export async function approveGateAction(
 ): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const input = gateIdSchema.safeParse({ gateId, clientId })
-  if (!input.success) return { error: 'Invalid gate or client ID' }
+  if (!input.success) return { error: 'ID de gate ou cliente invalido' }
 
   const admin = createAdminClient()
   const { error } = await admin.rpc('approve_gate', {
@@ -50,10 +50,10 @@ export async function rejectGateAction(
 ): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const input = rejectGateSchema.safeParse({ gateId, clientId, failedProcessIds, notes })
-  if (!input.success) return { error: input.error.issues[0]?.message ?? 'Invalid input' }
+  if (!input.success) return { error: input.error.issues[0]?.message ?? 'Entrada invalida' }
 
   const admin = createAdminClient()
   const { error } = await admin.rpc('reject_gate', {

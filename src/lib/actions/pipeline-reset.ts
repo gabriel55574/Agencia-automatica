@@ -26,11 +26,11 @@ export async function resetPipelineAction(clientId: string): Promise<ActionResul
   // Auth check (T-09-05)
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   // Validate input (T-09-06)
   const input = resetSchema.safeParse({ clientId })
-  if (!input.success) return { error: 'Invalid client ID' }
+  if (!input.success) return { error: 'ID de cliente invalido' }
 
   const admin = createAdminClient()
   const { error } = await admin.rpc('reset_pipeline_cycle', {

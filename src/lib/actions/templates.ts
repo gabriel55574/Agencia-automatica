@@ -34,7 +34,7 @@ export async function createTemplateAction(
 ): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const input = templateInsertSchema.safeParse({
     name,
@@ -44,7 +44,7 @@ export async function createTemplateAction(
     source_client_id: sourceClientId,
     source_job_id: sourceJobId,
   })
-  if (!input.success) return { error: input.error.issues[0]?.message ?? 'Invalid input' }
+  if (!input.success) return { error: input.error.issues[0]?.message ?? 'Entrada invalida' }
 
   const admin = createAdminClient()
   const { error } = await admin.from('templates').insert({
@@ -58,7 +58,7 @@ export async function createTemplateAction(
 
   if (error) {
     console.error('[createTemplateAction] Insert error:', error)
-    return { error: 'Failed to create template. Please try again.' }
+    return { error: 'Falha ao criar template. Tente novamente.' }
   }
 
   revalidatePath('/templates')
@@ -72,10 +72,10 @@ export async function createTemplateAction(
 export async function deleteTemplateAction(templateId: string): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const idResult = z.string().uuid().safeParse(templateId)
-  if (!idResult.success) return { error: 'Invalid template ID' }
+  if (!idResult.success) return { error: 'ID de template invalido' }
 
   const admin = createAdminClient()
   const { error } = await admin
@@ -85,7 +85,7 @@ export async function deleteTemplateAction(templateId: string): Promise<ActionRe
 
   if (error) {
     console.error('[deleteTemplateAction] Delete error:', error)
-    return { error: 'Failed to delete template. Please try again.' }
+    return { error: 'Falha ao excluir template. Tente novamente.' }
   }
 
   revalidatePath('/templates')
@@ -103,13 +103,13 @@ export async function updateTemplateAction(
 ): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const idResult = z.string().uuid().safeParse(templateId)
-  if (!idResult.success) return { error: 'Invalid template ID' }
+  if (!idResult.success) return { error: 'ID de template invalido' }
 
   const nameResult = z.string().min(1).max(255).safeParse(name)
-  if (!nameResult.success) return { error: 'Name is required (max 255 characters)' }
+  if (!nameResult.success) return { error: 'Nome e obrigatorio (max 255 caracteres)' }
 
   const admin = createAdminClient()
   const { error } = await admin
@@ -122,7 +122,7 @@ export async function updateTemplateAction(
 
   if (error) {
     console.error('[updateTemplateAction] Update error:', error)
-    return { error: 'Failed to update template. Please try again.' }
+    return { error: 'Falha ao atualizar template. Tente novamente.' }
   }
 
   revalidatePath('/templates')
@@ -138,10 +138,10 @@ export async function getTemplatesByProcess(
 ): Promise<{ templates: Array<{ id: string; name: string; description: string | null; content: Record<string, unknown> }> } | { error: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const numResult = z.number().int().min(1).max(16).safeParse(processNumber)
-  if (!numResult.success) return { error: 'Invalid process number' }
+  if (!numResult.success) return { error: 'Numero de processo invalido' }
 
   const admin = createAdminClient()
   const { data, error } = await admin
@@ -152,7 +152,7 @@ export async function getTemplatesByProcess(
 
   if (error) {
     console.error('[getTemplatesByProcess] Query error:', error)
-    return { error: 'Failed to load templates' }
+    return { error: 'Falha ao carregar templates' }
   }
 
   return {

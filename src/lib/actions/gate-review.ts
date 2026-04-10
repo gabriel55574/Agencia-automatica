@@ -53,7 +53,7 @@ export async function runGateReview(
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   // T-06-05: Validate input
   const input = runGateReviewSchema.safeParse({
@@ -63,7 +63,7 @@ export async function runGateReview(
     phaseId,
   })
   if (!input.success)
-    return { error: 'Invalid input: ' + input.error.issues[0]?.message }
+    return { error: 'Entrada invalida: ' + input.error.issues[0]?.message }
 
   const admin = createAdminClient()
 
@@ -76,7 +76,7 @@ export async function runGateReview(
 
   if (processError) {
     console.error('[runGateReview] Process query error:', processError)
-    return { error: 'Failed to fetch completed processes' }
+    return { error: 'Falha ao buscar processos concluidos' }
   }
 
   // Step 4: Fetch most recent completed squad_job outputs for this phase
@@ -91,7 +91,7 @@ export async function runGateReview(
 
   if (jobError) {
     console.error('[runGateReview] Job query error:', jobError)
-    return { error: 'Failed to fetch squad job outputs' }
+    return { error: 'Falha ao buscar outputs do squad' }
   }
 
   // Step 5: Build phase outputs array by matching jobs to processes
@@ -110,7 +110,7 @@ export async function runGateReview(
     .filter((o) => o.output !== '')
 
   if (phaseOutputs.length === 0) {
-    return { error: 'No completed process outputs found for this phase' }
+    return { error: 'Nenhum output de processo concluido encontrado para esta fase' }
   }
 
   // Step 6: Build the adversarial review prompt
@@ -132,7 +132,7 @@ export async function runGateReview(
 
   if (insertJobError || !jobRow) {
     console.error('[runGateReview] Job insert error:', insertJobError)
-    return { error: 'Failed to create gate review job' }
+    return { error: 'Falha ao criar tarefa de revisao do gate' }
   }
 
   // Step 8: Insert gate_reviews row with status='running' linked to the job
@@ -149,7 +149,7 @@ export async function runGateReview(
 
   if (insertReviewError) {
     console.error('[runGateReview] Review insert error:', insertReviewError)
-    return { error: 'Failed to create gate review record' }
+    return { error: 'Falha ao criar registro de revisao do gate' }
   }
 
   revalidatePath(`/clients/${input.data.clientId}`)

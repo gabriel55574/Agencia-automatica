@@ -8,7 +8,7 @@ import type { ActionResult } from './clients'
 
 const setBudgetSchema = z.object({
   processId: z.string().uuid(),
-  tokenBudget: z.number().int().min(1000, 'Minimum budget is 1,000 tokens'),
+  tokenBudget: z.number().int().min(1000, 'Orcamento minimo e 1.000 tokens'),
 })
 
 const removeBudgetSchema = z.object({
@@ -21,10 +21,10 @@ export async function setProcessBudget(
 ): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const input = setBudgetSchema.safeParse({ processId, tokenBudget })
-  if (!input.success) return { error: input.error.issues[0]?.message ?? 'Invalid input' }
+  if (!input.success) return { error: input.error.issues[0]?.message ?? 'Entrada invalida' }
 
   const admin = createAdminClient()
   const { error } = await admin
@@ -47,10 +47,10 @@ export async function removeProcessBudget(
 ): Promise<ActionResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  if (!user) return { error: 'Nao autorizado' }
 
   const input = removeBudgetSchema.safeParse({ processId })
-  if (!input.success) return { error: 'Invalid process ID' }
+  if (!input.success) return { error: 'ID de processo invalido' }
 
   const admin = createAdminClient()
   const { error } = await admin
