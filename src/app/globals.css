@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════
+   Velocity Brand Identity Tokens
+   Source: docs/VELOCITY-UI-IDENTITY-SYSTEM.md
+   ═══════════════════════════════════════════════════════════ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ═══ PRIMARY COLORS ═══ */
+  --color-black: #062222;
+  --color-lime: #BFF205;
+  --color-white: #F2F2F2;
+
+  /* ═══ DERIVED COLORS ═══ */
+  --color-lime-hover: #ACD904;
+  --color-lime-active: #93BA04;
+  --color-lime-light: #F8FDE6;
+  --color-lime-dark: #6D8A03;
+  --color-black-soft: #0A3333;
+  --color-black-deep: #041919;
+
+  /* ═══ GRAYS ═══ */
+  --color-gray-100: #E8EDED;
+  --color-gray-200: #CBD4D4;
+  --color-gray-300: #8A9999;
+  --color-gray-400: #5C6E6E;
+
+  /* ═══ SEMANTIC COLORS ═══ */
+  --color-success: #BFF205;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+  --color-info: #3B82F6;
+
+  /* ═══ TYPOGRAPHY ═══ */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+
+  /* ═══ SPACING ═══ */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ═══ BORDER RADIUS ═══ */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* ═══ SHADOWS ═══ */
+  --shadow-sm: 0 1px 2px rgba(6, 34, 34, 0.06);
+  --shadow-md: 0 4px 6px rgba(6, 34, 34, 0.08);
+  --shadow-lg: 0 10px 15px rgba(6, 34, 34, 0.10);
+  --shadow-xl: 0 20px 25px rgba(6, 34, 34, 0.12);
+
+  /* ═══ TRANSITIONS ═══ */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* ═══ SHADCN VARIABLE MAPPING (Light Theme — Content Area) ═══ */
+  --background: #F2F2F2;
+  --foreground: #062222;
+  --primary: #BFF205;
+  --primary-foreground: #062222;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --muted: #E8EDED;
+  --muted-foreground: #5C6E6E;
+  --accent: #F8FDE6;
+  --accent-foreground: #6D8A03;
+  --border: #E8EDED;
+  --input: #E8EDED;
+  --ring: #BFF205;
+  --card: #FFFFFF;
+  --card-foreground: #062222;
+  --popover: #FFFFFF;
+  --popover-foreground: #062222;
+  --secondary: #F2F2F2;
+  --secondary-foreground: #062222;
 }
 
+/* ═══ TAILWIND THEME — Static Velocity Color Tokens ═══ */
+@theme {
+  --color-velocity-black: #062222;
+  --color-velocity-lime: #BFF205;
+  --color-velocity-white: #F2F2F2;
+  --color-velocity-lime-hover: #ACD904;
+  --color-velocity-lime-active: #93BA04;
+  --color-velocity-lime-light: #F8FDE6;
+  --color-velocity-lime-dark: #6D8A03;
+  --color-velocity-black-soft: #0A3333;
+  --color-velocity-black-deep: #041919;
+  --color-velocity-gray-100: #E8EDED;
+  --color-velocity-gray-200: #CBD4D4;
+  --color-velocity-gray-300: #8A9999;
+  --color-velocity-gray-400: #5C6E6E;
+  --color-velocity-error: #EF4444;
+  --color-velocity-warning: #F59E0B;
+  --color-velocity-info: #3B82F6;
+}
+
+/* ═══ TAILWIND THEME — Font + Background References ═══ */
 @theme inline {
+  --font-heading: var(--font-montserrat);
+  --font-body: var(--font-roboto);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ═══ BASE STYLES ═══ */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), sans-serif;
+}
+
+/* ═══ SIDEBAR SLIDE-IN ANIMATION ═══ */
+@keyframes slide-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slide-in var(--transition-normal) ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-in {
+    animation: none;
+  }
 }
