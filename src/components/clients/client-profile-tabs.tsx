@@ -20,7 +20,7 @@ interface ClientProfileTabsProps {
   gates: GateRow[]
   latestJobs: Record<string, LatestJobData>
   latestReviews: Record<string, GateReviewRow>
-  budgetUsage: Record<string, { used: number; budget: number | null }>
+  budgetUsage: Record<string, { budget: number; used: number; status: string }>
   // Outputs tab data
   outputsData: {
     phaseNumbers: number[]
