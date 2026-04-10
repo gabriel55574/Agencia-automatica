@@ -36,6 +36,29 @@ export const PHASE_LABELS_EN = {
 } as const
 
 // ============================================================
+// PHASE COLORS
+// Distinct color per pipeline phase. 4 variants each:
+//   base   — icon tint, header text, small accents
+//   light  — badge/card backgrounds (10% opacity of base)
+//   dark   — text on light backgrounds (WCAG AA compliant)
+//   border — borders, bars, left-edge indicators
+//
+// Hex reference:
+//   Phase 1 #3B82F6 = blue-500
+//   Phase 2 #8B5CF6 = violet-500
+//   Phase 3 #F59E0B = amber-500
+//   Phase 4 #22C55E = green-500
+//   Phase 5 #14B8A6 = teal-500
+// ============================================================
+export const PHASE_COLORS = {
+  1: { base: 'text-blue-500', light: 'bg-blue-500/10', dark: 'text-blue-700', border: 'border-blue-500' },
+  2: { base: 'text-violet-500', light: 'bg-violet-500/10', dark: 'text-violet-700', border: 'border-violet-500' },
+  3: { base: 'text-amber-500', light: 'bg-amber-500/10', dark: 'text-amber-700', border: 'border-amber-500' },
+  4: { base: 'text-green-500', light: 'bg-green-500/10', dark: 'text-green-700', border: 'border-green-500' },
+  5: { base: 'text-teal-500', light: 'bg-teal-500/10', dark: 'text-teal-700', border: 'border-teal-500' },
+} as const satisfies Record<PhaseNumber, { base: string; light: string; dark: string; border: string }>
+
+// ============================================================
 // PROCESS-TO-PHASE MAPPING
 // 16 processes distributed across 5 phases:
 //   Phase 1 (Diagnostico):         processes 1-2   (2 processes)

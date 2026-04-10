@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { ProcessAccordionRow as ProcessRowComponent } from './process-row'
 import { GateSection } from './gate-section'
 import { PROCESS_DEFINITIONS } from '@/lib/pipeline/processes'
+import { PHASE_COLORS, type PhaseNumber } from '@/lib/database/enums'
 import type { PhaseRow, ProcessRow, GateRow, LatestJobData, GateReviewRow } from '@/lib/types/pipeline'
 import type { AssembledContext } from '@/lib/squads/assembler'
 
@@ -34,9 +35,19 @@ interface PipelinePhaseProps {
   }) => void
 }
 
-function PhaseStatusBadge({ status }: { status: PhaseRow['status'] }) {
-  if (status === 'active') return <Badge className="bg-blue-100 text-blue-700 border-blue-200">Active</Badge>
-  if (status === 'completed') return <Badge className="bg-green-100 text-green-700 border-green-200">Completed</Badge>
+/** Phase number circle background colors (solid variants for the numbered circle) */
+const PHASE_CIRCLE_BG: Record<number, string> = {
+  1: 'bg-blue-500',
+  2: 'bg-violet-500',
+  3: 'bg-amber-500',
+  4: 'bg-green-500',
+  5: 'bg-teal-500',
+}
+
+function PhaseStatusBadge({ status, phaseNumber }: { status: PhaseRow['status']; phaseNumber: PhaseNumber }) {
+  const colors = PHASE_COLORS[phaseNumber]
+  if (status === 'active') return <Badge className={`${colors.light} ${colors.dark} border-transparent`}>Active</Badge>
+  if (status === 'completed') return <Badge className={`${colors.light} ${colors.dark} border-transparent`}>Completed</Badge>
   return <Badge variant="secondary">Pending</Badge>
 }
 
@@ -44,14 +55,14 @@ export function PipelinePhase({ phase, processes, gate, clientId, clientName, la
   const isActivePhase = phase.status === 'active'
 
   return (
-    <AccordionItem value={phase.id} className="border border-zinc-200 rounded-lg mb-2 px-4 overflow-hidden">
+    <AccordionItem value={phase.id} className={`border border-zinc-200 rounded-lg mb-2 px-4 overflow-hidden border-l-[3px] ${PHASE_COLORS[phase.phase_number as PhaseNumber].border}`}>
       <AccordionTrigger className="hover:no-underline py-4">
         <div className="flex items-center gap-3 flex-1 text-left">
-          <span className="flex items-center justify-center w-7 h-7 rounded-full bg-zinc-800 text-white text-xs font-bold shrink-0">
+          <span className={`flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold shrink-0 ${PHASE_CIRCLE_BG[phase.phase_number] ?? 'bg-zinc-800'}`}>
             {phase.phase_number}
           </span>
           <span className="text-sm font-semibold text-zinc-900">{phase.name}</span>
-          <PhaseStatusBadge status={phase.status} />
+          <PhaseStatusBadge status={phase.status} phaseNumber={phase.phase_number as PhaseNumber} />
         </div>
       </AccordionTrigger>
       <AccordionContent className="pb-4">
