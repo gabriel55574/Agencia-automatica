@@ -62,7 +62,11 @@ export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
         setServerError(result.error)
         toast.error('Erro ao salvar: verifique os campos obrigatorios')
       } else if (result && 'success' in result) {
-        toast.success(mode === 'create' ? 'Cliente criado com sucesso' : 'Cliente atualizado')
+        if (mode === 'create') {
+          toast.success('Cliente criado com sucesso')
+        } else {
+          toast.success('Cliente atualizado')
+        }
         if (result.redirectTo) {
           router.push(result.redirectTo)
         }
