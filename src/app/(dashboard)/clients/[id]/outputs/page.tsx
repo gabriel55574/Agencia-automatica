@@ -9,30 +9,13 @@ import { Button } from '@/components/ui/button'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 import { format } from 'date-fns'
 import { OutputsBrowser } from './outputs-browser'
+import type { CompletedJob, ProcessWithRuns } from '@/lib/types/outputs'
+
+// Re-export for backward compatibility
+export type { CompletedJob, ProcessWithRuns } from '@/lib/types/outputs'
 
 interface OutputsPageProps {
   params: Promise<{ id: string }>
-}
-
-export type CompletedJob = {
-  id: string
-  processId: string
-  squadType: string
-  structuredOutput: Record<string, unknown> | null
-  output: string | null
-  createdAt: string
-  startedAt: string | null
-  completedAt: string | null
-}
-
-export type ProcessWithRuns = {
-  processId: string
-  processName: string
-  processNumber: number
-  squad: string
-  phaseNumber: number
-  phaseName: string
-  runs: CompletedJob[]
 }
 
 export default async function OutputsPage({ params }: OutputsPageProps) {

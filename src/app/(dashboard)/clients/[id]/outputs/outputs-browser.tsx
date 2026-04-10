@@ -7,7 +7,7 @@ import { PHASE_NAMES, type PhaseNumber } from '@/lib/database/enums'
 import { RunHistoryList, type CompletedRun } from '@/components/documents/RunHistoryList'
 import { OutputViewer } from '@/components/documents/OutputViewer'
 import { format } from 'date-fns'
-import type { ProcessWithRuns } from './page'
+import type { ProcessWithRuns } from '@/lib/types/outputs'
 
 interface OutputsBrowserProps {
   clientName: string
