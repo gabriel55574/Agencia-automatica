@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Dialog,
   DialogContent,
@@ -28,6 +29,7 @@ interface CloneClientDialogProps {
  * Pipeline state, squad runs, and gate reviews are NOT copied.
  */
 export function CloneClientDialog({ sourceClientId, sourceClientName }: CloneClientDialogProps) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [company, setCompany] = useState('')
@@ -44,8 +46,11 @@ export function CloneClientDialog({ sourceClientId, sourceClientName }: CloneCli
       const result = await cloneClientAction(sourceClientId, name.trim(), company.trim())
       if (result && 'error' in result) {
         toast.error(result.error)
+      } else if (result && 'success' in result) {
+        toast.success('Cliente clonado com sucesso')
+        setOpen(false)
+        if (result.redirectTo) router.push(result.redirectTo)
       }
-      // If successful, cloneClientAction redirects to new client page
     } catch {
       toast.error('Falha ao clonar cliente')
     } finally {

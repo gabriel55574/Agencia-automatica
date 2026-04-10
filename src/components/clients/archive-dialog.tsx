@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +24,7 @@ interface ArchiveDialogProps {
 }
 
 export function ArchiveDialog({ clientId, clientName, isArchived }: ArchiveDialogProps) {
+  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -35,7 +38,13 @@ export function ArchiveDialog({ clientId, clientName, isArchived }: ArchiveDialo
             setError(null)
             startTransition(async () => {
               const result = await restoreClientAction(clientId)
-              if (result && 'error' in result) setError(result.error)
+              if (result && 'error' in result) {
+                setError(result.error)
+                toast.error(result.error)
+              } else if (result && 'success' in result) {
+                toast.success('Cliente restaurado')
+                if (result.redirectTo) router.push(result.redirectTo)
+              }
             })
           }}
         >
@@ -68,7 +77,13 @@ export function ArchiveDialog({ clientId, clientName, isArchived }: ArchiveDialo
               setError(null)
               startTransition(async () => {
                 const result = await archiveClientAction(clientId)
-                if (result && 'error' in result) setError(result.error)
+                if (result && 'error' in result) {
+                  setError(result.error)
+                  toast.error(result.error)
+                } else if (result && 'success' in result) {
+                  toast.success('Cliente arquivado')
+                  if (result.redirectTo) router.push(result.redirectTo)
+                }
               })
             }}
           >

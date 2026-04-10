@@ -4,8 +4,10 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { briefingSchema } from '@/lib/database/schema'
-import { createClientAction, updateClientAction } from '@/lib/actions/clients'
+import { createClientAction, updateClientAction, type ActionResult } from '@/lib/actions/clients'
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -28,6 +30,7 @@ interface ClientFormProps {
 }
 
 export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
+  const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -48,7 +51,7 @@ export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
       fd.set('target_audience', values.target_audience)
       if (values.additional_context) fd.set('additional_context', values.additional_context)
 
-      let result: { error: string } | { success: true } | undefined
+      let result: ActionResult | undefined
       if (mode === 'create') {
         result = await createClientAction(fd)
       } else if (mode === 'edit' && clientId) {
@@ -57,6 +60,12 @@ export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
 
       if (result && 'error' in result) {
         setServerError(result.error)
+        toast.error('Erro ao salvar: verifique os campos obrigatorios')
+      } else if (result && 'success' in result) {
+        toast.success(mode === 'create' ? 'Cliente criado com sucesso' : 'Cliente atualizado')
+        if (result.redirectTo) {
+          router.push(result.redirectTo)
+        }
       }
     })
   }
