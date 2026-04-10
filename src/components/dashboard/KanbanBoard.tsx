@@ -39,7 +39,7 @@ export function KanbanBoard({ data, showArchived }: KanbanBoardProps) {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-zinc-800">Pipeline</h2>
         <Button variant="outline" size="sm" onClick={toggleArchived}>
-          {showArchived ? 'Hide archived' : 'Show archived'}
+          {showArchived ? 'Ocultar arquivados' : 'Mostrar arquivados'}
         </Button>
       </div>
 

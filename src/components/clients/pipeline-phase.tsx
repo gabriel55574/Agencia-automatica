@@ -46,9 +46,9 @@ const PHASE_CIRCLE_BG: Record<number, string> = {
 
 function PhaseStatusBadge({ status, phaseNumber }: { status: PhaseRow['status']; phaseNumber: PhaseNumber }) {
   const colors = PHASE_COLORS[phaseNumber]
-  if (status === 'active') return <Badge className={`${colors.light} ${colors.dark} border-transparent`}>Active</Badge>
-  if (status === 'completed') return <Badge className={`${colors.light} ${colors.dark} border-transparent`}>Completed</Badge>
-  return <Badge variant="secondary">Pending</Badge>
+  if (status === 'active') return <Badge className={`${colors.light} ${colors.dark} border-transparent`}>Ativo</Badge>
+  if (status === 'completed') return <Badge className={`${colors.light} ${colors.dark} border-transparent`}>Concluido</Badge>
+  return <Badge variant="secondary">Pendente</Badge>
 }
 
 export function PipelinePhase({ phase, processes, gate, clientId, clientName, latestJobs, latestReviews, budgetUsage, onAssembled }: PipelinePhaseProps) {

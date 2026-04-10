@@ -29,7 +29,7 @@ export function MonthSelector({ currentMonth }: MonthSelectorProps) {
   return (
     <Select value={currentMonth} onValueChange={handleMonthChange}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select month" />
+        <SelectValue placeholder="Selecionar mes" />
       </SelectTrigger>
       <SelectContent>
         {months.map((month) => (

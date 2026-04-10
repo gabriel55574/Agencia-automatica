@@ -12,7 +12,7 @@ const RANGE_OPTIONS: { value: DateRange; label: string }[] = [
   { value: '7d', label: '7d' },
   { value: '30d', label: '30d' },
   { value: '90d', label: '90d' },
-  { value: 'all', label: 'All Time' },
+  { value: 'all', label: 'Todo periodo' },
 ]
 
 export function DateRangeFilter({ value, onChange }: DateRangeFilterProps) {
@@ -26,7 +26,7 @@ export function DateRangeFilter({ value, onChange }: DateRangeFilterProps) {
         // Prevent deselection: if val is empty string, keep current value
         if (val) onChange(val as DateRange)
       }}
-      aria-label="Date range filter"
+      aria-label="Filtro de periodo"
     >
       {RANGE_OPTIONS.map((option) => (
         <ToggleGroupItem

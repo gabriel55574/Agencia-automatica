@@ -69,13 +69,13 @@ export function ProcessAccordionRow({
         <div className="flex items-center gap-2">
           {/* Job status badge inline with process status */}
           {latestJob?.status === 'running' && (
-            <Badge className="bg-amber-100 text-amber-700 border-amber-200">running</Badge>
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200">executando</Badge>
           )}
           {latestJob?.status === 'queued' && (
-            <Badge className="bg-blue-100 text-blue-700 border-blue-200">queued</Badge>
+            <Badge className="bg-blue-100 text-blue-700 border-blue-200">na fila</Badge>
           )}
           {latestJob?.status === 'failed' && (
-            <Badge className="bg-red-100 text-red-700 border-red-200">failed</Badge>
+            <Badge className="bg-red-100 text-red-700 border-red-200">falhou</Badge>
           )}
           {latestJob?.status === 'completed' && latestJob.token_count != null && (
             <RunCostBadge
@@ -164,7 +164,7 @@ export function ProcessAccordionRow({
         {/* Squad execution status messages */}
         {latestJob?.status === 'running' && (
           <div className="mt-4 flex items-center gap-2">
-            <Badge className="bg-amber-100 text-amber-700 border-amber-200">running</Badge>
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200">executando</Badge>
             <span className="text-sm text-zinc-500">Squad executando...</span>
           </div>
         )}
@@ -188,7 +188,7 @@ export function ProcessAccordionRow({
         {/* Failed job indicator */}
         {latestJob?.status === 'failed' && (
           <div className="mt-4 flex items-center gap-2">
-            <Badge className="bg-red-100 text-red-700 border-red-200">failed</Badge>
+            <Badge className="bg-red-100 text-red-700 border-red-200">falhou</Badge>
             {latestJob.output && (
               <span className="text-xs text-zinc-500 truncate max-w-xs">{latestJob.output}</span>
             )}
@@ -240,13 +240,13 @@ export function ProcessRow({ process, activeJob, onViewProgress }: ProcessRowPro
       <div className="flex items-center gap-2 shrink-0">
         {/* Process-level completed badge (independent of job status) */}
         {process.status === 'completed' && (
-          <Badge className="bg-green-100 text-green-700 border-green-200">completed</Badge>
+          <Badge className="bg-green-100 text-green-700 border-green-200">concluido</Badge>
         )}
 
         {/* Job-level status badges */}
         {activeJob?.status === 'running' && (
           <>
-            <Badge className="bg-amber-100 text-amber-700 border-amber-200">running</Badge>
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200">executando</Badge>
             <Button
               variant="ghost"
               size="sm"
@@ -259,7 +259,7 @@ export function ProcessRow({ process, activeJob, onViewProgress }: ProcessRowPro
         )}
 
         {activeJob?.status === 'failed' && (
-          <Badge className="bg-red-100 text-red-700 border-red-200">failed</Badge>
+          <Badge className="bg-red-100 text-red-700 border-red-200">falhou</Badge>
         )}
       </div>
     </div>

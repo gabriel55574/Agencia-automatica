@@ -27,10 +27,10 @@ export function PhasePerformanceChart({ data }: PhasePerformanceChartProps) {
   )
 
   const ariaLabel = hasData
-    ? `Bar chart showing average days per phase: ${data
-        .map((d) => `${d.phase_name} ${d.avg_days.toFixed(1)} days`)
+    ? `Grafico de barras mostrando media de dias por fase: ${data
+        .map((d) => `${d.phase_name} ${d.avg_days.toFixed(1)} dias`)
         .join(', ')}`
-    : 'No phase data available'
+    : 'Nenhum dado de fase disponivel'
 
   return (
     <Card>

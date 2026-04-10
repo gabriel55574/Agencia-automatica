@@ -17,7 +17,7 @@ export function ActionSummaryBar({ actions }: ActionSummaryBarProps) {
   if (allZero) {
     return (
       <div className="flex items-center gap-4 text-sm text-zinc-400">
-        All clear
+        Tudo certo
       </div>
     )
   }
@@ -29,7 +29,7 @@ export function ActionSummaryBar({ actions }: ActionSummaryBarProps) {
           <Badge className="bg-amber-100 text-amber-800 border-amber-200">
             {pending}
           </Badge>
-          pending approval{pending !== 1 ? 's' : ''}
+          {pending !== 1 ? 'aprovacoes pendentes' : 'aprovacao pendente'}
         </span>
       )}
       {failed > 0 && (
@@ -37,7 +37,7 @@ export function ActionSummaryBar({ actions }: ActionSummaryBarProps) {
           <Badge className="bg-red-100 text-red-800 border-red-200">
             {failed}
           </Badge>
-          failed gate{failed !== 1 ? 's' : ''}
+          {failed !== 1 ? 'gates reprovados' : 'gate reprovado'}
         </span>
       )}
       {running > 0 && (
@@ -45,7 +45,7 @@ export function ActionSummaryBar({ actions }: ActionSummaryBarProps) {
           <Badge className="bg-blue-100 text-blue-800 border-blue-200">
             {running}
           </Badge>
-          running job{running !== 1 ? 's' : ''}
+          {running !== 1 ? 'execucoes ativas' : 'execucao ativa'}
         </span>
       )}
     </div>

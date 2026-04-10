@@ -40,7 +40,7 @@ function OverallVerdictBadge({ overall }: { overall: 'pass' | 'fail' | 'partial'
     return (
       <Badge className="bg-green-100 text-green-700 border-green-200 text-sm px-3 py-1">
         <CheckCircle2 className="size-4 mr-1" />
-        PASS
+        APROVADO
       </Badge>
     )
   }
@@ -48,7 +48,7 @@ function OverallVerdictBadge({ overall }: { overall: 'pass' | 'fail' | 'partial'
     return (
       <Badge className="bg-red-100 text-red-700 border-red-200 text-sm px-3 py-1">
         <XCircle className="size-4 mr-1" />
-        FAIL
+        REPROVADO
       </Badge>
     )
   }
@@ -56,14 +56,14 @@ function OverallVerdictBadge({ overall }: { overall: 'pass' | 'fail' | 'partial'
     return (
       <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-sm px-3 py-1">
         <AlertTriangle className="size-4 mr-1" />
-        PARTIAL
+        PARCIAL
       </Badge>
     )
   }
   return (
     <Badge className="bg-yellow-100 text-yellow-700 border-yellow-200 text-sm px-3 py-1">
       <AlertTriangle className="size-4 mr-1" />
-      Review Failed
+      Revisao Falhou
     </Badge>
   )
 }
@@ -89,12 +89,12 @@ function VerdictItem({ item }: { item: { checklist_id: string; label: string; ve
             {expanded ? (
               <>
                 <ChevronDown className="size-3" />
-                Hide evidence
+                Ocultar evidencia
               </>
             ) : (
               <>
                 <ChevronRight className="size-3" />
-                Show evidence
+                Ver evidencia
               </>
             )}
           </button>
@@ -124,7 +124,7 @@ export function GateReviewDisplay({ review, gateNumber }: GateReviewDisplayProps
     return (
       <div className="flex items-center gap-2 py-4">
         <Loader2 className="size-4 animate-spin text-zinc-500" />
-        <span className="text-sm text-zinc-600">AI review in progress...</span>
+        <span className="text-sm text-zinc-600">Revisao IA em andamento...</span>
       </div>
     )
   }
@@ -136,7 +136,7 @@ export function GateReviewDisplay({ review, gateNumber }: GateReviewDisplayProps
         <div className="flex items-center gap-2">
           <AlertTriangle className="size-4 text-yellow-600" />
           <span className="text-sm text-yellow-700 font-medium">
-            AI review failed to produce a valid verdict. Raw output shown below.
+            A revisao IA nao produziu um veredito valido. Output bruto exibido abaixo.
           </span>
         </div>
         {review.raw_output && (
@@ -157,7 +157,7 @@ export function GateReviewDisplay({ review, gateNumber }: GateReviewDisplayProps
       <div className="space-y-3 py-3">
         <OverallVerdictBadge overall={null} />
         <p className="text-sm text-zinc-600">
-          Verdict data could not be parsed. Showing raw output.
+          Dados do veredito nao puderam ser processados. Exibindo output bruto.
         </p>
         {review.raw_output && (
           <pre className="bg-zinc-900 text-zinc-100 p-4 rounded-lg text-xs overflow-auto max-h-96">
@@ -173,12 +173,12 @@ export function GateReviewDisplay({ review, gateNumber }: GateReviewDisplayProps
       {/* Overall Verdict Badge */}
       <div className="flex items-center gap-2">
         <OverallVerdictBadge overall={parsed.overall} />
-        <span className="text-xs text-zinc-500">Gate {gateNumber} AI Review</span>
+        <span className="text-xs text-zinc-500">Revisao IA do Gate {gateNumber}</span>
       </div>
 
       {/* Summary Text */}
       <p className="text-sm text-zinc-700">
-        {parsed.summary ?? 'No summary available'}
+        {parsed.summary ?? 'Nenhum resumo disponivel'}
       </p>
 
       {/* Checklist Items List */}
@@ -199,7 +199,7 @@ export function GateReviewDisplay({ review, gateNumber }: GateReviewDisplayProps
             onClick={() => setShowRaw(!showRaw)}
             className="text-xs text-zinc-500"
           >
-            {showRaw ? 'Hide Raw Output' : 'View Raw Output'}
+            {showRaw ? 'Ocultar Output Bruto' : 'Ver Output Bruto'}
           </Button>
           {showRaw && (
             <pre className="mt-2 bg-zinc-900 text-zinc-100 p-4 rounded-lg text-xs overflow-auto max-h-96">

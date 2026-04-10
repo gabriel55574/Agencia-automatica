@@ -20,8 +20,8 @@ export function RunCostBadge({ tokenCount, estimatedCost }: RunCostBadgeProps) {
       : costStr
 
   const ariaLabel = tokenCount !== null
-    ? `Cost: ${costStr}, ${tokenCount.toLocaleString('en-US')} tokens`
-    : `Cost: ${costStr}`
+    ? `Custo: ${costStr}, ${tokenCount.toLocaleString('pt-BR')} tokens`
+    : `Custo: ${costStr}`
 
   return (
     <Badge

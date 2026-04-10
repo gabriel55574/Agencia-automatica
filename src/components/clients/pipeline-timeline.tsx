@@ -15,9 +15,9 @@ function formatDate(iso: string | null): string {
 }
 
 const STATUS_BADGE: Record<PhaseRow['status'], React.ReactNode> = {
-  active: <Badge className="bg-blue-100 text-blue-700 border-blue-200">Active</Badge>,
-  completed: <Badge className="bg-green-100 text-green-700 border-green-200">Completed</Badge>,
-  pending: <Badge variant="secondary">Pending</Badge>,
+  active: <Badge className="bg-blue-100 text-blue-700 border-blue-200">Ativo</Badge>,
+  completed: <Badge className="bg-green-100 text-green-700 border-green-200">Concluido</Badge>,
+  pending: <Badge variant="secondary">Pendente</Badge>,
 }
 
 export function PipelineTimeline({ phases }: { phases: PhaseRow[] }) {
@@ -41,8 +41,8 @@ export function PipelineTimeline({ phases }: { phases: PhaseRow[] }) {
                 </div>
                 {phase.started_at && (
                   <p className="text-xs text-zinc-500 mt-0.5">
-                    Started {formatDate(phase.started_at)}
-                    {phase.completed_at ? ` · Completed ${formatDate(phase.completed_at)}` : ''}
+                    Iniciado em {formatDate(phase.started_at)}
+                    {phase.completed_at ? ` · Concluido em ${formatDate(phase.completed_at)}` : ''}
                   </p>
                 )}
               </div>

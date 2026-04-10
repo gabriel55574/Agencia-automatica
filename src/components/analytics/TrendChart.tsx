@@ -37,7 +37,7 @@ export function TrendChart({ data }: TrendChartProps) {
         ) : (
           <div
             role="img"
-            aria-label="Trend chart showing monthly averages for phase duration and gate approval rate"
+            aria-label="Grafico de tendencias mostrando medias mensais de duracao por fase e taxa de aprovacao de gate"
           >
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={data} margin={{ left: 0, right: 0, top: 5, bottom: 5 }}>

@@ -28,10 +28,10 @@ export function BudgetBar({ used, budget }: BudgetBarProps) {
       <Progress
         value={displayPercentage}
         className={`h-2 ${colorClass}`}
-        aria-label={`Token budget usage: ${percentage}% of ${budget.toLocaleString('en-US')} tokens`}
+        aria-label={`Uso do orcamento de tokens: ${percentage}% de ${budget.toLocaleString('pt-BR')} tokens`}
       />
       <p className="text-xs text-zinc-500 font-mono text-right">
-        {percentage}% of {formatTokensCompact(budget)}
+        {percentage}% de {formatTokensCompact(budget)}
       </p>
     </div>
   )

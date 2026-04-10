@@ -89,7 +89,7 @@ export function BudgetSettingDialog({
             variant="ghost"
             size="sm"
             className="h-7 w-7 p-0"
-            aria-label={`Edit token budget for ${processName}`}
+            aria-label={`Editar orcamento de tokens para ${processName}`}
           >
             <Settings2 className="h-3.5 w-3.5" />
           </Button>
@@ -112,7 +112,7 @@ export function BudgetSettingDialog({
             Definir Orcamento de Tokens
           </DialogTitle>
           <p className="text-sm text-zinc-500">
-            Process: {processName}
+            Processo: {processName}
           </p>
         </DialogHeader>
 

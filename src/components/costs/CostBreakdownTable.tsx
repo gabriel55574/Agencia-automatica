@@ -134,7 +134,7 @@ export function CostBreakdownTable({ rows }: CostBreakdownTableProps) {
               </TableCell>
               <TableCell
                 className="text-right text-sm font-mono text-zinc-700"
-                aria-label={`${row.total_tokens.toLocaleString('en-US')} tokens`}
+                aria-label={`${row.total_tokens.toLocaleString('pt-BR')} tokens`}
               >
                 {formatTokensCompact(row.total_tokens)}
               </TableCell>

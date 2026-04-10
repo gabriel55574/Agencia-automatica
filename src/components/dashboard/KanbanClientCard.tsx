@@ -9,25 +9,25 @@ function gateStatusBadge(status: DashboardClient['gate_status']) {
     case 'approved':
       return (
         <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
-          Approved
+          Aprovado
         </Badge>
       )
     case 'rejected':
       return (
         <Badge className="bg-red-100 text-red-800 border-red-200">
-          Rejected
+          Rejeitado
         </Badge>
       )
     case 'evaluating':
       return (
         <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-          Evaluating
+          Avaliando
         </Badge>
       )
     case 'pending':
       return (
         <Badge className="bg-zinc-100 text-zinc-600 border-zinc-200">
-          Pending
+          Pendente
         </Badge>
       )
     default:
@@ -66,7 +66,7 @@ export function KanbanClientCard({ client, isStuck }: KanbanClientCardProps) {
             {gateStatusBadge(client.gate_status)}
             {isStuck && (
               <Badge className="bg-amber-100 text-amber-800 border-amber-200">
-                Stuck
+                Parado
               </Badge>
             )}
           </div>

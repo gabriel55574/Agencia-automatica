@@ -18,7 +18,7 @@ export function ActionPanel({ actions }: ActionPanelProps) {
   if (!hasAny) {
     return (
       <p className="text-sm text-zinc-400 py-2">
-        All clear — no actions needed
+        Tudo certo — nenhuma acao necessaria
       </p>
     )
   }
@@ -29,7 +29,7 @@ export function ActionPanel({ actions }: ActionPanelProps) {
         <div className="border border-zinc-200 rounded-lg p-4">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-amber-700 mb-2">
             <Clock className="h-4 w-4" />
-            Pending Approvals
+            Aprovacoes Pendentes
           </h3>
           <ul className="space-y-1">
             {pendingApprovals.map((item) => (
@@ -50,7 +50,7 @@ export function ActionPanel({ actions }: ActionPanelProps) {
         <div className="border border-zinc-200 rounded-lg p-4">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-red-700 mb-2">
             <XCircle className="h-4 w-4" />
-            Failed Gates
+            Gates Reprovados
           </h3>
           <ul className="space-y-1">
             {failedGates.map((item) => (
@@ -71,7 +71,7 @@ export function ActionPanel({ actions }: ActionPanelProps) {
         <div className="border border-zinc-200 rounded-lg p-4">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-700 mb-2">
             <Loader2 className="h-4 w-4 animate-spin" />
-            Running Jobs
+            Execucoes Ativas
           </h3>
           <ul className="space-y-1">
             {runningJobs.map((item) => (
@@ -81,7 +81,7 @@ export function ActionPanel({ actions }: ActionPanelProps) {
                   className="text-sm text-zinc-700 hover:text-zinc-900 hover:underline"
                 >
                   {item.squad_type} — {item.client_name}
-                  {item.status === 'queued' ? ' (queued)' : ''}
+                  {item.status === 'queued' ? ' (na fila)' : ''}
                 </Link>
               </li>
             ))}

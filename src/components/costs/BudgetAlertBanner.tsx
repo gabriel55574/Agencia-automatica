@@ -31,7 +31,7 @@ export function BudgetAlertBanner({ alerts }: BudgetAlertBannerProps) {
             <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-semibold text-red-800">
-                {exceeded.length} process(es) exceeded their token budget
+                {exceeded.length} processo(s) excederam o orcamento de tokens
               </p>
               <ul className="mt-1 space-y-0.5">
                 {exceeded.map((alert, i) => (
@@ -57,7 +57,7 @@ export function BudgetAlertBanner({ alerts }: BudgetAlertBannerProps) {
             <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-semibold text-amber-800">
-                {approaching.length} process(es) approaching their token budget
+                {approaching.length} processo(s) proximo(s) do limite de tokens
               </p>
               <ul className="mt-1 space-y-0.5">
                 {approaching.map((alert, i) => (

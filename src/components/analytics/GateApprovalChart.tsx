@@ -37,10 +37,10 @@ export function GateApprovalChart({ data }: GateApprovalChartProps) {
   const hasData = data.some((d) => d.total_evaluated > 0)
 
   const ariaLabel = hasData
-    ? `Gate approval rates: ${data
+    ? `Taxas de aprovacao de gate: ${data
         .map((d) => `Gate ${d.gate_number} ${Math.round(d.rate)}%`)
         .join(', ')}`
-    : 'No gate data available'
+    : 'Nenhum dado de gate disponivel'
 
   return (
     <Card>
