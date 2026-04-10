@@ -15,11 +15,11 @@ Requirements for UI/UX Overhaul milestone. Each maps to roadmap phases.
 ### Navegacao
 
 - [x] **NAV-01**: Operador navega entre todas as secoes via sidebar persistente (Dashboard, Clientes, Custos, Analytics, Templates) — Validated in Phase 16
-- [ ] **NAV-02**: Operador ve breadcrumbs em paginas de detalhe mostrando hierarquia (ex: Dashboard > Clientes > Joao Silva > Editar)
+- [x] **NAV-02**: Operador ve breadcrumbs em paginas de detalhe mostrando hierarquia (ex: Dashboard > Clientes > Joao Silva > Editar) — Validated in Phase 17
 
 ### Visual
 
-- [ ] **VIS-01**: Cada fase do pipeline tem cor distinta aplicada no Kanban, accordion de pipeline, e badges de status
+- [x] **VIS-01**: Cada fase do pipeline tem cor distinta aplicada no Kanban, accordion de pipeline, e badges de status — Validated in Phase 17
 - [x] **VIS-02**: App tem identidade visual definida (cor primaria, accent, area de logo no sidebar/header) — Validated in Phase 16
 - [ ] **VIS-03**: Empty states exibem ilustracao/icone relevante e CTA claro orientando o operador
 

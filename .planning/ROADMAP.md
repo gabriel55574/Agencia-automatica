@@ -40,7 +40,7 @@
 **Milestone Goal:** Transformar o frontend de wireframe funcional em interface operacional profissional — traduzida para PT-BR, com navegacao completa, identidade visual, e UX otimizada para operador solo gerenciando 15+ clientes.
 
 - [x] **Phase 16: Brand Identity & Sidebar Layout** - Define visual identity tokens and restructure app layout from header nav to persistent sidebar (completed 2026-04-10)
-- [ ] **Phase 17: Phase Colors & Breadcrumbs** - Apply distinct colors per pipeline phase and add hierarchical breadcrumbs to detail pages
+- [x] **Phase 17: Phase Colors & Breadcrumbs** - Apply distinct colors per pipeline phase and add hierarchical breadcrumbs to detail pages (completed 2026-04-10)
 - [ ] **Phase 18: PT-BR Localization** - Translate all UI text across ~45 components to Brazilian Portuguese
 - [ ] **Phase 19: UX Polish** - Add skeleton loading, toast feedback, empty states with CTAs, and tabbed client profile
 
@@ -105,6 +105,6 @@
 | 14. Analytics | v1.1 | 2/2 | Complete | 2026-04-09 |
 | 15. Templates | v1.1 | 2/2 | Complete | 2026-04-09 |
 | 16. Brand Identity & Sidebar Layout | v1.2 | 2/2 | Complete    | 2026-04-10 |
-| 17. Phase Colors & Breadcrumbs | v1.2 | 0/0 | Not started | - |
+| 17. Phase Colors & Breadcrumbs | v1.2 | 2/2 | Complete    | 2026-04-10 |
 | 18. PT-BR Localization | v1.2 | 0/0 | Not started | - |
 | 19. UX Polish | v1.2 | 0/0 | Not started | - |
