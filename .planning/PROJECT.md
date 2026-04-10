@@ -12,8 +12,17 @@ One person manages 15+ clients at agency quality by combining a standardized mar
 
 **Shipped:** v1.2 UI/UX Overhaul (2026-04-10)
 **Previously shipped:** v1.1 Production Hardening & Feature Expansion (2026-04-09)
+**Milestone status:** Archived with accepted audit gaps in Phase 18 verification (`LOC-01`, `LOC-02`)
+**Next step:** Define v1.3 with `/gsd-new-milestone`
 **Codebase:** ~14,200 lines TypeScript across 187 commits
 **Tech stack:** Next.js 16.2, Supabase (Postgres, Auth, Realtime, Storage), Claude Code CLI, Vitest, Recharts, Resend, @react-pdf/renderer
+
+### What v1.2 Delivers
+
+- Velocity visual identity system with Tailwind v4 tokens, Montserrat/Roboto typography, and a persistent dark sidebar replacing the old header navigation
+- Distinct pipeline phase colors and breadcrumb navigation across dashboard and client detail surfaces
+- PT-BR localization sweep across the operator UI, with archive-time audit follow-up still needed for formal Phase 18 verification
+- Skeleton loading screens, reusable empty states, tabbed client profile, and explicit toast feedback for client CRUD flows
 
 ### What v1.1 Delivers
 
@@ -39,13 +48,12 @@ One person manages 15+ clients at agency quality by combining a standardized mar
 - 5-column Kanban dashboard with bottleneck alerts, action panel, Supabase Realtime updates
 - Feedback loop: Phase 5 insights (NPS/CLV/churn) feed into Phase 1 re-execution, cycle tracking
 
-### Known Tech Debt (from v1.0 audit)
+### Open Follow-Ups
 
-- tsx missing from package.json devDependencies (worker can't start — fix: `npm install --save-dev tsx`)
-- Hand-generated TypeScript types need regeneration via `supabase gen types`
-- Integration tests written but never executed against live Supabase
-- `(admin as any)` type casts in gate-review.ts (resolves after type regeneration)
-- Orphaned ProcessRow export (dead code, cosmetic)
+- Close or explicitly rescope the accepted Phase 18 verification gap for `LOC-01` and `LOC-02`
+- Complete Nyquist validation coverage for Phases 16-19
+- Normalize legacy summary metadata and traceability bookkeeping so future milestone audits are machine-consistent
+- Decide whether global client search and keyboard shortcuts become v1.3 priorities
 
 ## Requirements
 
@@ -90,25 +98,33 @@ One person manages 15+ clients at agency quality by combining a standardized mar
 - FEED-01: Phase 5 outputs as context in Phase 1 re-run — v1.0
 - FEED-02: NPS/CLV/churn surfaced in Phase 1 — v1.0
 - FEED-03: Cycle tracking visible on client profile — v1.0
+- NAV-01: Sidebar persistente com navegacao completa — v1.2
+- NAV-02: Breadcrumbs nas paginas de detalhe — v1.2
+- VIS-01: Cores distintas por fase no Kanban, accordion e badges — v1.2
+- VIS-02: Identidade visual Velocity com tokens, tipografia e area de logo — v1.2
+- VIS-03: Empty states com icone relevante e CTA claro — v1.2
+- UX-01: Skeleton loading em todas as rotas do dashboard — v1.2
+- UX-02: Toast feedback apos acoes principais — v1.2
+- UX-03: Client profile em tabs (Pipeline / Outputs / Briefing) — v1.2
 
 ### Active
 
-- [ ] Traducao completa para PT-BR (~45 componentes)
-- [x] Sidebar com navegacao completa substituindo header fino — Validated in Phase 16: Brand Identity & Sidebar Layout
-- [ ] Cores por fase no Kanban e pipeline (5 fases distintas)
-- [ ] Breadcrumbs em paginas internas
-- [x] Loading states (skeleton screens) em todas as rotas — Validated in Phase 19: UX Polish
-- [x] Empty states com ilustracoes e CTAs claros — Validated in Phase 19: UX Polish
-- [x] Tabs no client profile (Pipeline / Outputs / Briefing) — Validated in Phase 19: UX Polish
+- [ ] Fechar a lacuna de verificacao da localizacao PT-BR (`LOC-01`, `LOC-02`) ou reescopar formalmente para o proximo milestone
 - [ ] Busca global de clientes
-- [x] Toast feedback apos acoes (criar/editar/deletar/arquivar) — Validated in Phase 19: UX Polish
-- [x] Identidade visual (logo, cor de marca, hierarquia tipografica) — Validated in Phase 16: Brand Identity & Sidebar Layout
+- [ ] Keyboard shortcuts para acoes frequentes
 
-## Current Milestone: v1.2 UI/UX Overhaul
+## Next Milestone Prep
 
-**Goal:** Transformar o frontend de wireframe funcional em interface operacional profissional — traduzida para PT-BR, com navegacao completa, identidade visual, e UX otimizada para operador solo gerenciando 15+ clientes.
+**Status:** No active milestone. `v1.2` is archived and the next planning cycle has not started.
 
-**Target features:**
+**Carry-over goals:**
+- Resolve the accepted v1.2 audit gap around PT-BR localization verification
+- Decide the scope for client search, keyboard shortcuts, and any remaining operator productivity work
+- Reassess tablet/mobile requirements against actual solo-operator usage before committing them to roadmap scope
+
+<details>
+<summary>Archived v1.2 scope</summary>
+
 - Traducao completa para PT-BR (todos os ~45 componentes de UI)
 - Sidebar com navegacao completa (Dashboard, Clientes, Custos, Analytics, Templates)
 - Cores por fase no Kanban e pipeline (5 fases = 5 cores distintas)
@@ -119,6 +135,8 @@ One person manages 15+ clients at agency quality by combining a standardized mar
 - Busca global de clientes
 - Toast feedback apos todas as acoes (criar/editar/deletar/arquivar)
 - Identidade visual (logo, cor de marca, hierarquia tipografica)
+
+</details>
 
 ### Out of Scope
 
@@ -181,4 +199,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-10 after Phase 19 completion*
+*Last updated: 2026-04-10 after archiving v1.2 milestone*

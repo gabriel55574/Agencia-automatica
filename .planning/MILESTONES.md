@@ -1,5 +1,26 @@
 # Milestones
 
+## v1.2 UI/UX Overhaul (Shipped: 2026-04-10)
+
+**Phases completed:** 4 phases, 11 plans, 12 tasks
+
+**Key accomplishments:**
+
+- Full Velocity brand identity injected into Tailwind v4 — 16 color tokens, 12 spacing tokens, 6 radii, 4 shadows, 3 transitions, plus Montserrat/Roboto font swap
+- Persistent dark sidebar with 5 nav items, Lucide icons, Electric Lime active state, mobile hamburger overlay — fully replacing horizontal header
+- 6 content-shaped skeleton loading screens for all dashboard routes using animate-pulse placeholders that match actual page layouts
+- Reusable EmptyState component with Lucide icons and PT-BR copy integrated into all 6 dashboard locations
+- Client profile restructured from linear scroll into Pipeline/Outputs/Briefing tabs with instant client-side switching
+- Client CRUD flows now surface PT-BR toast feedback across create, update, archive, restore, and clone while preserving fresh data through server-side revalidation and client-side navigation
+
+**Known gaps accepted at archive:**
+
+- `LOC-01` and `LOC-02` remain audit-blocked because Phase 18 never produced `18-VERIFICATION.md`, even though implementation evidence exists in Phase 18 summaries and current code.
+- Nyquist validation remains incomplete for Phases 16-19 (`16` and `18` missing validation files; `17` and `19` still marked non-compliant).
+- Full audit report: `milestones/v1.2-MILESTONE-AUDIT.md`
+
+---
+
 ## v1.1 Production Hardening & Feature Expansion (Shipped: 2026-04-09)
 
 **Phases completed:** 6 phases, 12 plans, 31 tasks
