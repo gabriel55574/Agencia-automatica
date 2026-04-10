@@ -41,7 +41,7 @@ export function BudgetSettingDialog({
 
   function handleSave() {
     if (!isValid) {
-      setError('Minimum budget is 1,000 tokens')
+      setError('Orcamento minimo e 1.000 tokens')
       return
     }
     setError(null)
@@ -50,7 +50,7 @@ export function BudgetSettingDialog({
       if ('error' in result) {
         setError(result.error)
       } else {
-        toast(`Budget saved: ${processName} set to ${formatTokensFull(budgetNum)} tokens`)
+        toast(`Orcamento salvo: ${processName} definido para ${formatTokensFull(budgetNum)} tokens`)
         setOpen(false)
       }
     })
@@ -62,7 +62,7 @@ export function BudgetSettingDialog({
       if ('error' in result) {
         setError(result.error)
       } else {
-        toast(`Budget removed for ${processName}`)
+        toast(`Orcamento removido para ${processName}`)
         setOpen(false)
         setShowRemoveConfirm(false)
         setBudget('')
@@ -94,12 +94,12 @@ export function BudgetSettingDialog({
             <Settings2 className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Edit Budget</TooltipContent>
+        <TooltipContent>Editar Orcamento</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   ) : (
     <Button variant="outline" size="sm">
-      Set Budget
+      Definir Orcamento
     </Button>
   )
 
@@ -109,7 +109,7 @@ export function BudgetSettingDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
-            Set Token Budget
+            Definir Orcamento de Tokens
           </DialogTitle>
           <p className="text-sm text-zinc-500">
             Process: {processName}
@@ -118,7 +118,7 @@ export function BudgetSettingDialog({
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="token-budget">Token Limit</Label>
+            <Label htmlFor="token-budget">Limite de Tokens</Label>
             <Input
               id="token-budget"
               type="number"
@@ -134,7 +134,7 @@ export function BudgetSettingDialog({
             />
             {estimatedCost !== null && (
               <p className="text-xs text-zinc-400">
-                Estimated cost: ~{formatCost(estimatedCost)}
+                Custo estimado: ~{formatCost(estimatedCost)}
               </p>
             )}
             {error && (
@@ -153,13 +153,13 @@ export function BudgetSettingDialog({
                 onClick={() => setShowRemoveConfirm(true)}
                 disabled={isPending}
               >
-                Remove Budget
+                Remover Orcamento
               </Button>
             )}
             {showRemoveConfirm && (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-zinc-500">
-                  Remove budget for {processName}?
+                  Remover orcamento para {processName}?
                 </span>
                 <Button
                   variant="ghost"
@@ -168,7 +168,7 @@ export function BudgetSettingDialog({
                   onClick={handleRemove}
                   disabled={isPending}
                 >
-                  Confirm
+                  Confirmar
                 </Button>
                 <Button
                   variant="ghost"
@@ -177,7 +177,7 @@ export function BudgetSettingDialog({
                   onClick={() => setShowRemoveConfirm(false)}
                   disabled={isPending}
                 >
-                  Cancel
+                  Cancelar
                 </Button>
               </div>
             )}
@@ -188,13 +188,13 @@ export function BudgetSettingDialog({
               onClick={() => setOpen(false)}
               disabled={isPending}
             >
-              Discard Changes
+              Descartar Alteracoes
             </Button>
             <Button
               onClick={handleSave}
               disabled={!isValid || isPending}
             >
-              Save Budget
+              Salvar Orcamento
             </Button>
           </div>
         </div>

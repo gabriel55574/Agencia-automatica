@@ -23,15 +23,15 @@ export function TrendChart({ data }: TrendChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Trends</CardTitle>
-        <CardDescription>Monthly performance over time</CardDescription>
+        <CardTitle className="text-base">Tendencias</CardTitle>
+        <CardDescription>Desempenho mensal ao longo do tempo</CardDescription>
       </CardHeader>
       <CardContent>
         {!hasEnoughData ? (
           <div className="py-8 text-center">
-            <p className="text-sm font-medium text-zinc-700">Not enough data for trends</p>
+            <p className="text-sm font-medium text-zinc-700">Dados insuficientes para tendencias</p>
             <p className="text-xs text-zinc-500 mt-1">
-              Trends appear after 2+ months of operation.
+              As tendencias aparecem apos 2+ meses de operacao.
             </p>
           </div>
         ) : (
@@ -54,7 +54,7 @@ export function TrendChart({ data }: TrendChartProps) {
                   axisLine={false}
                   tickLine={false}
                   label={{
-                    value: 'Days',
+                    value: 'Dias',
                     angle: -90,
                     position: 'insideLeft',
                     style: { fontSize: 11, fill: '#a1a1aa' },
@@ -86,7 +86,7 @@ export function TrendChart({ data }: TrendChartProps) {
                   formatter={(value, name) => {
                     if (value == null) return ['N/A', name]
                     const num = Number(value)
-                    if (name === 'Avg Phase Duration') return [`${num.toFixed(1)} days`, name]
+                    if (name === 'Duracao Media por Fase') return [`${num.toFixed(1)} dias`, name]
                     return [`${num.toFixed(1)}%`, name]
                   }}
                 />
@@ -99,7 +99,7 @@ export function TrendChart({ data }: TrendChartProps) {
                   dataKey="avg_phase_duration"
                   stroke="#3b82f6"
                   strokeWidth={2}
-                  name="Avg Phase Duration"
+                  name="Duracao Media por Fase"
                   dot={false}
                   activeDot={{ r: 4 }}
                   connectNulls
@@ -110,7 +110,7 @@ export function TrendChart({ data }: TrendChartProps) {
                   dataKey="gate_approval_rate"
                   stroke="#10b981"
                   strokeWidth={2}
-                  name="Gate Approval Rate"
+                  name="Taxa de Aprovacao de Gate"
                   dot={false}
                   activeDot={{ r: 4 }}
                   connectNulls

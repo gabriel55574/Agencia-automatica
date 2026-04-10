@@ -15,7 +15,7 @@ export function BottleneckAlert({ stuckClients }: BottleneckAlertProps) {
       <div className="flex items-center gap-2 mb-2">
         <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
         <h2 className="text-sm font-semibold text-amber-900">
-          {stuckClients.length} client(s) need attention
+          {stuckClients.length} cliente(s) precisam de atencao
         </h2>
       </div>
       <ul className="space-y-1 ml-7">
@@ -25,7 +25,7 @@ export function BottleneckAlert({ stuckClients }: BottleneckAlertProps) {
               href={`/clients/${client.id}`}
               className="text-sm text-amber-800 hover:underline"
             >
-              {client.name} ({client.company}) &mdash; stuck in{' '}
+              {client.name} ({client.company}) &mdash; parado em{' '}
               {PHASE_NAMES[client.current_phase_number]}
             </Link>
           </li>

@@ -28,9 +28,9 @@ const STATUS_COLORS: Record<GateRateStatus, { bar: string; badge: string; text: 
 }
 
 const STATUS_LABELS: Record<GateRateStatus, string> = {
-  healthy: 'Healthy',
-  moderate: 'Moderate',
-  poor: 'Poor',
+  healthy: 'Saudavel',
+  moderate: 'Moderado',
+  poor: 'Ruim',
 }
 
 export function GateApprovalChart({ data }: GateApprovalChartProps) {
@@ -45,15 +45,15 @@ export function GateApprovalChart({ data }: GateApprovalChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Gate Approval Rates</CardTitle>
-        <CardDescription>First-pass approval rate per gate</CardDescription>
+        <CardTitle className="text-base">Taxas de Aprovacao de Gate</CardTitle>
+        <CardDescription>Taxa de aprovacao na primeira avaliacao por gate</CardDescription>
       </CardHeader>
       <CardContent>
         {!hasData ? (
           <div className="py-8 text-center">
-            <p className="text-sm font-medium text-zinc-700">No gate data yet</p>
+            <p className="text-sm font-medium text-zinc-700">Nenhum dado de gate ainda</p>
             <p className="text-xs text-zinc-500 mt-1">
-              Gate approval rates appear after the first quality gate review.
+              As taxas de aprovacao aparecem apos a primeira revisao de gate.
             </p>
           </div>
         ) : (
@@ -86,7 +86,7 @@ export function GateApprovalChart({ data }: GateApprovalChartProps) {
                     />
                   </div>
                   <p className="text-xs text-zinc-400">
-                    {gate.first_pass_count} of {gate.total_evaluated} gates passed first try
+                    {gate.first_pass_count} de {gate.total_evaluated} gates aprovados na primeira tentativa
                   </p>
                 </div>
               )

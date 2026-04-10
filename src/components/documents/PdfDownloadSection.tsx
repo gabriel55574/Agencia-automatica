@@ -40,7 +40,7 @@ export function PdfDownloadSection({
     >
       {({ loading }) => (
         <Button variant="outline" size="sm" disabled={loading}>
-          {loading ? 'Generating PDF...' : 'Download PDF'}
+          {loading ? 'Gerando PDF...' : 'Baixar PDF'}
         </Button>
       )}
     </PDFDownloadLink>

@@ -45,10 +45,10 @@ interface ProcessAccordionRowProps {
 }
 
 function AccordionStatusBadge({ status }: { status: ProcessRowType['status'] }) {
-  if (status === 'pending') return <Badge variant="secondary">Pending</Badge>
-  if (status === 'active') return <Badge className="bg-blue-100 text-blue-700 border-blue-200">Active</Badge>
-  if (status === 'completed') return <Badge className="bg-green-100 text-green-700 border-green-200">Completed</Badge>
-  return <Badge className="bg-red-100 text-red-700 border-red-200 font-semibold">Needs Rework</Badge>
+  if (status === 'pending') return <Badge variant="secondary">Pendente</Badge>
+  if (status === 'active') return <Badge className="bg-blue-100 text-blue-700 border-blue-200">Ativo</Badge>
+  if (status === 'completed') return <Badge className="bg-green-100 text-green-700 border-green-200">Concluido</Badge>
+  return <Badge className="bg-red-100 text-red-700 border-red-200 font-semibold">Retrabalho Necessario</Badge>
 }
 
 export function ProcessAccordionRow({
@@ -91,10 +91,11 @@ export function ProcessAccordionRow({
           <dl className="space-y-3 text-sm">
             <div>
               <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Squad</dt>
+
               <dd className="text-zinc-700 capitalize">{definition.squad}</dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Required Inputs</dt>
+              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Entradas Necessarias</dt>
               <dd>
                 <ul className="list-disc list-inside space-y-0.5 text-zinc-600">
                   {definition.inputs.map((input, i) => <li key={i}>{input}</li>)}
@@ -102,7 +103,7 @@ export function ProcessAccordionRow({
               </dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Execution Steps</dt>
+              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Etapas de Execucao</dt>
               <dd>
                 <ol className="list-decimal list-inside space-y-0.5 text-zinc-600">
                   {definition.steps.map((step, i) => <li key={i}>{step}</li>)}
@@ -110,7 +111,7 @@ export function ProcessAccordionRow({
               </dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Output Checklist</dt>
+              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Checklist de Output</dt>
               <dd>
                 <ul className="space-y-0.5 text-zinc-600">
                   {definition.checklist.map((item, i) => (
@@ -124,7 +125,7 @@ export function ProcessAccordionRow({
             </div>
           </dl>
         ) : (
-          <p className="text-sm text-zinc-400">No definition available for this process.</p>
+          <p className="text-sm text-zinc-400">Nenhuma definicao disponivel para este processo.</p>
         )}
 
         {/* Run Squad button (Phase 5) — between definition and output sections */}
@@ -164,7 +165,7 @@ export function ProcessAccordionRow({
         {latestJob?.status === 'running' && (
           <div className="mt-4 flex items-center gap-2">
             <Badge className="bg-amber-100 text-amber-700 border-amber-200">running</Badge>
-            <span className="text-sm text-zinc-500">Squad is executing...</span>
+            <span className="text-sm text-zinc-500">Squad executando...</span>
           </div>
         )}
 
@@ -172,7 +173,7 @@ export function ProcessAccordionRow({
         {latestJob?.status === 'completed' && (
           <div className="mt-4">
             <h4 className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-2">
-              Latest Output
+              Ultimo Output
             </h4>
             <StructuredOutputView
               structuredOutput={latestJob.structured_output}
@@ -252,7 +253,7 @@ export function ProcessRow({ process, activeJob, onViewProgress }: ProcessRowPro
               onClick={() => onViewProgress(activeJob.id)}
               className="text-xs h-7 px-2"
             >
-              View ►
+              Ver ►
             </Button>
           </>
         )}

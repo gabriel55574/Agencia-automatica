@@ -35,15 +35,15 @@ export function PhasePerformanceChart({ data }: PhasePerformanceChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Phase Performance</CardTitle>
-        <CardDescription>Average days per phase</CardDescription>
+        <CardTitle className="text-base">Desempenho por Fase</CardTitle>
+        <CardDescription>Media de dias por fase</CardDescription>
       </CardHeader>
       <CardContent>
         {!hasData ? (
           <div className="py-8 text-center">
-            <p className="text-sm font-medium text-zinc-700">No phase data yet</p>
+            <p className="text-sm font-medium text-zinc-700">Nenhum dado de fase ainda</p>
             <p className="text-xs text-zinc-500 mt-1">
-              Phase performance appears after clients complete at least one phase.
+              O desempenho por fase aparece apos clientes completarem pelo menos uma fase.
             </p>
           </div>
         ) : (
@@ -60,7 +60,7 @@ export function PhasePerformanceChart({ data }: PhasePerformanceChartProps) {
                 />
                 <XAxis type="number" hide />
                 <Tooltip
-                  formatter={(value) => [`${Number(value).toFixed(1)} days`, 'Average']}
+                  formatter={(value) => [`${Number(value).toFixed(1)} dias`, 'Media']}
                   contentStyle={{
                     backgroundColor: '#ffffff',
                     border: '1px solid #e4e4e7',

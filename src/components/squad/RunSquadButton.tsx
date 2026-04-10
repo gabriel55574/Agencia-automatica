@@ -24,6 +24,7 @@ export interface RunSquadButtonProps {
     prompt: string
     squadType: string
     processId: string
+    processNumber: number
     clientId: string
     phaseId: string
   }) => void
@@ -88,11 +89,12 @@ export function RunSquadButton({
         prompt: result.prompt,
         squadType: result.squadType,
         processId,
+        processNumber,
         clientId,
         phaseId,
       })
     } catch (err) {
-      toast.error('Failed to assemble squad context')
+      toast.error('Falha ao montar contexto do squad')
     } finally {
       setLoading(false)
     }
@@ -104,17 +106,17 @@ export function RunSquadButton({
       size="sm"
       onClick={handleClick}
       disabled={loading}
-      title={`Run Squad ${squadLabel}`}
+      title={`Executar Squad ${squadLabel}`}
     >
       {loading ? (
         <>
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          Assembling...
+          Montando...
         </>
       ) : (
         <>
           <Play className="h-3.5 w-3.5" />
-          Run Squad
+          Executar Squad
         </>
       )}
     </Button>

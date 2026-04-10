@@ -35,7 +35,7 @@ function computeDuration(startedAt: string | null, completedAt: string | null): 
 
 export function RunHistoryList({ runs, onSelectRun, selectedRunId }: RunHistoryListProps) {
   if (runs.length === 0) {
-    return <p className="text-sm text-zinc-400 py-2">No completed runs.</p>
+    return <p className="text-sm text-zinc-400 py-2">Nenhuma execucao concluida.</p>
   }
 
   return (
@@ -58,7 +58,7 @@ export function RunHistoryList({ runs, onSelectRun, selectedRunId }: RunHistoryL
                 {computeDuration(run.startedAt, run.completedAt)}
               </span>
               <Badge variant={hasStructured ? 'default' : 'secondary'} className="shrink-0">
-                {hasStructured ? 'Structured' : 'Raw only'}
+                {hasStructured ? 'Estruturado' : 'Apenas bruto'}
               </Badge>
             </div>
             <Button
@@ -66,7 +66,7 @@ export function RunHistoryList({ runs, onSelectRun, selectedRunId }: RunHistoryL
               size="xs"
               onClick={() => onSelectRun(run)}
             >
-              View
+              Ver
             </Button>
           </div>
         )

@@ -11,7 +11,7 @@ import { format } from 'date-fns'
 
 const PdfDownloadSection = dynamic(() => import('./PdfDownloadSection'), {
   ssr: false,
-  loading: () => <span className="text-xs text-zinc-400">Loading PDF...</span>,
+  loading: () => <span className="text-xs text-zinc-400">Carregando PDF...</span>,
 })
 
 export type OutputViewerRun = {
@@ -101,15 +101,15 @@ export function OutputViewer({ run, processName, phaseName, clientName, onClose,
           {format(new Date(run.createdAt), 'MMM d, yyyy HH:mm')}
         </span>
         <span className="text-zinc-400">
-          Duration: {computeDuration(run.startedAt, run.completedAt)}
+          Duracao: {computeDuration(run.startedAt, run.completedAt)}
         </span>
       </div>
 
       {/* Content area with Tabs */}
       <Tabs defaultValue="structured" className="px-4 py-3">
         <TabsList>
-          <TabsTrigger value="structured">Structured</TabsTrigger>
-          <TabsTrigger value="raw">Raw</TabsTrigger>
+          <TabsTrigger value="structured">Estruturado</TabsTrigger>
+          <TabsTrigger value="raw">Bruto</TabsTrigger>
         </TabsList>
 
         <TabsContent value="structured" className="mt-3">
@@ -128,7 +128,7 @@ export function OutputViewer({ run, processName, phaseName, clientName, onClose,
               {run.output}
             </pre>
           ) : (
-            <p className="text-sm text-zinc-400 py-4">No raw output available.</p>
+            <p className="text-sm text-zinc-400 py-4">Nenhum output bruto disponivel.</p>
           )}
         </TabsContent>
       </Tabs>
@@ -141,7 +141,7 @@ export function OutputViewer({ run, processName, phaseName, clientName, onClose,
           onClick={handleDownloadRaw}
           disabled={!run.output}
         >
-          Download Raw (.txt)
+          Baixar Bruto (.txt)
         </Button>
         {showPdf ? (
           <PdfDownloadSection
@@ -155,7 +155,7 @@ export function OutputViewer({ run, processName, phaseName, clientName, onClose,
           />
         ) : (
           <Button variant="outline" size="sm" onClick={() => setShowPdf(true)}>
-            Export PDF
+            Exportar PDF
           </Button>
         )}
       </div>

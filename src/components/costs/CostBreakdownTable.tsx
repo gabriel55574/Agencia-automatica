@@ -55,10 +55,10 @@ export function CostBreakdownTable({ rows }: CostBreakdownTableProps) {
   if (rows.length === 0) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-lg font-semibold text-zinc-900 mb-2">No cost data yet</h3>
+        <h3 className="text-lg font-semibold text-zinc-900 mb-2">Nenhum dado de custo ainda</h3>
         <p className="text-sm text-zinc-500">
-          Cost tracking begins after your first squad run completes.
-          Run a squad for any client to start seeing cost data here.
+          O rastreamento de custos comeca apos a primeira execucao de squad concluir.
+          Execute um squad para qualquer cliente para comecar a ver os dados de custo aqui.
         </p>
       </div>
     )
@@ -74,7 +74,7 @@ export function CostBreakdownTable({ rows }: CostBreakdownTableProps) {
               className="flex items-center font-semibold text-zinc-900 hover:text-zinc-700"
               aria-sort={getAriaSortValue('client_name')}
             >
-              Client <SortIcon field="client_name" />
+              Cliente <SortIcon field="client_name" />
             </button>
           </TableHead>
           <TableHead className="text-right">
@@ -83,7 +83,7 @@ export function CostBreakdownTable({ rows }: CostBreakdownTableProps) {
               className="flex items-center justify-end font-semibold text-zinc-900 hover:text-zinc-700 w-full"
               aria-sort={getAriaSortValue('run_count')}
             >
-              Runs <SortIcon field="run_count" />
+              Execucoes <SortIcon field="run_count" />
             </button>
           </TableHead>
           <TableHead className="text-right">
@@ -101,10 +101,10 @@ export function CostBreakdownTable({ rows }: CostBreakdownTableProps) {
               className="flex items-center justify-end font-semibold text-zinc-900 hover:text-zinc-700 w-full"
               aria-sort={getAriaSortValue('total_cost')}
             >
-              Cost <SortIcon field="total_cost" />
+              Custo <SortIcon field="total_cost" />
             </button>
           </TableHead>
-          <TableHead className="text-right hidden md:table-cell">Trend</TableHead>
+          <TableHead className="text-right hidden md:table-cell">Tendencia</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

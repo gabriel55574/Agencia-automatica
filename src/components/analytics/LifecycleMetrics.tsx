@@ -16,15 +16,15 @@ export function LifecycleMetrics({ data }: LifecycleMetricsProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Client Lifecycle</CardTitle>
-        <CardDescription>Time from intake to Phase 5 completion</CardDescription>
+        <CardTitle className="text-base">Ciclo de Vida do Cliente</CardTitle>
+        <CardDescription>Tempo do inicio ate a conclusao da Fase 5</CardDescription>
       </CardHeader>
       <CardContent>
         {!hasData ? (
           <div className="py-8 text-center">
-            <p className="text-sm font-medium text-zinc-700">No completed lifecycles</p>
+            <p className="text-sm font-medium text-zinc-700">Nenhum ciclo completo</p>
             <p className="text-xs text-zinc-500 mt-1">
-              Lifecycle metrics appear after a client completes all 5 phases.
+              As metricas de ciclo de vida aparecem apos um cliente completar todas as 5 fases.
             </p>
           </div>
         ) : (
@@ -34,10 +34,10 @@ export function LifecycleMetrics({ data }: LifecycleMetricsProps) {
                 <span className="text-3xl font-semibold font-mono text-zinc-900">
                   {avg_days.toFixed(1)}
                 </span>
-                <span className="text-sm text-zinc-500">days</span>
+                <span className="text-sm text-zinc-500">dias</span>
               </div>
               <p className="text-sm text-zinc-500 mt-1">
-                {completed_clients.length} clients completed full cycle
+                {completed_clients.length} clientes completaram o ciclo completo
               </p>
             </div>
 
@@ -56,7 +56,7 @@ export function LifecycleMetrics({ data }: LifecycleMetricsProps) {
                 </div>
               ))}
               {remaining > 0 && (
-                <p className="text-xs text-zinc-400">and {remaining} more</p>
+                <p className="text-xs text-zinc-400">e mais {remaining}</p>
               )}
             </div>
           </div>

@@ -39,12 +39,12 @@ export function TemplateList({ templates: initialTemplates }: TemplateListProps)
       if ('error' in result && result.error) {
         toast.error(result.error)
       } else {
-        toast.success('Template deleted')
+        toast.success('Template excluido')
         setTemplates((prev) => prev.filter((t) => t.id !== deleteId))
         setDeleteId(null)
       }
     } catch {
-      toast.error('Failed to delete template')
+      toast.error('Falha ao excluir template')
     } finally {
       setDeleting(false)
     }
@@ -52,7 +52,7 @@ export function TemplateList({ templates: initialTemplates }: TemplateListProps)
 
   function getProcessName(processNumber: number): string {
     const def = PROCESS_DEFINITIONS[processNumber]
-    return def ? def.name : `Process ${processNumber}`
+    return def ? def.name : `Processo ${processNumber}`
   }
 
   return (
@@ -74,7 +74,7 @@ export function TemplateList({ templates: initialTemplates }: TemplateListProps)
                 <p className="text-sm text-zinc-500 line-clamp-2">{template.description}</p>
               )}
               <p className="text-xs text-zinc-400 mt-1">
-                Created {new Date(template.created_at).toLocaleDateString()}
+                Criado em {new Date(template.created_at).toLocaleDateString('pt-BR')}
               </p>
             </div>
             <Button
@@ -93,23 +93,23 @@ export function TemplateList({ templates: initialTemplates }: TemplateListProps)
       <Dialog open={deleteId !== null} onOpenChange={(isOpen) => { if (!isOpen) setDeleteId(null) }}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Delete Template</DialogTitle>
+            <DialogTitle>Excluir Template</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-zinc-600">
-            Are you sure you want to delete this template? This action cannot be undone.
+            Tem certeza que deseja excluir este template? Esta acao nao pode ser desfeita.
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteId(null)} disabled={deleting}>
-              Cancel
+              Cancelar
             </Button>
             <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
               {deleting ? (
                 <>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  Deleting...
+                  Excluindo...
                 </>
               ) : (
-                'Delete'
+                'Excluir'
               )}
             </Button>
           </DialogFooter>

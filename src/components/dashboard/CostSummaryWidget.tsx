@@ -15,12 +15,12 @@ export function CostSummaryWidget({ summary, month }: CostSummaryWidgetProps) {
     return (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <h3 className="text-base font-semibold text-zinc-900">Cost Summary</h3>
+          <h3 className="text-base font-semibold text-zinc-900">Resumo de Custos</h3>
         </CardHeader>
         <CardContent>
-          <p className="text-sm font-semibold text-zinc-700 mb-1">No spend this month</p>
+          <p className="text-sm font-semibold text-zinc-700 mb-1">Sem gastos neste mes</p>
           <p className="text-xs text-zinc-500">
-            Run a squad to start tracking costs.
+            Execute um squad para comecar a rastrear custos.
           </p>
         </CardContent>
       </Card>
@@ -30,10 +30,10 @@ export function CostSummaryWidget({ summary, month }: CostSummaryWidgetProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <h3 className="text-base font-semibold text-zinc-900">Cost Summary</h3>
+        <h3 className="text-base font-semibold text-zinc-900">Resumo de Custos</h3>
         <Link href={`/costs?month=${month}`}>
           <Button variant="link" size="sm" className="text-sm px-0">
-            View All Costs &rarr;
+            Ver Todos os Custos &rarr;
           </Button>
         </Link>
       </CardHeader>
@@ -48,7 +48,7 @@ export function CostSummaryWidget({ summary, month }: CostSummaryWidgetProps) {
         {summary.top_clients.length > 0 && (
           <div>
             <p className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-2">
-              Top clients
+              Maiores clientes
             </p>
             <ul className="space-y-1.5">
               {summary.top_clients.map((client, i) => (

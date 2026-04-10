@@ -42,12 +42,12 @@ interface GateSectionProps {
 
 function GateStatusBadge({ gate }: { gate: GateRow }) {
   if (gate.status === 'approved') {
-    return <Badge className="bg-green-100 text-green-700 border-green-200">Gate {gate.gate_number} — Approved</Badge>
+    return <Badge className="bg-green-100 text-green-700 border-green-200">Gate {gate.gate_number} — Aprovado</Badge>
   }
   if (gate.status === 'rejected') {
-    return <Badge className="bg-red-100 text-red-700 border-red-200">Gate {gate.gate_number} — Rejected</Badge>
+    return <Badge className="bg-red-100 text-red-700 border-red-200">Gate {gate.gate_number} — Rejeitado</Badge>
   }
-  return <Badge variant="secondary">Gate {gate.gate_number} — Pending</Badge>
+  return <Badge variant="secondary">Gate {gate.gate_number} — Pendente</Badge>
 }
 
 /** Check whether the verdict has any failed items (for reject dialog pre-selection per D-13) */
@@ -102,7 +102,7 @@ export function GateSection({ gate, phaseProcesses, clientId, clientName, phaseI
       if ('error' in result) {
         toast.error(result.error)
       } else {
-        toast.success('Gate review started')
+        toast.success('Revisao do gate iniciada')
       }
     })
   }
@@ -150,10 +150,10 @@ export function GateSection({ gate, phaseProcesses, clientId, clientName, phaseI
             size="sm"
             variant="outline"
             disabled={!allProcessesCompleted || isPendingReview}
-            title={!allProcessesCompleted ? 'Complete all processes before running gate review' : undefined}
+            title={!allProcessesCompleted ? 'Complete todos os processos antes de executar a revisao do gate' : undefined}
             onClick={handleRunReview}
           >
-            {isPendingReview ? 'Running Review...' : 'Run Gate Review'}
+            {isPendingReview ? 'Executando Revisao...' : 'Executar Revisao do Gate'}
           </Button>
         </div>
       )}
@@ -170,19 +170,19 @@ export function GateSection({ gate, phaseProcesses, clientId, clientName, phaseI
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button size="sm" disabled={isPendingApprove}>
-                  {isPendingApprove ? 'Approving...' : 'Approve Gate'}
+                  {isPendingApprove ? 'Aprovando...' : 'Aprovar Gate'}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Approve Gate {gate.gate_number}?</AlertDialogTitle>
+                  <AlertDialogTitle>Aprovar Gate {gate.gate_number}?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will advance {clientName} to Phase {gate.gate_number + 1}. This action cannot be undone.
+                    Isso avancara {clientName} para a Fase {gate.gate_number + 1}. Esta acao nao pode ser desfeita.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleApprove}>Approve Gate</AlertDialogAction>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleApprove}>Aprovar Gate</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -197,15 +197,15 @@ export function GateSection({ gate, phaseProcesses, clientId, clientName, phaseI
                 disabled={isPendingReject}
                 onClick={handleOpenReject}
               >
-                Reject Gate
+                Rejeitar Gate
               </Button>
               <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Reject Gate {gate.gate_number}</DialogTitle>
+                    <DialogTitle>Rejeitar Gate {gate.gate_number}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4 py-2">
-                    <p className="text-sm text-zinc-600">Select which process(es) need revision:</p>
+                    <p className="text-sm text-zinc-600">Selecione qual(is) processo(s) precisam de revisao:</p>
                     <div className="space-y-2">
                       {phaseProcesses.map(proc => (
                         <label key={proc.id} className="flex items-center gap-2 cursor-pointer">
@@ -218,27 +218,27 @@ export function GateSection({ gate, phaseProcesses, clientId, clientName, phaseI
                       ))}
                     </div>
                     <div>
-                      <label className="text-sm text-zinc-600 block mb-1">Notes (optional)</label>
+                      <label className="text-sm text-zinc-600 block mb-1">Observacoes (opcional)</label>
                       <textarea
                         className="w-full rounded-md border border-zinc-200 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-zinc-400"
                         rows={3}
                         maxLength={2000}
                         value={notes}
                         onChange={e => setNotes(e.target.value)}
-                        placeholder="Add context for the rejection..."
+                        placeholder="Adicione contexto para a rejeicao..."
                       />
                     </div>
                   </div>
                   <DialogFooter>
                     <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
+                      <Button variant="outline">Cancelar</Button>
                     </DialogClose>
                     <Button
                       variant="destructive"
                       disabled={selectedIds.length === 0 || isPendingReject}
                       onClick={handleReject}
                     >
-                      {isPendingReject ? 'Rejecting...' : 'Confirm Rejection'}
+                      {isPendingReject ? 'Rejeitando...' : 'Confirmar Rejeicao'}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
