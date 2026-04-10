@@ -14,13 +14,13 @@ Requirements for UI/UX Overhaul milestone. Each maps to roadmap phases.
 
 ### Navegacao
 
-- [ ] **NAV-01**: Operador navega entre todas as secoes via sidebar persistente (Dashboard, Clientes, Custos, Analytics, Templates)
+- [x] **NAV-01**: Operador navega entre todas as secoes via sidebar persistente (Dashboard, Clientes, Custos, Analytics, Templates) — Validated in Phase 16
 - [ ] **NAV-02**: Operador ve breadcrumbs em paginas de detalhe mostrando hierarquia (ex: Dashboard > Clientes > Joao Silva > Editar)
 
 ### Visual
 
 - [ ] **VIS-01**: Cada fase do pipeline tem cor distinta aplicada no Kanban, accordion de pipeline, e badges de status
-- [ ] **VIS-02**: App tem identidade visual definida (cor primaria, accent, area de logo no sidebar/header)
+- [x] **VIS-02**: App tem identidade visual definida (cor primaria, accent, area de logo no sidebar/header) — Validated in Phase 16
 - [ ] **VIS-03**: Empty states exibem ilustracao/icone relevante e CTA claro orientando o operador
 
 ### UX/Feedback
@@ -65,10 +65,10 @@ Deferred to v1.3+. Tracked but not in current roadmap.
 |-------------|-------|--------|
 | LOC-01 | Phase 18 | Pending |
 | LOC-02 | Phase 18 | Pending |
-| NAV-01 | Phase 16 | Pending |
+| NAV-01 | Phase 16 | Complete |
 | NAV-02 | Phase 17 | Pending |
 | VIS-01 | Phase 17 | Pending |
-| VIS-02 | Phase 16 | Pending |
+| VIS-02 | Phase 16 | Complete |
 | VIS-03 | Phase 19 | Pending |
 | UX-01 | Phase 19 | Pending |
 | UX-02 | Phase 19 | Pending |
@@ -81,4 +81,4 @@ Deferred to v1.3+. Tracked but not in current roadmap.
 
 ---
 *Requirements defined: 2026-04-09*
-*Last updated: 2026-04-09 after roadmap creation*
+*Last updated: 2026-04-09 after Phase 16 completion*
