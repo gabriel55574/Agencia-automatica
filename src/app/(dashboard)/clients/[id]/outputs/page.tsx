@@ -139,14 +139,14 @@ export default async function OutputsPage({ params }: OutputsPageProps) {
           <p className="text-sm text-zinc-500">{client.company}</p>
         </div>
         <Link href={`/clients/${client.id}`}>
-          <Button variant="outline" size="sm">Back to Profile</Button>
+          <Button variant="outline" size="sm">Voltar ao Perfil</Button>
         </Link>
       </div>
 
       {!hasAnyRuns ? (
         <div className="py-12 text-center">
-          <p className="text-sm text-zinc-400">No completed outputs yet.</p>
-          <p className="text-xs text-zinc-300 mt-1">Outputs will appear here as squads complete processes.</p>
+          <p className="text-sm text-zinc-400">Nenhum output concluido ainda.</p>
+          <p className="text-xs text-zinc-300 mt-1">Os outputs aparecerao aqui conforme os squads concluirem os processos.</p>
         </div>
       ) : (
         <OutputsBrowser

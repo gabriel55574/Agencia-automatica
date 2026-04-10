@@ -29,13 +29,13 @@ export function ClientCard({ client }: { client: ClientRow }) {
               <p className="text-sm text-zinc-500 truncate">{client.company}</p>
             </div>
             <Badge variant={isArchived ? 'secondary' : 'default'} className="shrink-0">
-              {isArchived ? 'Archived' : 'Active'}
+              {isArchived ? 'Arquivado' : 'Ativo'}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="pt-0">
           <p className="text-sm text-zinc-600">
-            Phase {phaseNum} — {phaseName}
+            Fase {phaseNum} — {phaseName}
           </p>
           <p className="text-xs text-zinc-400 mt-1">{lastActivity}</p>
         </CardContent>

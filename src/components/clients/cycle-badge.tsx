@@ -16,7 +16,7 @@ export function CycleBadge({ cycleNumber }: CycleBadgeProps) {
   if (cycleNumber <= 1) return null
   return (
     <Badge variant="outline" className="text-xs font-medium border-blue-300 text-blue-700 bg-blue-50">
-      Cycle {cycleNumber}
+      Ciclo {cycleNumber}
     </Badge>
   )
 }

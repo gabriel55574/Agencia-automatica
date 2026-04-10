@@ -43,9 +43,9 @@ export function ResetPipelineDialog({ clientId, clientName, canReset }: ResetPip
         variant="outline"
         size="sm"
         disabled
-        title="Client must complete Phase 5 before starting a new cycle"
+        title="O cliente deve completar a Fase 5 antes de iniciar um novo ciclo"
       >
-        Reset Pipeline (New Cycle)
+        Reiniciar Pipeline (Novo Ciclo)
       </Button>
     )
   }
@@ -54,19 +54,19 @@ export function ResetPipelineDialog({ clientId, clientName, canReset }: ResetPip
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="outline" size="sm" className="border-blue-300 text-blue-700 hover:bg-blue-50">
-          Reset Pipeline (New Cycle)
+          Reiniciar Pipeline (Novo Ciclo)
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Start New Cycle for {clientName}?</AlertDialogTitle>
+          <AlertDialogTitle>Iniciar Novo Ciclo para {clientName}?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will start a new pipeline cycle for {clientName}. All existing squad outputs
-            will be preserved. The client will return to Phase 1 (Diagnostico).
+            Isso iniciara um novo ciclo de pipeline para {clientName}. Todos os outputs de squad
+            existentes serao preservados. O cliente voltara para a Fase 1 (Diagnostico).
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction
             className="bg-blue-600 hover:bg-blue-700"
             disabled={isPending}
@@ -78,13 +78,13 @@ export function ResetPipelineDialog({ clientId, clientName, canReset }: ResetPip
                   setError(result.error)
                   toast.error(result.error)
                 } else {
-                  toast.success('Pipeline reset — new cycle started')
+                  toast.success('Pipeline reiniciado — novo ciclo iniciado')
                   router.refresh()
                 }
               })
             }}
           >
-            {isPending ? 'Resetting...' : 'Confirm Reset'}
+            {isPending ? 'Reiniciando...' : 'Confirmar Reinicio'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

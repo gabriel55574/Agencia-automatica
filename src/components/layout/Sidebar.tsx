@@ -14,9 +14,9 @@ import {
 
 const NAV_ITEMS = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/clientes', label: 'Clientes', icon: Users },
-  { href: '/custos', label: 'Custos', icon: DollarSign },
-  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/clients', label: 'Clientes', icon: Users },
+  { href: '/costs', label: 'Custos', icon: DollarSign },
+  { href: '/analytics', label: 'Analise', icon: BarChart3 },
   { href: '/templates', label: 'Templates', icon: FileText },
 ]
 
@@ -51,7 +51,7 @@ export function Sidebar({ signOutAction, className = '' }: SidebarProps) {
       >
         <ul className="space-y-1">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
             const Icon = item.icon
             return (
               <li key={item.href}>

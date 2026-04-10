@@ -24,7 +24,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
 
   if (error) {
     console.error('[ClientsPage] fetch error:', error)
-    return <p className="text-red-600">Failed to load clients.</p>
+    return <p className="text-red-600">Falha ao carregar clientes.</p>
   }
 
   return <ClientGrid clients={clients ?? []} showArchived={showArchived} />

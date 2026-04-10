@@ -17,7 +17,7 @@ export default async function TemplatesPage() {
       <div>
         <h1 className="text-2xl font-bold text-zinc-900">Templates</h1>
         <p className="text-sm text-zinc-500 mt-1">
-          Saved squad outputs that can be used as reference context for future runs.
+          Outputs de squad salvos que podem ser usados como contexto de referencia para futuras execucoes.
         </p>
       </div>
 
@@ -32,9 +32,9 @@ export default async function TemplatesPage() {
         }>} />
       ) : (
         <div className="text-center py-12 text-zinc-400">
-          <p className="text-lg font-medium">No templates yet</p>
+          <p className="text-lg font-medium">Nenhum template ainda</p>
           <p className="text-sm mt-1">
-            Save a squad output as a template from any completed run.
+            Salve um output de squad como template a partir de qualquer execucao concluida.
           </p>
         </div>
       )}

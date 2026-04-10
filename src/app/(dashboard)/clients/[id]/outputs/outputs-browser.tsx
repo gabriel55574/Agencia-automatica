@@ -40,10 +40,10 @@ export function OutputsBrowser({ clientName, clientId, phaseNumbers, byPhase }: 
                 <AccordionTrigger className="text-sm">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">
-                      Phase {phaseNum}: {PHASE_NAMES[phaseNum as PhaseNumber]}
+                      Fase {phaseNum}: {PHASE_NAMES[phaseNum as PhaseNumber]}
                     </span>
                     <Badge variant="secondary" className="text-xs">
-                      {totalRuns} {totalRuns === 1 ? 'run' : 'runs'}
+                      {totalRuns} {totalRuns === 1 ? 'execucao' : 'execucoes'}
                     </Badge>
                   </div>
                 </AccordionTrigger>
@@ -63,10 +63,10 @@ export function OutputsBrowser({ clientName, clientId, phaseNumbers, byPhase }: 
                               </Badge>
                             </div>
                             <div className="flex items-center gap-2 shrink-0 text-xs text-zinc-400">
-                              <span>{proc.runs.length} {proc.runs.length === 1 ? 'run' : 'runs'}</span>
+                              <span>{proc.runs.length} {proc.runs.length === 1 ? 'execucao' : 'execucoes'}</span>
                               {latestRun && (
                                 <span>
-                                  Latest: {format(new Date(latestRun.createdAt), 'MMM d, yyyy')}
+                                  Ultima: {format(new Date(latestRun.createdAt), 'dd/MM/yyyy')}
                                 </span>
                               )}
                             </div>

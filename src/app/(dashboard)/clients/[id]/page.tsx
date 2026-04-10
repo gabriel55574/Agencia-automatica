@@ -136,7 +136,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-2xl font-bold text-zinc-900 truncate">{client.name}</h1>
             <Badge variant={isArchived ? 'secondary' : 'default'}>
-              {isArchived ? 'Archived' : 'Active'}
+              {isArchived ? 'Arquivado' : 'Ativo'}
             </Badge>
             <CycleBadge cycleNumber={client.cycle_number as number} />
           </div>
@@ -145,7 +145,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <Link href={`/clients/${client.id}/edit`}>
-            <Button variant="outline" size="sm">Edit</Button>
+            <Button variant="outline" size="sm">Editar</Button>
           </Link>
           <CloneClientDialog
             sourceClientId={client.id}
@@ -172,23 +172,23 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
         {briefing ? (
           <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Niche</dt>
+              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Nicho</dt>
               {/* Text node only — never dangerouslySetInnerHTML (T-2-02-05) */}
               <dd className="text-sm text-zinc-800">{briefing.niche ?? '—'}</dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Target Audience</dt>
+              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Publico-Alvo</dt>
               <dd className="text-sm text-zinc-800">{briefing.target_audience ?? '—'}</dd>
             </div>
             {briefing.additional_context && (
               <div className="sm:col-span-2">
-                <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Additional Context</dt>
+                <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Contexto Adicional</dt>
                 <dd className="text-sm text-zinc-800 whitespace-pre-wrap">{briefing.additional_context}</dd>
               </div>
             )}
           </dl>
         ) : (
-          <p className="text-sm text-zinc-400">No briefing information recorded yet.</p>
+          <p className="text-sm text-zinc-400">Nenhuma informacao de briefing registrada.</p>
         )}
       </div>
 
@@ -209,7 +209,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
             budgetUsage={budgetUsage}
           />
         ) : (
-          <p className="text-sm text-zinc-400">Pipeline phases not initialized.</p>
+          <p className="text-sm text-zinc-400">Fases do pipeline nao inicializadas.</p>
         )}
       </div>
 
@@ -220,10 +220,10 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-semibold text-zinc-900">Outputs</h2>
           <Link href={`/clients/${client.id}/outputs`}>
-            <Button variant="outline" size="sm">View All Outputs</Button>
+            <Button variant="outline" size="sm">Ver Todos os Outputs</Button>
           </Link>
         </div>
-        <p className="text-sm text-zinc-400">Browse all squad outputs organized by phase and process.</p>
+        <p className="text-sm text-zinc-400">Navegue por todos os outputs do squad organizados por fase e processo.</p>
       </div>
 
     </div>

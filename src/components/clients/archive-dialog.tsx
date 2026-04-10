@@ -39,7 +39,7 @@ export function ArchiveDialog({ clientId, clientName, isArchived }: ArchiveDialo
             })
           }}
         >
-          {isPending ? 'Restoring...' : 'Restore client'}
+          {isPending ? 'Restaurando...' : 'Restaurar cliente'}
         </Button>
         {error && <p className="text-xs text-red-600">{error}</p>}
       </div>
@@ -50,18 +50,18 @@ export function ArchiveDialog({ clientId, clientName, isArchived }: ArchiveDialo
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="outline" className="text-red-600 hover:text-red-700 hover:border-red-300">
-          Archive
+          Arquivar
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Archive {clientName}?</AlertDialogTitle>
+          <AlertDialogTitle>Arquivar {clientName}?</AlertDialogTitle>
           <AlertDialogDescription>
-            They&apos;ll be hidden from active views. You can restore them later from their profile.
+            O cliente sera ocultado das visualizacoes ativas. Voce pode restaura-lo depois pelo perfil.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction
             className="bg-red-600 hover:bg-red-700"
             onClick={() => {
@@ -72,7 +72,7 @@ export function ArchiveDialog({ clientId, clientName, isArchived }: ArchiveDialo
               })
             }}
           >
-            {isPending ? 'Archiving...' : 'Archive'}
+            {isPending ? 'Arquivando...' : 'Arquivar'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

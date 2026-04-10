@@ -7,9 +7,9 @@ export default async function AnalyticsPage() {
   return (
     <div className="max-w-6xl space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900">Analytics</h1>
+        <h1 className="text-2xl font-semibold text-zinc-900">Analise</h1>
         <p className="text-sm text-zinc-500">
-          Operational performance across your portfolio
+          Desempenho operacional do seu portfolio
         </p>
       </div>
       <AnalyticsDashboard data={data} />

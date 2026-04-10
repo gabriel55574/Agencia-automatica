@@ -42,7 +42,7 @@ export default async function EditClientPage({ params }: EditClientPageProps) {
   return (
     <div className="max-w-2xl">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900">Edit Client</h1>
+        <h1 className="text-2xl font-bold text-zinc-900">Editar Cliente</h1>
         <p className="text-zinc-500 text-sm mt-1">
           {client.name} · {client.company}
         </p>

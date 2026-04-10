@@ -13,8 +13,8 @@ import { Button } from '@/components/ui/button'
 
 // Merged form schema: client top-level + briefing fields flattened
 const clientFormSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(255),
-  company: z.string().min(1, 'Company is required').max(255),
+  name: z.string().min(1, 'Nome e obrigatorio').max(255),
+  company: z.string().min(1, 'Empresa e obrigatoria').max(255),
   niche: briefingSchema.shape.niche,
   target_audience: briefingSchema.shape.target_audience,
   additional_context: z.string().optional(),
@@ -70,7 +70,7 @@ export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Client Name</FormLabel>
+                <FormLabel>Nome do Cliente</FormLabel>
                 <FormControl><Input placeholder="e.g. João Silva" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
@@ -81,7 +81,7 @@ export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
             name="company"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Company</FormLabel>
+                <FormLabel>Empresa</FormLabel>
                 <FormControl><Input placeholder="e.g. Acme Ltda" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
@@ -94,7 +94,7 @@ export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
           name="niche"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Niche</FormLabel>
+              <FormLabel>Nicho</FormLabel>
               <FormControl><Input placeholder="e.g. SaaS B2B para empresas de logistica" {...field} /></FormControl>
               <FormMessage />
             </FormItem>
@@ -106,7 +106,7 @@ export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
           name="target_audience"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Target Audience</FormLabel>
+              <FormLabel>Publico-Alvo</FormLabel>
               <FormControl><Input placeholder="e.g. CTOs de empresas com 50-200 funcionarios" {...field} /></FormControl>
               <FormMessage />
             </FormItem>
@@ -118,10 +118,10 @@ export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
           name="additional_context"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Additional Context <span className="text-zinc-400 text-xs">(optional)</span></FormLabel>
+              <FormLabel>Contexto Adicional <span className="text-zinc-400 text-xs">(opcional)</span></FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Any other context that will help the squads..."
+                  placeholder="Qualquer contexto adicional que ajude os squads..."
                   className="min-h-[120px]"
                   {...field}
                 />
@@ -137,10 +137,10 @@ export function ClientForm({ mode, defaultValues, clientId }: ClientFormProps) {
 
         <div className="flex gap-3">
           <Button type="submit" disabled={isPending}>
-            {isPending ? (mode === 'create' ? 'Creating...' : 'Saving...') : (mode === 'create' ? 'Create Client' : 'Save Changes')}
+            {isPending ? (mode === 'create' ? 'Criando...' : 'Salvando...') : (mode === 'create' ? 'Criar Cliente' : 'Salvar Alteracoes')}
           </Button>
           <Button type="button" variant="outline" onClick={() => window.history.back()}>
-            Cancel
+            Cancelar
           </Button>
         </div>
       </form>

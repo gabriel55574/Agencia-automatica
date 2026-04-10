@@ -77,36 +77,36 @@ export function JobProgressModal({ jobId, onClose }: JobProgressModalProps) {
     <Dialog open={jobId !== null} onOpenChange={(o) => { if (!o) onClose() }}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Squad Job Progress</DialogTitle>
+          <DialogTitle>Progresso do Squad</DialogTitle>
         </DialogHeader>
 
         {job === null ? (
           <div className="flex items-center justify-center py-8 text-sm text-zinc-500">
-            Loading...
+            Carregando...
           </div>
         ) : job.status === 'running' ? (
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm text-amber-700">
               {/* Animated indicator */}
               <span className="inline-flex h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
-              Running — updating every 5 seconds...
+              Executando — atualizando a cada 5 segundos...
             </div>
             <pre className="bg-zinc-950 text-green-400 text-xs p-4 rounded-md overflow-auto max-h-96 whitespace-pre-wrap font-mono">
-              {job.progress_log ?? 'Waiting for output...'}
+              {job.progress_log ?? 'Aguardando output...'}
             </pre>
           </div>
         ) : job.status === 'completed' ? (
           <div className="space-y-3">
-            <p className="text-sm font-medium text-green-700">Completed</p>
+            <p className="text-sm font-medium text-green-700">Concluido</p>
             <pre className="bg-zinc-950 text-green-400 text-xs p-4 rounded-md overflow-auto max-h-96 whitespace-pre-wrap font-mono">
-              {job.output ?? job.progress_log ?? 'No output recorded.'}
+              {job.output ?? job.progress_log ?? 'Nenhum output registrado.'}
             </pre>
           </div>
         ) : job.status === 'failed' ? (
           <div className="space-y-3">
-            <p className="text-sm font-medium text-red-700">Failed</p>
+            <p className="text-sm font-medium text-red-700">Falhou</p>
             <pre className="bg-zinc-950 text-green-400 text-xs p-4 rounded-md overflow-auto max-h-96 whitespace-pre-wrap font-mono">
-              {job.error_log ?? job.progress_log ?? 'No error details recorded.'}
+              {job.error_log ?? job.progress_log ?? 'Nenhum detalhe de erro registrado.'}
             </pre>
           </div>
         ) : (

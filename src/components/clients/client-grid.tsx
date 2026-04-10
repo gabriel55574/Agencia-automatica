@@ -35,27 +35,27 @@ export function ClientGrid({ clients, showArchived }: ClientGridProps) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900">Clients</h1>
+          <h1 className="text-2xl font-bold text-zinc-900">Clientes</h1>
           <p className="text-sm text-zinc-500 mt-1">
-            {clients.length} {showArchived ? 'client(s) total' : 'active client(s)'}
+            {clients.length} {showArchived ? 'cliente(s) no total' : 'cliente(s) ativo(s)'}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" size="sm" onClick={toggleArchived}>
-            {showArchived ? 'Hide archived' : 'Show archived'}
+            {showArchived ? 'Ocultar arquivados' : 'Mostrar arquivados'}
           </Button>
           <Link href="/clients/new">
-            <Button size="sm">New Client</Button>
+            <Button size="sm">Novo Cliente</Button>
           </Link>
         </div>
       </div>
 
       {clients.length === 0 ? (
         <div className="text-center py-16 text-zinc-400">
-          <p className="text-lg">No clients yet.</p>
+          <p className="text-lg">Nenhum cliente ainda.</p>
           <p className="text-sm mt-1">
             <Link href="/clients/new" className="text-zinc-600 underline hover:text-zinc-900">
-              Add your first client
+              Adicione seu primeiro cliente
             </Link>
           </p>
         </div>
