@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { ClientForm } from '@/components/clients/client-form'
 import type { Json } from '@/lib/database/types'
 
@@ -41,6 +42,13 @@ export default async function EditClientPage({ params }: EditClientPageProps) {
 
   return (
     <div className="max-w-2xl">
+      {/* Breadcrumb — Clientes > {client name} > Editar */}
+      <Breadcrumb items={[
+        { label: 'Clientes', href: '/clients' },
+        { label: client.name, href: `/clients/${client.id}` },
+        { label: 'Editar' },
+      ]} />
+
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-zinc-900">Editar Cliente</h1>
         <p className="text-zinc-500 text-sm mt-1">

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -129,6 +130,12 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
 
   return (
     <div className="max-w-3xl space-y-8">
+
+      {/* Breadcrumb — Clientes > {client name} */}
+      <Breadcrumb items={[
+        { label: 'Clientes', href: '/clients' },
+        { label: client.name },
+      ]} />
 
       {/* ---- Header ---- */}
       <div className="flex items-start justify-between gap-4">

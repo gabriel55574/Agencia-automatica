@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { PHASE_NAMES, type PhaseNumber } from '@/lib/database/enums'
 import { PROCESS_DEFINITIONS } from '@/lib/pipeline/processes'
+import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
@@ -128,15 +129,18 @@ export default async function OutputsPage({ params }: OutputsPageProps) {
 
   return (
     <div className="max-w-5xl space-y-6">
-      {/* Header */}
+      {/* Breadcrumb — Clientes > {client name} > Outputs */}
+      <Breadcrumb items={[
+        { label: 'Clientes', href: '/clients' },
+        { label: client.name, href: `/clients/${client.id}` },
+        { label: 'Outputs' },
+      ]} />
+
+      {/* Header — simplified since breadcrumb handles navigation context */}
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold text-zinc-900 truncate">{client.name}</h1>
-            <span className="text-zinc-400">/</span>
-            <span className="text-lg text-zinc-600">Outputs</span>
-          </div>
-          <p className="text-sm text-zinc-500">{client.company}</p>
+          <h1 className="text-2xl font-bold text-zinc-900 truncate">Outputs</h1>
+          <p className="text-sm text-zinc-500">{client.name} · {client.company}</p>
         </div>
         <Link href={`/clients/${client.id}`}>
           <Button variant="outline" size="sm">Voltar ao Perfil</Button>
