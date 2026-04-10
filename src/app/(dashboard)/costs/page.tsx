@@ -1,7 +1,9 @@
 import { Suspense } from 'react'
+import { DollarSign } from 'lucide-react'
 import { fetchMonthlyCostBreakdown } from '@/lib/costs/queries'
 import { CostBreakdownTable } from '@/components/costs/CostBreakdownTable'
 import { MonthSelector } from '@/components/costs/MonthSelector'
+import { EmptyState } from '@/components/ui/empty-state'
 import { formatMonth, formatCost, getCurrentMonth } from '@/lib/costs/format'
 
 interface CostsPageProps {
@@ -30,7 +32,15 @@ export default async function CostsPage({ searchParams }: CostsPageProps) {
         </p>
       </div>
 
-      <CostBreakdownTable rows={rows} />
+      {rows.length === 0 ? (
+        <EmptyState
+          icon={DollarSign}
+          title="Nenhum dado de custo"
+          description="Custos de execucao das squads serao registrados automaticamente."
+        />
+      ) : (
+        <CostBreakdownTable rows={rows} />
+      )}
     </div>
   )
 }

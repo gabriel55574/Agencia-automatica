@@ -36,7 +36,7 @@ export function KanbanColumn({ column, stuckClientIds }: KanbanColumnProps) {
 
       <div className="flex-1 bg-zinc-50 rounded-lg p-2 space-y-3">
         {column.clients.length === 0 ? (
-          <p className="text-xs text-zinc-400 text-center py-8">Nenhum cliente</p>
+          <p className="text-xs text-[#8A9999] text-center py-8">Nenhum cliente</p>
         ) : (
           column.clients.map((client) => (
             <KanbanClientCard

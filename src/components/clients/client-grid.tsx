@@ -1,8 +1,10 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { Users } from 'lucide-react'
 import { ClientCard } from './client-card'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
 import type { Tables } from '@/lib/database/types'
 import Link from 'next/link'
 
@@ -51,14 +53,13 @@ export function ClientGrid({ clients, showArchived }: ClientGridProps) {
       </div>
 
       {clients.length === 0 ? (
-        <div className="text-center py-16 text-zinc-400">
-          <p className="text-lg">Nenhum cliente ainda.</p>
-          <p className="text-sm mt-1">
-            <Link href="/clients/new" className="text-zinc-600 underline hover:text-zinc-900">
-              Adicione seu primeiro cliente
-            </Link>
-          </p>
-        </div>
+        <EmptyState
+          icon={Users}
+          title="Nenhum cliente cadastrado"
+          description="Adicione seu primeiro cliente para comecar a gerenciar o pipeline."
+          actionLabel="Novo Cliente"
+          actionHref="/clients/new"
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {clients.map((client) => (

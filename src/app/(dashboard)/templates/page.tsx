@@ -1,6 +1,8 @@
+import { FileText } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { TemplateList } from '@/components/templates/template-list'
+import { EmptyState } from '@/components/ui/empty-state'
 
 export default async function TemplatesPage() {
   const supabase = await createClient()
@@ -31,12 +33,11 @@ export default async function TemplatesPage() {
           created_at: string
         }>} />
       ) : (
-        <div className="text-center py-12 text-zinc-400">
-          <p className="text-lg font-medium">Nenhum template ainda</p>
-          <p className="text-sm mt-1">
-            Salve um output de squad como template a partir de qualquer execucao concluida.
-          </p>
-        </div>
+        <EmptyState
+          icon={FileText}
+          title="Nenhum template salvo"
+          description="Templates de prompt facilitam a execucao das squads. Salve um output como template a partir de qualquer execucao concluida."
+        />
       )}
     </div>
   )
