@@ -13,7 +13,7 @@ import { ClientProfileTabs } from '@/components/clients/client-profile-tabs'
 import { fetchProcessBudgetUsage } from '@/lib/costs/queries'
 import type { Json } from '@/lib/database/types'
 import type { PhaseRow, ProcessRow, GateRow, GateReviewRow, LatestJobData } from '@/lib/types/pipeline'
-import type { CompletedJob, ProcessWithRuns } from '@/lib/types/outputs'
+import type { CompletedJob, ProcessWithRuns, GateReviewOutput } from '@/lib/types/outputs'
 
 interface ClientProfilePageProps {
   params: Promise<{ id: string }>
@@ -75,7 +75,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
     if (job.process_id && !jobsByProcessId.has(job.process_id)) {
       jobsByProcessId.set(job.process_id, {
         id: job.id,
-        status: job.status as string,
+        status: job.status as LatestJobData['status'],
         structured_output: (job.structured_output as Record<string, unknown>) ?? null,
         output: (job.output as string) ?? null,
         token_count: (job.token_count as number) ?? null,
@@ -183,12 +183,41 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
   const outputPhaseNumbers = Array.from(outputsByPhase.keys()).sort((a, b) => a - b)
   const hasAnyRuns = processesWithRuns.length > 0
 
+  // Build gate review outputs list for the outputs tab
+  // gates is already fetched above (quality_gates with gate_number + phase_id)
+  const gateById = new Map<string, { gate_number: number; phase_id: string }>()
+  for (const gate of gates ?? []) {
+    gateById.set(gate.id as string, {
+      gate_number: gate.gate_number as number,
+      phase_id: gate.phase_id as string,
+    })
+  }
+
+  const gateReviewOutputs: GateReviewOutput[] = []
+  for (const review of gateReviewsRaw ?? []) {
+    const gateId = review.gate_id as string
+    const gate = gateById.get(gateId)
+    if (!gate) continue
+    const phaseNum = phaseNumberById.get(gate.phase_id) ?? 1
+    gateReviewOutputs.push({
+      id: review.id as string,
+      gateId,
+      gateNumber: gate.gate_number,
+      phaseNumber: phaseNum,
+      phaseName: PHASE_NAMES[phaseNum as PhaseNumber] ?? `Fase ${phaseNum}`,
+      verdict: (review.verdict as Record<string, unknown>) ?? {},
+      rawOutput: (review.raw_output as string) ?? '',
+      status: review.status as 'running' | 'completed' | 'failed',
+      createdAt: review.created_at as string,
+    })
+  }
+
   const briefing = parseBriefing(client.briefing)
   const isArchived = client.status === 'archived'
 
   // Determine if pipeline can be reset: Phase 5 must be completed
   const phase5Completed = (phases ?? []).some(
-    (p: PhaseRow) => p.phase_number === 5 && p.status === 'completed'
+    (p) => p.phase_number === 5 && p.status === 'completed'
   )
 
   return (
@@ -250,6 +279,7 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
             Array.from(outputsByPhase.entries()).map(([k, v]) => [String(k), v])
           ),
           hasAnyRuns,
+          gateReviews: gateReviewOutputs,
         }}
         briefing={briefing}
       />

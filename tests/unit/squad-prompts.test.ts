@@ -30,6 +30,7 @@ const mockContext: AssembledContext = {
       output: 'Prior output from process 1 for testing',
     },
   ],
+  priorOutputFilePaths: [],
   feedbackContext: '',
   templateContent: '',
   truncated: false,

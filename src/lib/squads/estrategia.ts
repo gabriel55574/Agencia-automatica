@@ -98,14 +98,28 @@ export function buildPrompt(context: AssembledContext, processNumber: number): s
   const def = PROCESS_DEFINITIONS[processNumber]
   const outputFormat = OUTPUT_FORMATS[processNumber]
 
-  const priorOutputsSection = context.priorOutputs.length > 0
-    ? context.priorOutputs
-        .map(
-          (o) =>
-            `--- Process ${o.processNumber}: ${o.processName} ---\n${o.output}`
-        )
-        .join('\n\n')
-    : 'Nenhum output anterior disponivel.'
+  let priorOutputsSection = 'Nenhum output anterior disponivel.'
+
+  if (context.priorOutputFilePaths.length > 0 || context.priorOutputs.length > 0) {
+    const parts: string[] = []
+
+    if (context.priorOutputFilePaths.length > 0) {
+      parts.push(
+        'Leia os seguintes arquivos de contexto dos processos anteriores:\n' +
+        context.priorOutputFilePaths.map(p => `@${p}`).join('\n')
+      )
+    }
+
+    if (context.priorOutputs.length > 0) {
+      parts.push(
+        context.priorOutputs
+          .map(o => `--- Process ${o.processNumber}: ${o.processName} ---\n${o.output}`)
+          .join('\n\n')
+      )
+    }
+
+    priorOutputsSection = parts.join('\n\n')
+  }
 
   const feedbackSection = context.feedbackContext
     ? `Feedback Loop Data:\n${context.feedbackContext}`
@@ -116,11 +130,15 @@ export function buildPrompt(context: AssembledContext, processNumber: number): s
     ? `\n=== REFERENCE OUTPUT (TEMPLATE) ===\nThe following is a reference output from a previous successful run. Use it as a guide for structure and quality, adapting the content to the current client's context:\n${context.templateContent}\n`
     : ''
 
-  return `=== SQUAD IDENTITY ===
+  return `=== YOUR ROLE ===
+You are an autonomous marketing research agent executing within Agency OS.
 ${SQUAD_IDENTITY}
 
+You have FULL ACCESS to tools: WebSearch, Read, Bash, and others.
+You MUST use them to conduct real research — do NOT generate answers from memory alone.
+
 === AGENCY OS METHODOLOGY ===
-Voce opera dentro do Agency OS, um sistema de 16 processos distribuidos em 5 fases sequenciais. Cada fase e executada por um Squad especializado. Nenhum cliente avanca de fase sem passar pelo Quality Gate correspondente.
+Agency OS operates 16 processes across 5 sequential phases. Each phase is executed by a specialized Squad. No client advances without passing the corresponding Quality Gate.
 
 === CLIENT CONTEXT ===
 Briefing:
@@ -131,23 +149,27 @@ ${priorOutputsSection}
 
 ${feedbackSection}
 ${templateSection}
-=== PROCESS INSTRUCTIONS ===
-Process: ${def.name} (Process #${processNumber})
-Phase: ${def.phase}
+=== TASK ===
+Execute: ${def.name} (Process #${processNumber}, Phase ${def.phase})
 
 Required Inputs:
 ${def.inputs.map((i) => `- ${i}`).join('\n')}
 
-Execution Steps:
+Execution Steps — USE YOUR TOOLS for each step:
 ${def.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}
 
 Output Checklist (ALL items must be addressed):
 ${def.checklist.map((c) => `- [ ] ${c}`).join('\n')}
 
-=== OUTPUT FORMAT ===
-Respond with a single JSON object matching this exact structure:
+=== INSTRUCTIONS ===
+1. Use WebSearch to research the client's market, competitors, and audience based on the briefing
+2. Use WebSearch to find real data, trends, and insights specific to this niche and location
+3. Analyze your findings against the execution steps and checklist above
+4. Produce your final deliverable as a JSON object
+
+=== DELIVERABLE FORMAT ===
+After completing your research, your FINAL response must be a valid JSON object matching this structure:
 ${outputFormat}
 
-IMPORTANT: Your response must be valid JSON. Do not include markdown code fences.
-Do not include any text before or after the JSON object.`
+CRITICAL: Base your analysis on REAL data from your research. Do not fabricate companies, statistics, or market data. Your final message must be ONLY the JSON object.`
 }

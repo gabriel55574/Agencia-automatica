@@ -91,7 +91,13 @@ export async function assembleSquadContext(
     templateContent = JSON.stringify(template.content)
   }
 
-  const context = await assembleContext(clientId, processNumber, undefined, templateContent)
+  const context = await assembleContext(
+    clientId,
+    processNumber,
+    undefined,
+    templateContent,
+    PROCESS_DEFINITIONS[processNumber]?.context_from
+  )
   const builder = SQUAD_PROMPT_BUILDERS[squadType]
   if (!builder) return { error: `Nenhum construtor de prompt para o squad ${squadType}` }
 

@@ -183,7 +183,7 @@ export async function runJob(
   const args = [
     '--print',
     '--output-format',
-    'json',
+    'stream-json',
     '--no-session-persistence',
     '--permission-mode',
     'auto',
@@ -192,8 +192,10 @@ export async function runJob(
     job.cli_command ?? 'No command specified',
   ]
 
-  // CRITICAL: stdio: ['ignore', 'pipe', 'pipe'] — closes stdin immediately
-  // This eliminates the "Warning: no stdin data received in 3s" message
+  process.stdout.write(`\n${'='.repeat(60)}\n`)
+  process.stdout.write(`[worker] JOB ${job.id.slice(0, 8)} — squad: ${job.squad_type}\n`)
+  process.stdout.write(`${'='.repeat(60)}\n\n`)
+
   // T-04-01: spawn() with array args does NOT invoke a shell — shell injection impossible
   const proc = spawn('claude', args, {
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -205,9 +207,37 @@ export async function runJob(
 
   let stdoutBuffer = ''
   let stderrBuffer = ''
+  let lastResultEvent: string | null = null
 
   proc.stdout!.on('data', (chunk: Buffer) => {
-    stdoutBuffer += chunk.toString()
+    const text = chunk.toString()
+    stdoutBuffer += text
+
+    // Parse stream-json events and show live progress in terminal
+    for (const line of text.split('\n')) {
+      if (!line.trim()) continue
+      try {
+        const event = JSON.parse(line)
+        if (event.type === 'assistant' && event.message?.content) {
+          for (const block of event.message.content) {
+            if (block.type === 'text' && block.text) {
+              process.stdout.write(`[claude] ${block.text}\n`)
+            } else if (block.type === 'tool_use') {
+              process.stdout.write(`[tool]   ${block.name}(${JSON.stringify(block.input, null, 2)})\n`)
+            } else if (block.type === 'tool_result') {
+              const content = Array.isArray(block.content)
+                ? block.content.map((c: { text?: string }) => c.text ?? '').join('')
+                : String(block.content ?? '')
+              process.stdout.write(`[result] ${content}\n`)
+            }
+          }
+        } else if (event.type === 'result') {
+          lastResultEvent = line
+        }
+      } catch {
+        // Not JSON or partial line — skip
+      }
+    }
   })
 
   proc.stderr!.on('data', (chunk: Buffer) => {
@@ -228,11 +258,16 @@ export async function runJob(
     clearInterval(flushInterval)
     activeJobs.delete(job.id)
 
-    const success = exitCode === 0 && !isCliError(stdoutBuffer)
+    process.stdout.write(`\n[worker] JOB ${job.id.slice(0, 8)} finished — exit code: ${exitCode}\n`)
+
+    // With stream-json, the final result comes as a separate event line
+    // Fall back to scanning the full buffer if no result event was captured
+    const outputToParse = lastResultEvent ?? stdoutBuffer
+    const success = exitCode === 0 && !isCliError(outputToParse)
 
     if (success) {
       // Phase 5: Parse structured output from CLI response
-      const parsedContent = parseCliOutput(stdoutBuffer)
+      const parsedContent = parseCliOutput(outputToParse)
       let structuredOutput: unknown = null
 
       if (parsedContent !== null && job.process_id) {
@@ -259,7 +294,7 @@ export async function runJob(
 
       // Phase 6: Gate review jobs — parse verdict and store in gate_reviews table
       if (job.squad_type === 'gate_review') {
-        const gateReviewParsed = parseCliOutput(stdoutBuffer)
+        const gateReviewParsed = parseCliOutput(outputToParse)
         if (gateReviewParsed !== null) {
           // Dynamic import: worker runs outside Next.js bundler, use relative path
           const { GateReviewVerdictSchema } = await import(
@@ -272,7 +307,7 @@ export async function runJob(
               .from('gate_reviews')
               .update({
                 verdict: verdictResult.data,
-                raw_output: stdoutBuffer,
+                raw_output: outputToParse,
                 status: 'completed',
               })
               .eq('squad_job_id', job.id)
@@ -324,7 +359,7 @@ export async function runJob(
                   parse_error: verdictResult.error.message,
                   raw: gateReviewParsed,
                 },
-                raw_output: stdoutBuffer,
+                raw_output: outputToParse,
                 status: 'failed',
               })
               .eq('squad_job_id', job.id)
@@ -335,7 +370,7 @@ export async function runJob(
             .from('gate_reviews')
             .update({
               verdict: { parse_error: 'CLI output could not be parsed' },
-              raw_output: stdoutBuffer,
+              raw_output: outputToParse,
               status: 'failed',
             })
             .eq('squad_job_id', job.id)
@@ -343,7 +378,7 @@ export async function runJob(
       }
 
       // Phase 12: Extract token usage from CLI output for cost tracking (COST-01)
-      const tokenUsage = extractTokenUsage(stdoutBuffer)
+      const tokenUsage = extractTokenUsage(outputToParse)
       const tokenCount = tokenUsage?.total_tokens ?? null
       const estimatedCost = calculateCost(tokenCount)
 
@@ -366,6 +401,44 @@ export async function runJob(
         })
         .eq('id', job.id)
 
+      // Mark the process as completed so next processes can see this output
+      if (job.process_id) {
+        await supabase
+          .from('processes')
+          .update({
+            status: 'completed',
+            output_json: structuredOutput,
+            output_markdown: typeof parsedContent === 'string' ? parsedContent : JSON.stringify(parsedContent),
+            completed_at: new Date().toISOString(),
+          })
+          .eq('id', job.process_id)
+      }
+
+      // Write output to file for file-based context system
+      if (job.process_id && parsedContent) {
+        try {
+          const { data: processData } = await supabase
+            .from('processes')
+            .select('process_number, name')
+            .eq('id', job.process_id)
+            .single()
+
+          if (processData) {
+            const { getProcessOutputFilePath, getClientOutputDir } = await import('@/lib/squads/output-files')
+            const fsPromises = await import('fs/promises')
+            await fsPromises.mkdir(getClientOutputDir(job.client_id), { recursive: true })
+            const filePath = getProcessOutputFilePath(job.client_id, processData.process_number, processData.name)
+            const fileContent = typeof parsedContent === 'string'
+              ? parsedContent
+              : JSON.stringify(parsedContent, null, 2)
+            await fsPromises.writeFile(filePath, fileContent, 'utf-8')
+            process.stdout.write(`[worker] Output saved to file: ${filePath}\n`)
+          }
+        } catch (err) {
+          process.stdout.write(`[worker] Warning: could not write output file: ${String(err)}\n`)
+        }
+      }
+
       // NOTF-01: Notify operator of squad completion (fire-and-forget)
       buildCompletionData(job, 'completed', supabase).then((data) => {
         if (data) {
@@ -386,12 +459,12 @@ export async function runJob(
               error: 'Job failed',
               stderr: stderrBuffer.slice(0, 2000),
             },
-            raw_output: stdoutBuffer,
+            raw_output: outputToParse,
             status: 'failed',
           })
           .eq('squad_job_id', job.id)
       }
-      await handleFailure(job, stdoutBuffer, stderrBuffer, supabase, retryCallback)
+      await handleFailure(job, outputToParse, stderrBuffer, supabase, retryCallback)
     }
   })
 }

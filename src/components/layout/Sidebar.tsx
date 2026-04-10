@@ -9,6 +9,7 @@ import {
   DollarSign,
   BarChart3,
   FileText,
+  Terminal,
   LogOut,
 } from 'lucide-react'
 
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
   { href: '/costs', label: 'Custos', icon: DollarSign },
   { href: '/analytics', label: 'Analise', icon: BarChart3 },
   { href: '/templates', label: 'Templates', icon: FileText },
+  { href: '/worker', label: 'Worker', icon: Terminal },
 ]
 
 interface SidebarProps {

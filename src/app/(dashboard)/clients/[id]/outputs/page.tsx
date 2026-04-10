@@ -2,17 +2,13 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { PHASE_NAMES, type PhaseNumber } from '@/lib/database/enums'
-import { PROCESS_DEFINITIONS } from '@/lib/pipeline/processes'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
-import { format } from 'date-fns'
 import { OutputsBrowser } from './outputs-browser'
-import type { CompletedJob, ProcessWithRuns } from '@/lib/types/outputs'
+import type { CompletedJob, ProcessWithRuns, GateReviewOutput } from '@/lib/types/outputs'
 
 // Re-export for backward compatibility
-export type { CompletedJob, ProcessWithRuns } from '@/lib/types/outputs'
+export type { CompletedJob, ProcessWithRuns, GateReviewOutput } from '@/lib/types/outputs'
 
 interface OutputsPageProps {
   params: Promise<{ id: string }>
@@ -45,13 +41,26 @@ export default async function OutputsPage({ params }: OutputsPageProps) {
     .eq('client_id', id)
     .order('process_number', { ascending: true })
 
-  // Fetch completed squad jobs
+  // Fetch completed squad jobs (process outputs only — gate reviews fetched separately)
   const { data: completedJobs } = await supabase
     .from('squad_jobs')
     .select('id, process_id, squad_type, status, structured_output, output, created_at, started_at, completed_at')
     .eq('client_id', id)
     .eq('status', 'completed')
     .order('created_at', { ascending: false })
+
+  // Fetch gate reviews for the outputs tab
+  const { data: gateReviewsRaw } = await supabase
+    .from('gate_reviews')
+    .select('id, gate_id, verdict, raw_output, status, created_at')
+    .eq('client_id', id)
+    .order('created_at', { ascending: false })
+
+  // Fetch gates to resolve gate_number and phase_id
+  const { data: gates } = await supabase
+    .from('quality_gates')
+    .select('id, gate_number, phase_id')
+    .eq('client_id', id)
 
   // Build a Map<processId, CompletedJob[]>
   const jobsByProcessId = new Map<string, CompletedJob[]>()
@@ -108,7 +117,37 @@ export default async function OutputsPage({ params }: OutputsPageProps) {
   // Sort phase keys
   const phaseNumbers = Array.from(byPhase.keys()).sort((a, b) => a - b)
 
+  // Build gate context map: gate_id -> { gate_number, phase_id }
+  const gateById = new Map<string, { gate_number: number; phase_id: string }>()
+  for (const gate of gates ?? []) {
+    gateById.set(gate.id as string, {
+      gate_number: gate.gate_number as number,
+      phase_id: gate.phase_id as string,
+    })
+  }
+
+  // Build gate review outputs list (only completed reviews with real content)
+  const gateReviewOutputs: GateReviewOutput[] = []
+  for (const review of gateReviewsRaw ?? []) {
+    const gateId = review.gate_id as string
+    const gate = gateById.get(gateId)
+    if (!gate) continue
+    const phaseNum = phaseNumberById.get(gate.phase_id) ?? 1
+    gateReviewOutputs.push({
+      id: review.id as string,
+      gateId,
+      gateNumber: gate.gate_number,
+      phaseNumber: phaseNum,
+      phaseName: PHASE_NAMES[phaseNum as PhaseNumber] ?? `Fase ${phaseNum}`,
+      verdict: (review.verdict as Record<string, unknown>) ?? {},
+      rawOutput: (review.raw_output as string) ?? '',
+      status: review.status as 'running' | 'completed' | 'failed',
+      createdAt: review.created_at as string,
+    })
+  }
+
   const hasAnyRuns = processesWithRuns.length > 0
+  const hasAnyContent = hasAnyRuns || gateReviewOutputs.length > 0
 
   return (
     <div className="max-w-5xl space-y-6">
@@ -130,7 +169,7 @@ export default async function OutputsPage({ params }: OutputsPageProps) {
         </Link>
       </div>
 
-      {!hasAnyRuns ? (
+      {!hasAnyContent ? (
         <div className="py-12 text-center">
           <p className="text-sm text-zinc-400">Nenhum output concluido ainda.</p>
           <p className="text-xs text-zinc-300 mt-1">Os outputs aparecerao aqui conforme os squads concluirem os processos.</p>
@@ -143,6 +182,7 @@ export default async function OutputsPage({ params }: OutputsPageProps) {
           byPhase={Object.fromEntries(
             Array.from(byPhase.entries()).map(([k, v]) => [String(k), v])
           )}
+          gateReviews={gateReviewOutputs}
         />
       )}
     </div>

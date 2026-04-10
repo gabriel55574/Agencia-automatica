@@ -36,3 +36,6 @@ next-env.d.ts
 # Supabase local
 .supabase/
 node_modules
+
+# Client output files (generated, not versioned)
+outputs/clients/

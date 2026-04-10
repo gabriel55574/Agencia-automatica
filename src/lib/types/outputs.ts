@@ -21,3 +21,16 @@ export type ProcessWithRuns = {
   phaseName: string
   runs: CompletedJob[]
 }
+
+/** A single gate review output entry, used in the Outputs tab gate reviews section */
+export type GateReviewOutput = {
+  id: string
+  gateId: string
+  gateNumber: number
+  phaseNumber: number
+  phaseName: string
+  verdict: Record<string, unknown>
+  rawOutput: string
+  status: 'running' | 'completed' | 'failed'
+  createdAt: string
+}

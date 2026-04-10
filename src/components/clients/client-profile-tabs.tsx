@@ -1,15 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { FileText } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { PipelineAccordion } from '@/components/clients/pipeline-accordion'
 import { OutputsBrowser } from '@/app/(dashboard)/clients/[id]/outputs/outputs-browser'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
+import { createClient } from '@/lib/supabase/client'
 import type { PhaseRow, ProcessRow, GateRow, GateReviewRow, LatestJobData } from '@/lib/types/pipeline'
-import type { ProcessWithRuns } from '@/lib/types/outputs'
+import type { ProcessWithRuns, GateReviewOutput } from '@/lib/types/outputs'
 
 interface ClientProfileTabsProps {
   clientId: string
@@ -26,6 +28,7 @@ interface ClientProfileTabsProps {
     phaseNumbers: number[]
     byPhase: Record<string, ProcessWithRuns[]>
     hasAnyRuns: boolean
+    gateReviews: GateReviewOutput[]
   }
   // Briefing tab data
   briefing: {
@@ -48,6 +51,58 @@ export function ClientProfileTabs({
   briefing,
 }: ClientProfileTabsProps) {
   const [activeTab, setActiveTab] = useState('pipeline')
+  const router = useRouter()
+
+  useEffect(() => {
+    const supabase = createClient()
+    let refreshTimer: ReturnType<typeof setTimeout> | null = null
+
+    const scheduleRefresh = () => {
+      if (refreshTimer !== null) return
+
+      // Debounce bursts of worker updates into a single route refresh.
+      refreshTimer = setTimeout(() => {
+        refreshTimer = null
+        router.refresh()
+      }, 250)
+    }
+
+    const channel = supabase
+      .channel(`client-pipeline-${clientId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'squad_jobs', filter: `client_id=eq.${clientId}` },
+        scheduleRefresh
+      )
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'processes', filter: `client_id=eq.${clientId}` },
+        scheduleRefresh
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'gate_reviews', filter: `client_id=eq.${clientId}` },
+        scheduleRefresh
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'quality_gates', filter: `client_id=eq.${clientId}` },
+        scheduleRefresh
+      )
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'phases', filter: `client_id=eq.${clientId}` },
+        scheduleRefresh
+      )
+      .subscribe()
+
+    return () => {
+      if (refreshTimer !== null) {
+        clearTimeout(refreshTimer)
+      }
+      void supabase.removeChannel(channel)
+    }
+  }, [clientId, router])
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -75,12 +130,13 @@ export function ClientProfileTabs({
       </TabsContent>
 
       <TabsContent value="outputs" className="pt-6">
-        {outputsData.hasAnyRuns ? (
+        {(outputsData.hasAnyRuns || outputsData.gateReviews.length > 0) ? (
           <OutputsBrowser
             clientName={clientName}
             clientId={clientId}
             phaseNumbers={outputsData.phaseNumbers}
             byPhase={outputsData.byPhase}
+            gateReviews={outputsData.gateReviews}
           />
         ) : (
           <EmptyState

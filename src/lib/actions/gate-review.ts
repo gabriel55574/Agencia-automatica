@@ -20,7 +20,6 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { buildReviewPrompt } from '@/lib/gates/review-prompt'
 import type { PhaseOutput } from '@/lib/gates/review-prompt'
-import type { ActionResult } from './clients'
 
 const runGateReviewSchema = z.object({
   gateId: z.string().uuid(),
@@ -67,16 +66,22 @@ export async function runGateReview(
 
   const admin = createAdminClient()
 
-  // Step 3: Query completed processes in this phase
-  const { data: completedProcesses, error: processError } = await admin
+  // Step 3: Query all phase processes. Gate review should rely on the most recent
+  // completed job outputs, not on process.status alone, because the UI may observe
+  // job completion slightly before the persisted process row catches up.
+  const { data: phaseProcesses, error: processError } = await admin
     .from('processes')
     .select('id, process_number, name')
     .eq('phase_id', input.data.phaseId)
-    .eq('status', 'completed')
+    .order('process_number', { ascending: true })
 
   if (processError) {
     console.error('[runGateReview] Process query error:', processError)
-    return { error: 'Falha ao buscar processos concluidos' }
+    return { error: 'Falha ao buscar processos da fase' }
+  }
+
+  if (!phaseProcesses || phaseProcesses.length === 0) {
+    return { error: 'Nenhum processo encontrado para esta fase' }
   }
 
   // Step 4: Fetch most recent completed squad_job outputs for this phase
@@ -88,30 +93,39 @@ export async function runGateReview(
     .eq('status', 'completed')
     .not('output', 'is', null)
     .not('squad_type', 'eq', 'gate_review')
+    .in('process_id', phaseProcesses.map((process) => process.id))
+    .order('created_at', { ascending: false })
 
   if (jobError) {
     console.error('[runGateReview] Job query error:', jobError)
     return { error: 'Falha ao buscar outputs do squad' }
   }
 
-  // Step 5: Build phase outputs array by matching jobs to processes
-  const phaseOutputs: PhaseOutput[] = (completedProcesses ?? [])
-    .map((proc) => {
-      // Find the most recent job output for this process
-      const matchingJob = (completedJobs ?? []).find(
-        (job) => job.process_id === proc.id
-      )
-      return {
-        processName: proc.name,
-        processNumber: proc.process_number,
-        output: matchingJob?.output ?? '',
-      }
-    })
-    .filter((o) => o.output !== '')
-
-  if (phaseOutputs.length === 0) {
-    return { error: 'Nenhum output de processo concluido encontrado para esta fase' }
+  // Step 5: Keep only the most recent completed output per process.
+  const latestCompletedJobByProcessId = new Map<string, string>()
+  for (const job of completedJobs ?? []) {
+    if (!job.process_id || latestCompletedJobByProcessId.has(job.process_id)) continue
+    if (typeof job.output !== 'string' || job.output.length === 0) continue
+    latestCompletedJobByProcessId.set(job.process_id, job.output)
   }
+
+  const missingOutputs = phaseProcesses.filter(
+    (process) => !latestCompletedJobByProcessId.has(process.id)
+  )
+
+  if (missingOutputs.length > 0) {
+    return {
+      error: `Complete os processos pendentes antes da revisao do gate: ${missingOutputs
+        .map((process) => `${process.process_number}. ${process.name}`)
+        .join(', ')}`,
+    }
+  }
+
+  const phaseOutputs: PhaseOutput[] = phaseProcesses.map((process) => ({
+    processName: process.name,
+    processNumber: process.process_number,
+    output: latestCompletedJobByProcessId.get(process.id) ?? '',
+  }))
 
   // Step 6: Build the adversarial review prompt
   const reviewPrompt = buildReviewPrompt(input.data.gateNumber, phaseOutputs)

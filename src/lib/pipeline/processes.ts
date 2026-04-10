@@ -21,6 +21,8 @@ export type ProcessDefinition = {
   inputs: string[]
   steps: string[]
   checklist: string[]
+  /** Process numbers whose completed outputs should be injected as context for this process. */
+  context_from: number[]
 }
 
 export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
@@ -47,6 +49,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Analise competitiva (5 Cs: Clientes, Colaboradores, Companhia, Concorrentes, Contexto)',
       'Insights acionaveis para decisao de negocio',
     ],
+    context_from: [],
   },
 
   2: {
@@ -69,6 +72,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Personas detalhadas com dores, desejos e comportamentos',
       'Custo para servir < receita esperada',
     ],
+    context_from: [1],
   },
 
   // ============================================================
@@ -107,6 +111,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Categoria de mercado que torna pontos fortes obvios',
       'Nome estrategico validado',
     ],
+    context_from: [1, 2],
   },
 
   4: {
@@ -130,6 +135,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Apenas itens de alto valor / baixo custo na pilha final',
       'Value Equation validada: maximiza (Sonho + Probabilidade) / minimiza (Tempo + Esforco)',
     ],
+    context_from: [3],
   },
 
   5: {
@@ -155,6 +161,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Garantia de reversao de risco incluida',
       'Nome da oferta com formula M-A-G-I-C',
     ],
+    context_from: [4],
   },
 
   6: {
@@ -176,6 +183,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Associacoes secundarias mapeadas',
       'Pontos de Diferenca e Paridade identificados',
     ],
+    context_from: [3, 4],
   },
 
   // ============================================================
@@ -203,6 +211,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Cronograma de implementacao',
       'Dashboard de metricas de controle',
     ],
+    context_from: [1, 2, 3, 4, 5, 6],
   },
 
   8: {
@@ -222,6 +231,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Intermediarios selecionados e avaliados',
       'Plano de gestao de conflitos de canal',
     ],
+    context_from: [7],
   },
 
   9: {
@@ -241,6 +251,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Sortimento e nivel de servico definidos',
       'Estrategia de marcas proprias (se aplicavel)',
     ],
+    context_from: [8],
   },
 
   10: {
@@ -262,6 +273,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Gestao de estoque configurada',
       'Modos de transporte selecionados',
     ],
+    context_from: [7, 8],
   },
 
   11: {
@@ -280,6 +292,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Campanha de impacto social alinhada aos valores (se aplicavel)',
       'Autenticidade validada (nao greenwashing)',
     ],
+    context_from: [3, 6],
   },
 
   // ============================================================
@@ -307,6 +320,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Landing pages estruturadas',
       'Todos consistentes com posicionamento da Fase 2',
     ],
+    context_from: [7],
   },
 
   13: {
@@ -328,6 +342,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Integracao horizontal e vertical validadas',
       'Calendario editorial configurado',
     ],
+    context_from: [2, 12],
   },
 
   14: {
@@ -350,6 +365,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       '1 canal principal selecionado para foco total',
       'Regra dos 50% aplicada (metade produto, metade tracao)',
     ],
+    context_from: [13],
   },
 
   15: {
@@ -373,6 +389,7 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Taxa de conversao por etapa do funil',
       'Processo de onboarding pos-venda definido',
     ],
+    context_from: [14],
   },
 
   // ============================================================
@@ -402,5 +419,6 @@ export const PROCESS_DEFINITIONS: Record<number, ProcessDefinition> = {
       'Taxa de retencao > taxa de aquisicao em custo',
       'Clientes promotores gerando referrals',
     ],
+    context_from: [15],
   },
 }
