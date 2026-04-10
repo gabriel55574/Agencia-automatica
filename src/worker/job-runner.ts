@@ -208,17 +208,36 @@ export async function runJob(
   let stdoutBuffer = ''
   let stderrBuffer = ''
   let lastResultEvent: string | null = null
+  let flushPending = false
+
+  // Flush progress_log to DB immediately after each parsed event (debounced 300ms)
+  // so the worker monitor UI updates in near-realtime as Claude works.
+  function scheduleFlush() {
+    if (flushPending) return
+    flushPending = true
+    setTimeout(async () => {
+      flushPending = false
+      if (stdoutBuffer) {
+        await supabase
+          .from('squad_jobs')
+          .update({ progress_log: stdoutBuffer })
+          .eq('id', job.id)
+      }
+    }, 300)
+  }
 
   proc.stdout!.on('data', (chunk: Buffer) => {
     const text = chunk.toString()
     stdoutBuffer += text
 
     // Parse stream-json events and show live progress in terminal
+    let hasEvent = false
     for (const line of text.split('\n')) {
       if (!line.trim()) continue
       try {
         const event = JSON.parse(line)
         if (event.type === 'assistant' && event.message?.content) {
+          hasEvent = true
           for (const block of event.message.content) {
             if (block.type === 'text' && block.text) {
               process.stdout.write(`[claude] ${block.text}\n`)
@@ -233,18 +252,22 @@ export async function runJob(
           }
         } else if (event.type === 'result') {
           lastResultEvent = line
+          hasEvent = true
         }
       } catch {
         // Not JSON or partial line — skip
       }
     }
+
+    // Flush to DB whenever a meaningful event was parsed
+    if (hasEvent) scheduleFlush()
   })
 
   proc.stderr!.on('data', (chunk: Buffer) => {
     stderrBuffer += chunk.toString()
   })
 
-  // Batch flush progress_log to DB every 5 seconds (D-03)
+  // Fallback flush every 5 seconds to catch any buffered output not yet flushed
   const flushInterval = setInterval(async () => {
     if (stdoutBuffer) {
       await supabase
