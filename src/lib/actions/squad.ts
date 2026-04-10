@@ -72,7 +72,7 @@ export async function assembleSquadContext(
   if (!input.success) return { error: 'Entrada invalida: ' + input.error.issues[0]?.message }
 
   const squadType = PROCESS_TO_SQUAD[processNumber]
-  if (!squadType) return { error: `No squad mapped for process ${processNumber}` }
+  if (!squadType) return { error: `Nenhum squad mapeado para o processo ${processNumber}` }
 
   // TMPL-03: Fetch template content if templateId provided
   let templateContent: string | undefined
@@ -93,7 +93,7 @@ export async function assembleSquadContext(
 
   const context = await assembleContext(clientId, processNumber, undefined, templateContent)
   const builder = SQUAD_PROMPT_BUILDERS[squadType]
-  if (!builder) return { error: `No prompt builder for squad ${squadType}` }
+  if (!builder) return { error: `Nenhum construtor de prompt para o squad ${squadType}` }
 
   const prompt = builder(context, processNumber)
   return { context, prompt, squadType }

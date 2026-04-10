@@ -119,7 +119,7 @@ export function gateFailureTemplate(data: GateFailureData): string {
 </div>
 <div style="${STYLES.row}">
   <span style="${STYLES.label}">Itens Reprovados</span>
-  <span style="${STYLES.value}">${data.failed_items_count} of ${data.total_items_count}</span>
+  <span style="${STYLES.value}">${data.failed_items_count} de ${data.total_items_count}</span>
 </div>
 <div style="margin-top: 16px; padding: 12px; background: #f9fafb; border-radius: 4px;">
   <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">Resumo</div>
