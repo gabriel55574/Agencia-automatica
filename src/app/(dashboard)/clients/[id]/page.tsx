@@ -1,18 +1,19 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { PHASE_NAMES, type PhaseNumber } from '@/lib/database/enums'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { PipelineAccordion } from '@/components/clients/pipeline-accordion'
 import { ArchiveDialog } from '@/components/clients/archive-dialog'
 import { CycleBadge } from '@/components/clients/cycle-badge'
 import { ResetPipelineDialog } from '@/components/clients/reset-pipeline-dialog'
 import { CloneClientDialog } from '@/components/clients/clone-client-dialog'
+import { ClientProfileTabs } from '@/components/clients/client-profile-tabs'
 import { fetchProcessBudgetUsage } from '@/lib/costs/queries'
 import type { Json } from '@/lib/database/types'
 import type { PhaseRow, ProcessRow, GateRow, GateReviewRow, LatestJobData } from '@/lib/types/pipeline'
+import type { CompletedJob, ProcessWithRuns } from '@/lib/types/outputs'
 
 interface ClientProfilePageProps {
   params: Promise<{ id: string }>
@@ -120,6 +121,68 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
   // Fetch budget usage for processes with token budgets (Phase 12, COST-03)
   const budgetUsage = await fetchProcessBudgetUsage(id)
 
+  // Fetch completed squad jobs for outputs tab (Phase 19, UX-03)
+  const { data: completedJobs } = await supabase
+    .from('squad_jobs')
+    .select('id, process_id, squad_type, status, structured_output, output, created_at, started_at, completed_at')
+    .eq('client_id', id)
+    .eq('status', 'completed')
+    .order('created_at', { ascending: false })
+
+  // Build Map<processId, CompletedJob[]> for outputs tab
+  const completedJobsByProcessId = new Map<string, CompletedJob[]>()
+  for (const job of completedJobs ?? []) {
+    if (!job.process_id) continue
+    const processId = job.process_id as string
+    if (!completedJobsByProcessId.has(processId)) {
+      completedJobsByProcessId.set(processId, [])
+    }
+    completedJobsByProcessId.get(processId)!.push({
+      id: job.id,
+      processId,
+      squadType: job.squad_type,
+      structuredOutput: (job.structured_output as Record<string, unknown>) ?? null,
+      output: (job.output as string) ?? null,
+      createdAt: job.created_at,
+      startedAt: (job.started_at as string) ?? null,
+      completedAt: (job.completed_at as string) ?? null,
+    })
+  }
+
+  // Build phase_id -> phase_number map for outputs grouping
+  const phaseNumberById = new Map<string, number>()
+  for (const phase of phases ?? []) {
+    phaseNumberById.set(phase.id, phase.phase_number)
+  }
+
+  // Build processes with runs grouped by phase for outputs tab
+  const processesWithRuns: ProcessWithRuns[] = []
+  for (const proc of processes ?? []) {
+    const runs = completedJobsByProcessId.get(proc.id) ?? []
+    if (runs.length === 0) continue
+    const phaseNum = phaseNumberById.get(proc.phase_id) ?? 1
+    processesWithRuns.push({
+      processId: proc.id,
+      processName: proc.name,
+      processNumber: proc.process_number,
+      squad: proc.squad,
+      phaseNumber: phaseNum,
+      phaseName: PHASE_NAMES[phaseNum as PhaseNumber] ?? `Phase ${phaseNum}`,
+      runs,
+    })
+  }
+
+  // Group by phase number
+  const outputsByPhase = new Map<number, ProcessWithRuns[]>()
+  for (const p of processesWithRuns) {
+    if (!outputsByPhase.has(p.phaseNumber)) {
+      outputsByPhase.set(p.phaseNumber, [])
+    }
+    outputsByPhase.get(p.phaseNumber)!.push(p)
+  }
+  const outputPhaseNumbers = Array.from(outputsByPhase.keys()).sort((a, b) => a - b)
+  const hasAnyRuns = processesWithRuns.length > 0
+
   const briefing = parseBriefing(client.briefing)
   const isArchived = client.status === 'archived'
 
@@ -171,67 +234,25 @@ export default async function ClientProfilePage({ params }: ClientProfilePagePro
         </div>
       </div>
 
-      <Separator />
-
-      {/* ---- Briefing section ---- */}
-      <div>
-        <h2 className="text-lg font-semibold text-zinc-900 mb-4">Briefing</h2>
-        {briefing ? (
-          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Nicho</dt>
-              {/* Text node only — never dangerouslySetInnerHTML (T-2-02-05) */}
-              <dd className="text-sm text-zinc-800">{briefing.niche ?? '—'}</dd>
-            </div>
-            <div>
-              <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Publico-Alvo</dt>
-              <dd className="text-sm text-zinc-800">{briefing.target_audience ?? '—'}</dd>
-            </div>
-            {briefing.additional_context && (
-              <div className="sm:col-span-2">
-                <dt className="text-xs font-medium text-zinc-400 uppercase tracking-wide mb-1">Contexto Adicional</dt>
-                <dd className="text-sm text-zinc-800 whitespace-pre-wrap">{briefing.additional_context}</dd>
-              </div>
-            )}
-          </dl>
-        ) : (
-          <p className="text-sm text-zinc-400">Nenhuma informacao de briefing registrada.</p>
-        )}
-      </div>
-
-      <Separator />
-
-      {/* ---- Pipeline accordion (replaces PipelineTimeline) ---- */}
-      <div>
-        <h2 className="text-lg font-semibold text-zinc-900 mb-4">Pipeline</h2>
-        {phases && phases.length > 0 ? (
-          <PipelineAccordion
-            phases={phases as PhaseRow[]}
-            processes={(processes ?? []) as ProcessRow[]}
-            gates={(gates ?? []) as GateRow[]}
-            clientId={client.id}
-            clientName={client.name}
-            latestJobs={jobsByProcessIdObj}
-            latestReviews={latestReviewsByGateId}
-            budgetUsage={budgetUsage}
-          />
-        ) : (
-          <p className="text-sm text-zinc-400">Fases do pipeline nao inicializadas.</p>
-        )}
-      </div>
-
-      <Separator />
-
-      {/* ---- Outputs section ---- */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold text-zinc-900">Outputs</h2>
-          <Link href={`/clients/${client.id}/outputs`}>
-            <Button variant="outline" size="sm">Ver Todos os Outputs</Button>
-          </Link>
-        </div>
-        <p className="text-sm text-zinc-400">Navegue por todos os outputs do squad organizados por fase e processo.</p>
-      </div>
+      {/* ---- Tabbed content (Pipeline, Outputs, Briefing) ---- */}
+      <ClientProfileTabs
+        clientId={client.id}
+        clientName={client.name}
+        phases={(phases ?? []) as PhaseRow[]}
+        processes={(processes ?? []) as ProcessRow[]}
+        gates={(gates ?? []) as GateRow[]}
+        latestJobs={jobsByProcessIdObj}
+        latestReviews={latestReviewsByGateId}
+        budgetUsage={budgetUsage}
+        outputsData={{
+          phaseNumbers: outputPhaseNumbers,
+          byPhase: Object.fromEntries(
+            Array.from(outputsByPhase.entries()).map(([k, v]) => [String(k), v])
+          ),
+          hasAnyRuns,
+        }}
+        briefing={briefing}
+      />
 
     </div>
   )
