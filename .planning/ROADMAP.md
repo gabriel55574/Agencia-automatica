@@ -106,5 +106,5 @@
 | 15. Templates | v1.1 | 2/2 | Complete | 2026-04-09 |
 | 16. Brand Identity & Sidebar Layout | v1.2 | 2/2 | Complete    | 2026-04-10 |
 | 17. Phase Colors & Breadcrumbs | v1.2 | 2/2 | Complete    | 2026-04-10 |
-| 18. PT-BR Localization | v1.2 | 0/3 | Complete    | 2026-04-10 |
-| 19. UX Polish | v1.2 | 0/0 | Not started | - |
+| 18. PT-BR Localization | v1.2 | 3/3 | Complete   | 2026-04-10 |
+| 19. UX Polish | v1.2 | 2/4 | In Progress|  |
