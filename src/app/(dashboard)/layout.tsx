@@ -1,7 +1,7 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { NavLinks } from '@/components/layout/NavLinks'
+import { Sidebar } from '@/components/layout/Sidebar'
+import { MobileHeader } from '@/components/layout/MobileHeader'
 
 async function signOut() {
   'use server'
@@ -25,22 +25,19 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-50">
-      <header className="border-b border-zinc-200 bg-white px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="text-base font-semibold text-zinc-900">Agency OS</Link>
-          <NavLinks />
-        </div>
-        <form action={signOut}>
-          <button
-            type="submit"
-            className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
-          >
-            Sair
-          </button>
-        </form>
-      </header>
-      <main className="flex-1 px-6 py-6">{children}</main>
+    <div className="min-h-screen flex bg-velocity-white">
+      {/* Desktop sidebar — D-06: fixed, always visible >= 1024px */}
+      <div className="hidden lg:flex lg:flex-shrink-0">
+        <Sidebar signOutAction={signOut} />
+      </div>
+
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile header — D-12: only visible < 1024px */}
+        <MobileHeader signOutAction={signOut} />
+
+        <main className="flex-1 px-6 py-6">{children}</main>
+      </div>
     </div>
   )
 }
